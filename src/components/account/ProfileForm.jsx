@@ -14,15 +14,6 @@ import {
 } from '../ui/form';
 import { Input } from '../ui/input';
 
-import { app } from '../../firebase';
-
-import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from 'firebase/storage';
-
 import { useDispatch, useSelector } from 'react-redux';
 
 import { Textarea } from '../ui/textarea';
@@ -34,6 +25,7 @@ import {
   updateUserStart,
   updateUserSuccess,
 } from '../../redux/user/userSlice';
+import uploadFile from '../../lib/uploadFile';
 
 const profileFormSchema = z.object({
   username: z
@@ -60,19 +52,19 @@ const ProfileForm = () => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const dispatch = useDispatch();
 
   const form = useForm({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      username: currentUser.username,
-      email: currentUser.email,
-      bio: currentUser.bio,
-      photo: currentUser.photo,
+      username: currentUser?.username,
+      email: currentUser?.email,
+      bio: currentUser?.bio,
+      photo: currentUser?.photo,
     },
     mode: 'onChange',
   });
 
-  const dispatch = useDispatch();
   useEffect(() => {
     if (file) {
       handleFileUpload(file);
@@ -85,21 +77,12 @@ const ProfileForm = () => {
   }, [updateSuccess, file]);
 
   const handleFileUpload = async (file) => {
-    const storage = getStorage(app);
-    const fileName = new Date().getTime() + '-' + file.name;
-    const storageRef = ref(storage, `avatars/${fileName}`);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {},
-      (error) => {},
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          form.setValue('photo', downloadURL);
-        });
-      }
-    );
+    try {
+      const downloadURL = await uploadFile(file);
+      form.setValue('photo', downloadURL);
+    } catch (error) {
+      console.log('Error uploading file: ', error);
+    }
   };
 
   const onSubmit = async (formData) => {
