@@ -4,8 +4,10 @@ import { cn } from '../../lib/utils';
 import { buttonVariants } from '../ui/button';
 
 import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-export function SidebarNav({ className, items, ...props }) {
+const SidebarNav = ({ className, items, ...props }) => {
+  const { currentUser } = useSelector((state) => state.user);
   const pathname = useLocation();
 
   return (
@@ -17,7 +19,11 @@ export function SidebarNav({ className, items, ...props }) {
       {...props}
     >
       {items.map((item) => {
-        return (
+        // Sprawdź, czy użytkownik ma wymaganą rolę
+        const hasRequiredRole = currentUser?.role === item.role;
+
+        // Jeżeli użytkownik ma wymaganą rolę lub rola nie jest wymagana, renderuj link
+        return hasRequiredRole || !item.role ? (
           <Link
             key={item.href}
             to={item.href}
@@ -31,8 +37,10 @@ export function SidebarNav({ className, items, ...props }) {
           >
             {item.title}
           </Link>
-        );
+        ) : null; // W przeciwnym razie nie renderuj linku
       })}
     </nav>
   );
-}
+};
+
+export default SidebarNav;
