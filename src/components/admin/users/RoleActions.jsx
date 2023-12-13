@@ -1,14 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
-import { Form, FormControl, FormField, FormItem } from '../../ui/form';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '../../ui/select';
+import { Form } from '../../ui/form';
+
+import FormArea from '../../FormArea';
 
 const RoleActions = ({ row }) => {
   const role = row.getValue('role');
@@ -46,29 +40,12 @@ const RoleActions = ({ row }) => {
   return (
     <Form {...form}>
       <form onChange={(e) => handleRoleChange(e)}>
-        <FormField
-          control={form.control}
+        <FormArea
+          type='select'
+          form={form}
+          items={roles}
+          placeholder={role}
           name='role'
-          render={({ field }) => (
-            <FormItem>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger className='w-full'>
-                    <SelectValue placeholder={role} />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectGroup>
-                    {roles.map((role) => (
-                      <SelectItem key={role} value={role}>
-                        {role}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                </SelectContent>
-              </Select>
-            </FormItem>
-          )}
         />
       </form>
     </Form>
