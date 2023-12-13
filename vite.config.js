@@ -11,6 +11,9 @@ export default defineConfig({
       },
     },
   },
+  images: {
+    domains: ['lh3.googleusercontent.com'],
+  },
   plugins: [react()],
   esbuild: {
     jsxInject: `import React from 'react'`,
