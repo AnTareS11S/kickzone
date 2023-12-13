@@ -1,23 +1,21 @@
 /* eslint-disable react/prop-types */
 import { Separator } from '../components/ui/separator';
-import { SidebarNav } from '../components/account/SidebarNav';
+import SidebarNav from '../components/account/SidebarNav';
 import { Outlet } from 'react-router-dom';
 
 const sidebarNavItems = [
   {
     title: 'Profile',
     href: '/user/profile',
-    role: 'user',
   },
   {
-    title: 'Account',
-    href: '/user/account',
-    role: 'user',
+    title: 'Referee Profile',
+    href: '/user/referee/profile',
+    role: 'referee',
   },
   {
     title: 'Settings',
     href: '/user/settings',
-    role: 'user',
   },
   {
     title: 'Manage Users',
