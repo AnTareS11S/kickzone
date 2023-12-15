@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
 
@@ -9,32 +8,7 @@ import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../../lib/uploadFile';
-
-const refereeFormSchema = z.object({
-  name: z
-    .string()
-    .min(1, {
-      message: 'Name must be at least 4 characters.',
-    })
-    .max(30, {
-      message: 'Name must not be longer than 30 characters.',
-    }),
-  surname: z
-    .string()
-    .min(1, {
-      message: 'Surname must be at least 4 characters.',
-    })
-    .max(30, {
-      message: 'Surname must not be longer than 30 characters.',
-    }),
-  birthDate: z.string(),
-  country: z.string(),
-  city: z.string(),
-  photo: z.string().optional(),
-  bio: z.string().min(1, {
-    message: 'Bio must be at least 4 characters.',
-  }),
-});
+import { usersFormSchema } from '../../lib/validation/UsersValidation';
 
 const RefereeForm = ({ currentUser, refereeData }) => {
   const fileRef = useRef(null);
@@ -42,7 +16,7 @@ const RefereeForm = ({ currentUser, refereeData }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const form = useForm({
-    resolver: zodResolver(refereeFormSchema),
+    resolver: zodResolver(usersFormSchema),
     defaultValues: {
       name: '',
       surname: '',
