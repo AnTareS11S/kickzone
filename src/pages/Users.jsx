@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import UsersPanel from '../components/admin/users/UsersPanel';
 import { columns } from '../components/admin/users/columns';
+import { Separator } from '../components/ui/separator';
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -26,6 +27,7 @@ const Users = () => {
         <h3 className='text-lg font-medium'>Users</h3>
         <p className='text-sm text-muted-foreground'>Manage users.</p>
       </div>
+      <Separator />
       <UsersPanel columns={columns} data={users} />
     </div>
   );
