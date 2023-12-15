@@ -1,7 +1,7 @@
 import { Button } from '../../ui/button';
 import { CaretSortIcon } from '@radix-ui/react-icons';
 import RoleActions from './RoleActions';
-import DeleteActions from './DeleteActions';
+import DeleteUser from './DeleteUser';
 
 export const columns = [
   {
@@ -63,6 +63,6 @@ export const columns = [
   {
     id: 'actions',
     header: 'Actions',
-    cell: ({ row }) => <DeleteActions row={row} />,
+    cell: ({ row }) => <DeleteUser row={row} />,
   },
 ];
