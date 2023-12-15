@@ -11,6 +11,9 @@ import Settings from './pages/Settings';
 import AdminRoute from './components/AdminRoute';
 import Users from './pages/Users';
 import RefereeProfile from './pages/RefereeProfile';
+import RefereeRoute from './components/RefereeRoute';
+import CoachProfile from './pages/CoachProfile';
+import TeamManage from './pages/TeamManage';
 
 const App = () => {
   return (
@@ -23,11 +26,15 @@ const App = () => {
         <Route path='/about' element={<About />} />
         <Route path='/user' element={<SettingsLayout />}>
           <Route path='/user/profile' element={<Profile />} />
-          <Route path='/user/referee/profile' element={<RefereeProfile />} />
+          <Route path='/user/referee' element={<RefereeRoute />}>
+            <Route path='/user/referee/profile' element={<RefereeProfile />} />
+          </Route>
           <Route path='/user/settings' element={<Settings />} />
           <Route path='/user/admin' element={<AdminRoute />}>
             <Route path='/user/admin/users' element={<Users />} />
+            <Route path='/user/admin/teams' element={<TeamManage />} />
           </Route>
+          <Route path='/user/coach/profile' element={<CoachProfile />} />
         </Route>
 
         <Route element={<PrivateRoute />}>
