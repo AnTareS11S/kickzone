@@ -3,6 +3,7 @@ import RefereeForm from '../components/referee/RefereeForm';
 
 import { useSelector } from 'react-redux';
 import { useState } from 'react';
+import { Separator } from '../components/ui/separator';
 
 const RefereeProfile = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -25,7 +26,18 @@ const RefereeProfile = () => {
     getReferee();
   }, [currentUser._id]);
 
-  return <RefereeForm currentUser={currentUser} refereeData={referee} />;
+  return (
+    <div className='space-y-6'>
+      <div>
+        <h3 className='text-lg font-medium'>Referee Profile</h3>
+        <p className='text-sm text-muted-foreground'>
+          Fulfill your referee profile
+        </p>
+      </div>
+      <Separator />
+      <RefereeForm currentUser={currentUser} refereeData={referee} />
+    </div>
+  );
 };
 
 export default RefereeProfile;
