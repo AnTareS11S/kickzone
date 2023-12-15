@@ -1,4 +1,3 @@
-import { FaSearch } from 'react-icons/fa';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from './ui/button';
@@ -47,14 +46,7 @@ const Header = () => {
             <span className='text-slate-700'>Pro</span>
           </h1>
         </Link>
-        <form className='bg-slate-100 flex items-center rounded-full p-3 focus:ring-2 focus:ring-slate-600'>
-          <input
-            type='text'
-            placeholder='Search'
-            className='bg-transparent focus:outline-none w-24 sm:w-64'
-          />
-          <FaSearch className='text-slate-600' />
-        </form>
+
         <ul className='flex gap-4'>
           <Link to='/'>
             <li className='hidden sm:inline text-slate-500 hover:text-slate-700 font-semibold hover:underline'>
