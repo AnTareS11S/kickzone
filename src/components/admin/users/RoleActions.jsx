@@ -13,7 +13,7 @@ const RoleActions = ({ row }) => {
     },
   });
 
-  const roles = ['user', 'admin', 'coach', 'referee'];
+  const roles = ['user:1', 'admin:2', 'coach:3', 'referee:4', 'player:5'];
 
   const id = row.original._id;
 
@@ -28,10 +28,11 @@ const RoleActions = ({ row }) => {
         },
         body: JSON.stringify({ role: newRole }),
       });
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to fetch data!');
-      }
       const data = await res.json();
+      if (data.success === false) {
+        console.log(data.message);
+        return;
+      }
     } catch (error) {
       console.log(error);
     }
