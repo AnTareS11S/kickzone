@@ -17,6 +17,7 @@ const FormArea = ({
   currentUserPhoto,
   form,
   name,
+  idFlag,
   items,
   setFile,
   placeholder,
@@ -31,15 +32,20 @@ const FormArea = ({
           <FormControl>
             {type === 'file' ? (
               <div className='flex items-center'>
-                <img
-                  src={currentUserPhoto}
-                  alt='user'
-                  className='w-24 h-24 rounded-full object-cover mt-2 self-center mx-auto cursor-pointer'
-                  onClick={() => fileRef.current.click()}
-                />
+                {name === 'logo' ? (
+                  ''
+                ) : (
+                  <img
+                    src={currentUserPhoto}
+                    alt='user'
+                    className='w-24 h-24 rounded-full object-cover mt-2 self-center mx-auto cursor-pointer'
+                    onClick={() => fileRef.current.click()}
+                  />
+                )}
                 <Input
                   id={name}
                   type={type}
+                  className={name === 'logo' ? 'w-[410px]' : 'hidden'}
                   ref={fileRef}
                   accept='image/*'
                   onChange={(e) => setFile(e.target.files[0])}
@@ -58,15 +64,14 @@ const FormArea = ({
                 id={name}
                 items={items}
                 placeholder={placeholder}
+                idFlag={idFlag}
                 onChange={field.onChange}
               />
             ) : (
               <Input
                 id={name}
                 type={type}
-                className='w-full'
-                format={type === 'date' ? 'yyyy-MM-dd' : ''}
-                value={type === 'date' ? '2023-03-23' : ''}
+                className='w-full flex'
                 {...form.register(name)}
                 {...field}
               />
