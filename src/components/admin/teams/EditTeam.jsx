@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import ModalActions from '../../ModalActions';
@@ -16,11 +17,10 @@ const EditTeam = ({ row }) => {
   };
 
   const form = useForm({
-    resolver: zodResolver(teamFormSchema),
+    resolver: zodResolver(teamFormSchema(true)),
     defaultValues: {
       name: '',
       coach: '',
-      league: '',
       city: '',
       country: '',
       yearFounded: '',
@@ -54,8 +54,6 @@ const EditTeam = ({ row }) => {
         body: JSON.stringify(updatedTeam),
       });
       const data = await res.json();
-      console.log('data: ', data);
-
       if (res.status === 200) {
         window.location.reload();
       }
