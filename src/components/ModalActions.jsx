@@ -14,50 +14,28 @@ import {
 import { Button } from './ui/button';
 import { Form } from './ui/form';
 import FormArea from './FormArea';
-import { useForm } from 'react-hook-form';
 import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../lib/uploadFile';
-import { teamFormSchema } from '../lib/validation/TeamValidation';
-import { zodResolver } from '@hookform/resolvers/zod';
+
+import { Pencil1Icon } from '@radix-ui/react-icons';
 
 const ModalActions = ({
   label,
   title,
   desc,
   onSubmit,
-  coaches,
   data,
-  coach,
+  fields,
+  edit,
+  form,
 }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
 
-  const form = useForm({
-    resolver: zodResolver(teamFormSchema),
-    defaultValues: {
-      name: '',
-      logo: '',
-      bio: '',
-      coach: '',
-      stadium: '',
-      yearFounded: '',
-      country: '',
-      city: '',
-    },
-    mode: 'onChange',
-  });
-
   useEffect(() => {
     if (data) {
       form.reset({
-        name: data.name,
-        logo: data.logo,
-        bio: data.bio,
-
-        stadium: data.stadium,
-        yearFounded: data.yearFounded,
-        country: data.country,
-        city: data.city,
+        ...data,
       });
     }
   }, [data, form]);
@@ -80,12 +58,16 @@ const ModalActions = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
-          variant='outline'
-          className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
-        >
-          {label}
-        </Button>
+        {!edit ? (
+          <Button
+            variant='outline'
+            className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
+          >
+            {label}
+          </Button>
+        ) : (
+          <Pencil1Icon className='w-5 h-5 cursor-pointer' />
+        )}
       </DialogTrigger>
       <DialogContent className='sm:max-w-[525px]'>
         <DialogHeader>
@@ -95,79 +77,43 @@ const ModalActions = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className='grid grid-cols-2 gap-4 py-4'>
-              <FormArea
-                id='name'
-                label='Name'
-                type='text'
-                form={form}
-                name='name'
-              />
-              <FormArea
-                id='logo'
-                label='Logo'
-                type='file'
-                form={form}
-                name='logo'
-                fileRef={fileRef}
-                setFile={setFile}
-              />
-              <FormArea
-                id='bio'
-                label='Bio'
-                type='textarea'
-                form={form}
-                name='bio'
-              />
-              <FormArea
-                id='coach'
-                label='Coach'
-                type='select'
-                form={form}
-                items={coaches}
-                placeholder={coach}
-                idFlag={true}
-                name='coach'
-              />
-              <FormArea
-                id='stadium'
-                label='Stadium'
-                type='select'
-                form={form}
-                name='stadium'
-              />
-              <FormArea
-                id='yearFounded'
-                label='Founded Year'
-                type='number'
-                form={form}
-                name='yearFounded'
-              />
-
-              <FormArea
-                id='country'
-                label='Country'
-                type='select'
-                form={form}
-                name='country'
-              />
-              <FormArea
-                id='city'
-                label='City'
-                type='text'
-                form={form}
-                name='city'
-              />
+              {fields.map((field) => (
+                <FormArea
+                  key={field.id}
+                  id={field.id}
+                  label={field.label}
+                  type={field.type}
+                  form={form}
+                  name={field.name}
+                  items={field.items}
+                  placeholder={field.placeholder}
+                  idFlag={field.idFlag}
+                  fileRef={field.type === 'file' ? fileRef : undefined}
+                  setFile={field.type === 'file' ? setFile : undefined}
+                />
+              ))}
             </div>
             <DialogFooter>
-              <DialogClose asChild>
-                <Button
-                  type='submit'
-                  className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
-                  disabled={!form.formState.isValid}
-                >
-                  {title}
-                </Button>
-              </DialogClose>
+              {!form.formState.isValid && (
+                <Dialog asChild>
+                  <Button
+                    type='submit'
+                    className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
+                  >
+                    {title}
+                  </Button>
+                </Dialog>
+              )}
+              {form.formState.isValid && (
+                <DialogClose asChild>
+                  <Button
+                    type='submit'
+                    className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
+                  >
+                    {title}
+                  </Button>
+                </DialogClose>
+              )}
             </DialogFooter>
           </form>
         </Form>
@@ -175,5 +121,4 @@ const ModalActions = ({
     </Dialog>
   );
 };
-
 export default ModalActions;
