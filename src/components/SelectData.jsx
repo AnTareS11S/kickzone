@@ -8,7 +8,6 @@ import {
   SelectValue,
 } from './ui/select';
 import { FormControl } from './ui/form';
-import { Input } from './ui/input';
 
 const SelectData = ({ placeholder, items, onChange, defaultValue, idFlag }) => {
   return (
@@ -19,9 +18,9 @@ const SelectData = ({ placeholder, items, onChange, defaultValue, idFlag }) => {
         </SelectTrigger>
       </FormControl>
       <SelectContent>
-        <SelectGroup>
-          {Array.isArray(items) &&
-            items.map((item) => (
+        {Array.isArray(items) && items.length > 0 ? (
+          <SelectGroup>
+            {items.map((item) => (
               <SelectItem
                 key={item.split(':')[1]}
                 value={idFlag ? item.split(':')[1] : item.split(':')[0]}
@@ -29,8 +28,12 @@ const SelectData = ({ placeholder, items, onChange, defaultValue, idFlag }) => {
                 {item.split(':')[0]}
               </SelectItem>
             ))}
-          <Input className='hidden' />
-        </SelectGroup>
+          </SelectGroup>
+        ) : (
+          <SelectGroup>
+            <SelectItem value='No data'>No data</SelectItem>
+          </SelectGroup>
+        )}
       </SelectContent>
     </Select>
   );
