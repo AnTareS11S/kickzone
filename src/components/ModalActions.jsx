@@ -17,7 +17,7 @@ import FormArea from './FormArea';
 import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../lib/uploadFile';
 
-import { Pencil1Icon } from '@radix-ui/react-icons';
+import { Pencil1Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 
 const ModalActions = ({
   label,
@@ -28,6 +28,7 @@ const ModalActions = ({
   fields,
   edit,
   form,
+  add,
 }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
@@ -58,17 +59,20 @@ const ModalActions = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        {!edit ? (
+        {edit ? (
+          edit && <Pencil1Icon className='w-5 h-5 cursor-pointer' />
+        ) : add ? (
+          <PlusCircledIcon className='w-5 h-5 cursor-pointer' />
+        ) : (
           <Button
             variant='outline'
             className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
           >
             {label}
           </Button>
-        ) : (
-          <Pencil1Icon className='w-5 h-5 cursor-pointer' />
         )}
       </DialogTrigger>
+
       <DialogContent className='sm:max-w-[525px]'>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
