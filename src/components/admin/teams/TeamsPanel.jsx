@@ -20,6 +20,11 @@ import {
   TableRow,
 } from '../../ui/table';
 import ModalActions from '../../ModalActions';
+import { fetchCoaches, fetchTeamDataForTable } from '../../../lib/apiUtils';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { teamFormSchema } from '../../../lib/validation/TeamValidation';
+import { Cross2Icon } from '@radix-ui/react-icons';
 
 const TeamsPanel = ({ columns }) => {
   const [sorting, setSorting] = useState([]);
@@ -29,21 +34,76 @@ const TeamsPanel = ({ columns }) => {
   const [coaches, setCoaches] = useState([]);
   const [tableData, setTableData] = useState([]);
 
+  const form = useForm({
+    resolver: zodResolver(teamFormSchema),
+    defaultValues: {
+      name: '',
+      coach: '',
+      league: '',
+      city: '',
+      country: '',
+      yearFounded: '',
+      logo: '',
+    },
+    mode: 'onChange',
+  });
+
+  const fields = [
+    {
+      id: 'name',
+      label: 'Name',
+      type: 'text',
+      name: 'name',
+    },
+    {
+      id: 'logo',
+      label: 'Logo',
+      type: 'file',
+      name: 'logo',
+    },
+    {
+      id: 'bio',
+      label: 'Bio',
+      type: 'textarea',
+      name: 'bio',
+    },
+    {
+      id: 'coach',
+      label: 'Coach',
+      type: 'select',
+      name: 'coach',
+      items: coaches,
+      placeholder: 'Select a coach',
+      idFlag: true,
+    },
+    {
+      id: 'stadium',
+      label: 'Stadium',
+      type: 'select',
+      name: 'stadium',
+    },
+    {
+      id: 'yearFounded',
+      label: 'Founded Year',
+      type: 'number',
+      name: 'yearFounded',
+    },
+    {
+      id: 'country',
+      label: 'Country',
+      type: 'select',
+      name: 'country',
+    },
+    {
+      id: 'city',
+      label: 'City',
+      type: 'text',
+      name: 'city',
+    },
+  ];
+
   useEffect(() => {
-    const fetchDataForTable = async () => {
-      try {
-        const res = await fetch('/api/admin/teams');
-        const data = await res.json();
-        if (data.success === false) {
-          console.log(data);
-          return;
-        }
-        setTableData(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchDataForTable();
+    fetchTeamDataForTable(setTableData, updateSuccess);
   }, [updateSuccess]);
 
   const table = useReactTable({
@@ -64,20 +124,12 @@ const TeamsPanel = ({ columns }) => {
   });
 
   useEffect(() => {
-    const fetchCoaches = async () => {
-      try {
-        const res = await fetch('/api/admin/coaches');
-        const data = await res.json();
-        setCoaches(
-          data.map(
-            (coach) => coach.name + ' ' + coach.surname + ':' + coach._id
-          )
-        );
-      } catch (error) {
-        console.log(error);
-      }
+    const fetchCoachesData = async () => {
+      const coachesData = await fetchCoaches();
+      setCoaches(coachesData);
     };
-    fetchCoaches();
+
+    fetchCoachesData();
   }, []);
 
   const onSubmit = async (formData) => {
@@ -96,30 +148,46 @@ const TeamsPanel = ({ columns }) => {
         return;
       }
       setUpdateSuccess(true);
+      form.reset();
     } catch (error) {
       console.log(error);
     }
   };
 
+  const isFiltered = table.getState().columnFilters.length > 0;
+
   return (
     <>
-      <div className='flex items-center py-4 justify-between'>
-        <Input
-          placeholder='Search teams...'
-          className='max-w-sm'
-          value={table.getColumn('name')?.getFilterValue() ?? ''}
-          onChange={(e) =>
-            table.getColumn('name').setFilterValue(e.target.value)
-          }
-        />
+      <div className='flex items-center justify-between'>
+        <div className='flex flex-1 items-center space-x-2'>
+          <Input
+            placeholder='Search teams...'
+            className='h-8 w-[250px] lg:w-[350px]'
+            value={table.getColumn('name')?.getFilterValue() ?? ''}
+            onChange={(e) =>
+              table.getColumn('name').setFilterValue(e.target.value)
+            }
+          />
+
+          {isFiltered && (
+            <Button
+              variant='ghost'
+              onClick={() => table.resetColumnFilters()}
+              className='h-8 pl-2'
+            >
+              Reset
+              <Cross2Icon className='ml-2 h-4 w-4' />
+            </Button>
+          )}
+        </div>
         <ModalActions
+          label='Add'
           onSubmit={onSubmit}
-          label='Add Team'
           title='Add Team'
           desc='Add a new team'
-          teamData={tableData}
           coaches={coaches}
-          updateSuccess={updateSuccess}
+          form={form}
+          fields={fields}
         />
       </div>
 
@@ -130,7 +198,7 @@ const TeamsPanel = ({ columns }) => {
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className='bg-gray-200'>
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -149,9 +217,10 @@ const TeamsPanel = ({ columns }) => {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className='hover:bg-gray-300'
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className='p-2'>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -162,10 +231,7 @@ const TeamsPanel = ({ columns }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
+                <TableCell colSpan={columns.length} className='h-24 text-cente'>
                   No teams found.
                 </TableCell>
               </TableRow>
