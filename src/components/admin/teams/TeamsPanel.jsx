@@ -35,7 +35,7 @@ const TeamsPanel = ({ columns }) => {
   const [tableData, setTableData] = useState([]);
 
   const form = useForm({
-    resolver: zodResolver(teamFormSchema),
+    resolver: zodResolver(teamFormSchema(false)),
     defaultValues: {
       name: '',
       coach: '',
@@ -104,6 +104,7 @@ const TeamsPanel = ({ columns }) => {
 
   useEffect(() => {
     fetchTeamDataForTable(setTableData, updateSuccess);
+    setUpdateSuccess(false);
   }, [updateSuccess]);
 
   const table = useReactTable({
@@ -231,7 +232,10 @@ const TeamsPanel = ({ columns }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className='h-24 text-cente'>
+                <TableCell
+                  colSpan={columns.length}
+                  className='h-24 text-center'
+                >
                   No teams found.
                 </TableCell>
               </TableRow>
