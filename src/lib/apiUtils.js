@@ -26,4 +26,18 @@ const fetchTeamDataForTable = async (setTableData, updateSuccess) => {
   }
 };
 
-export { fetchCoaches, fetchTeamDataForTable };
+const fetchLeagueDataForTable = async (setTableData, updateSuccess) => {
+  try {
+    const res = await fetch('/api/admin/leagues');
+    const data = await res.json();
+    if (data.success === false) {
+      console.log(data);
+      return;
+    }
+    setTableData(data);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { fetchCoaches, fetchTeamDataForTable, fetchLeagueDataForTable };
