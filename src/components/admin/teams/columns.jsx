@@ -33,20 +33,6 @@ export const columns = [
     },
   },
   {
-    accessorKey: 'league',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          League
-          <CaretSortIcon className='w-4 h-4 ml-2' />
-        </Button>
-      );
-    },
-  },
-  {
     accessorKey: 'yearFounded',
     header: ({ column }) => {
       return (
