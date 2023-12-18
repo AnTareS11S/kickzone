@@ -14,6 +14,7 @@ import RefereeProfile from './pages/RefereeProfile';
 import RefereeRoute from './components/RefereeRoute';
 import CoachProfile from './pages/CoachProfile';
 import TeamManage from './pages/TeamManage';
+import LeagueManage from './pages/LeagueManage';
 
 const App = () => {
   return (
@@ -33,6 +34,7 @@ const App = () => {
           <Route path='/user/admin' element={<AdminRoute />}>
             <Route path='/user/admin/users' element={<Users />} />
             <Route path='/user/admin/teams' element={<TeamManage />} />
+            <Route path='/user/admin/leagues' element={<LeagueManage />} />
           </Route>
           <Route path='/user/coach/profile' element={<CoachProfile />} />
         </Route>
