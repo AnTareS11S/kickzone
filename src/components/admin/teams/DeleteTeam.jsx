@@ -1,10 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useNavigate } from 'react-router-dom';
+
 import ModalDialog from '../../ModalDialog';
 
 const DeleteTeam = ({ row }) => {
   const id = row.original._id;
-  const navigate = useNavigate();
 
   const handleDeleteTeam = async () => {
     try {
@@ -15,7 +14,7 @@ const DeleteTeam = ({ row }) => {
         throw new Error(data.message || 'Failed to delete team!');
       }
       const data = await res.json();
-      navigate(0);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
