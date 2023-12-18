@@ -13,7 +13,7 @@ const SidebarNav = ({ className, items, ...props }) => {
   return (
     <nav
       className={cn(
-        'flex space-x-2 lg:flex-col lg:space-x-0 lg:space-y-1 ',
+        'flex flex-col lg:space-x-0 lg:space-y-1 max-sm:grid max-sm:grid-cols-3 max-sm:gap-2 max-md:grid max-md:grid-cols-3 max-md:gap-2 max-lg:grid max-lg:grid-cols-4 max-lg:gap-2 ',
         className
       )}
       {...props}
@@ -32,7 +32,7 @@ const SidebarNav = ({ className, items, ...props }) => {
               pathname === item.href
                 ? 'bg-muted hover:bg-muted'
                 : 'hover:bg-transparent hover:underline ',
-              'justify-start '
+              'justify-start shadow-sm'
             )}
           >
             {item.title}
