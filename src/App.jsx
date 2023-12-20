@@ -2,8 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
-import About from './pages/About';
-import Header from './components/Header';
 import PrivateRoute from './components/PrivateRoute';
 import SettingsLayout from './pages/SettingsLayout';
 import Profile from './pages/Profile';
@@ -15,16 +13,22 @@ import RefereeRoute from './components/RefereeRoute';
 import CoachProfile from './pages/CoachProfile';
 import TeamManage from './pages/TeamManage';
 import LeagueManage from './pages/LeagueManage';
+import Layout from './pages/Layout';
+import AddPost from './pages/AddPost';
+import PostPage from './pages/PostPage';
 
 const App = () => {
   return (
     <BrowserRouter>
-      <Header />
       <Routes>
-        <Route path='/' element={<Home />} />
+        <Route path='/' element={<Layout />}>
+          <Route path='/' element={<Home />} />
+          <Route path='/post/create' element={<AddPost />} />
+          <Route path='/post/:id' element={<PostPage />} />
+        </Route>
         <Route path='/sign-in' element={<Signin />} />
         <Route path='/sign-up' element={<Signup />} />
-        <Route path='/about' element={<About />} />
+
         <Route path='/user' element={<SettingsLayout />}>
           <Route path='/user/profile' element={<Profile />} />
           <Route path='/user/referee' element={<RefereeRoute />}>
