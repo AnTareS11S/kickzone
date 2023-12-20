@@ -55,22 +55,23 @@ const UsersPanel = ({ columns, data }) => {
         />
       </div>
       <div className='rounded-md border'>
-        <Table>
+        <Table className='min-w-full divide-y divide-gray-200'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
+                {headerGroup.headers.map((header) => (
+                  <TableHead
+                    key={header.id}
+                    className='px-6 py-3 text-gray-600'
+                  >
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
@@ -80,9 +81,10 @@ const UsersPanel = ({ columns, data }) => {
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && 'selected'}
+                  className='bg-white hover:bg-gray-100'
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className='py-1 px-6 '>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
@@ -95,7 +97,7 @@ const UsersPanel = ({ columns, data }) => {
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
-                  className='h-24 text-center'
+                  className='px-6 py-4 text-center'
                 >
                   No users found.
                 </TableCell>
@@ -103,6 +105,7 @@ const UsersPanel = ({ columns, data }) => {
             )}
           </TableBody>
         </Table>
+
         <div className='flex items-center justify-between px-4 py-3 bg-gray-50 sm:px-6'>
           <div className='flex justify-between flex-1 sm:hidden'>
             <Button
