@@ -48,7 +48,6 @@ const AddTeam = ({ row }) => {
   ];
 
   const onSubmit = async (formData) => {
-    console.log(formData);
     const teamId = getTeamId(formData.names);
 
     try {
