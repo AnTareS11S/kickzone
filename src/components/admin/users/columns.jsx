@@ -11,11 +11,15 @@ export const columns = [
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='cursor-pointer flex items-center'
         >
           Username
           <CaretSortIcon className='w-4 h-4 ml-2' />
         </Button>
       );
+    },
+    cell: ({ row }) => {
+      return <div className='font-medium'>{row.getValue('username')}</div>;
     },
   },
   {
@@ -25,6 +29,7 @@ export const columns = [
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='cursor-pointer flex items-center'
         >
           Email
           <CaretSortIcon className='w-4 h-4 ml-2' />
@@ -32,13 +37,28 @@ export const columns = [
       );
     },
     cell: ({ row }) => {
-      return <div className='lowercase'>{row.getValue('email')}</div>;
+      return <div className='lowercase w-1'>{row.getValue('email')}</div>;
     },
   },
   {
     accessorKey: 'role',
-    header: 'Role',
-    cell: ({ row }) => <RoleActions row={row} />,
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Role
+          <CaretSortIcon className='w-4 h-4 ml-2' />
+        </Button>
+      );
+    },
+    cell: ({ row }) => (
+      <div className=''>
+        {' '}
+        <RoleActions row={row} />
+      </div>
+    ),
   },
 
   {
@@ -48,7 +68,6 @@ export const columns = [
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='text-right'
         >
           Created At
           <CaretSortIcon className='w-4 h-4 ml-2' />
@@ -57,7 +76,7 @@ export const columns = [
     },
     cell: ({ row }) => {
       const date = new Date(row.original.createdAt);
-      return <div className='text-right'>{date.toLocaleDateString()}</div>;
+      return <div className=''>{date.toLocaleDateString()}</div>;
     },
   },
   {
