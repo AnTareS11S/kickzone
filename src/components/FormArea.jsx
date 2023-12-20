@@ -32,7 +32,7 @@ const FormArea = ({
           <FormControl>
             {type === 'file' ? (
               <div className='flex items-center'>
-                {name === 'logo' ? (
+                {name === 'logo' || name === 'postPhoto' ? (
                   ''
                 ) : (
                   <img
@@ -45,7 +45,11 @@ const FormArea = ({
                 <Input
                   id={name}
                   type={type}
-                  className={name === 'logo' ? 'w-[410px]' : 'hidden'}
+                  className={
+                    name === 'logo' || name === 'postPhoto'
+                      ? 'w-full'
+                      : 'hidden'
+                  }
                   ref={fileRef}
                   accept='image/*'
                   onChange={(e) => setFile(e.target.files[0])}
@@ -55,6 +59,7 @@ const FormArea = ({
               <Textarea
                 id={name}
                 placeholder={placeholder}
+                rows={name === 'postContent' ? 15 : 1}
                 className='resize-none w-full'
                 {...form.register(name)}
                 {...field}
