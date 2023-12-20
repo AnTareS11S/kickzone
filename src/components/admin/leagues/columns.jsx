@@ -3,6 +3,7 @@ import { CaretSortIcon } from '@radix-ui/react-icons';
 import EditLeague from './EditLeague';
 import DeleteLeague from './DeleteLeague';
 import AddTeam from './AddTeam';
+import RemoveTeamFromLeague from './RemoveTeamFromLeague';
 
 export const columns = [
   {
@@ -46,15 +47,21 @@ export const columns = [
         </Button>
       );
     },
+    cell: ({ row }) => {
+      const value = row.getValue('teams').toString().split(',')[0];
+      return <div>{value}</div>;
+    },
   },
   {
     id: 'actions',
     header: 'Actions',
     cell: ({ row }) => {
+      const teams = row?.original.teams.toString().split(',').slice(1);
       return (
         <div className='flex items-center space-x-4'>
           <EditLeague row={row} />
           <AddTeam row={row} />
+          <RemoveTeamFromLeague row={row} teams={teams} />
           <DeleteLeague row={row} />
         </div>
       );
