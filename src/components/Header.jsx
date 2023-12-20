@@ -38,27 +38,16 @@ const Header = () => {
     }
   };
   return (
-    <header className='bg-slate-200 shadow-md'>
-      <div className='flex justify-between items-center max-6xl mx-auto p-3'>
-        <Link to='/'>
-          <h1 className='font-bold text-sm sm:text-xl flex flex-wrap'>
-            <span className='text-slate-500'>Futbolista</span>
-            <span className='text-slate-700'>Pro</span>
-          </h1>
-        </Link>
+    <nav className='topbar'>
+      <Link to='/' className='flex items-center gap-1 justify-center'>
+        <img src='/logo_black.png' alt='logo' className='h-9 w-9' />
+        <p className='text-heading3-bold text-dark-2 max-xs:hidden'>
+          FutbolistPro
+        </p>
+      </Link>
 
-        <ul className='flex gap-4'>
-          <Link to='/'>
-            <li className='hidden sm:inline text-slate-500 hover:text-slate-700 font-semibold hover:underline'>
-              Home
-            </li>
-          </Link>
-          <Link to='/about'>
-            <li className='hidden sm:inline text-slate-500 hover:text-slate-700 font-semibold hover:underline'>
-              About
-            </li>
-          </Link>
-
+      <div className='flex items-center gap-1'>
+        <div className='block'>
           {currentUser ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -74,7 +63,7 @@ const Header = () => {
                   </Avatar>
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className='w-56' align='end' forceMount>
+              <DropdownMenuContent className='w-52 mt-4' align='end' forceMount>
                 <DropdownMenuLabel className='font-normal'>
                   <div className='flex flex-col space-y-1'>
                     <p className='text-sm font-medium leading-none'>
@@ -108,9 +97,9 @@ const Header = () => {
               Log In
             </Link>
           )}
-        </ul>
+        </div>
       </div>
-    </header>
+    </nav>
   );
 };
 
