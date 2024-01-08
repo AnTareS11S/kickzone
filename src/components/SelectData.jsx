@@ -11,10 +11,14 @@ import { FormControl } from './ui/form';
 
 const SelectData = ({ placeholder, items, onChange, defaultValue, idFlag }) => {
   return (
-    <Select onValueChange={onChange} defaultValue={defaultValue}>
+    <Select onValueChange={onChange}>
       <FormControl>
         <SelectTrigger className='w-full'>
-          <SelectValue placeholder={placeholder} />
+          <SelectValue
+            placeholder={
+              defaultValue ? defaultValue.split(':')[0] : placeholder
+            }
+          />
         </SelectTrigger>
       </FormControl>
       <SelectContent>
