@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const sidebarLinks = [
   {
@@ -24,18 +25,19 @@ const sidebarLinks = [
   },
   {
     imgURL: '/community.svg',
-    route: '/communities',
-    label: 'Communities',
+    route: '/leagues',
+    label: 'Leagues',
   },
   {
     imgURL: '/user.svg',
-    route: '/profile',
+    route: '/profile/:id',
     label: 'Profile',
   },
 ];
 
 const LeftSidebar = () => {
   const { pathname } = useLocation();
+  const { currentUser } = useSelector((state) => state.user);
 
   return (
     <section className='custom-scrollbar leftsidebar'>
@@ -43,9 +45,19 @@ const LeftSidebar = () => {
         {sidebarLinks.map((link) => {
           const isActive = pathname === link.route;
 
-          return (
+          // Check if the link should be visible based on the user's role
+          const shouldShowLink =
+            link.label !== 'Create Post' ||
+            (currentUser &&
+              ['referee', 'admin', 'coach'].includes(currentUser.role));
+
+          return shouldShowLink ? (
             <Link
-              to={link.route}
+              to={
+                link.label === 'Profile'
+                  ? `/profile/${currentUser?._id}`
+                  : link.route
+              }
               key={link.label}
               className={`leftsidebar_link ${isActive && 'bg-primary-500'}`}
             >
@@ -58,7 +70,7 @@ const LeftSidebar = () => {
               />
               <p className='text-dark-2 max-lg:hidden'>{link.label}</p>
             </Link>
-          );
+          ) : null;
         })}
       </div>
     </section>
