@@ -12,8 +12,18 @@ const sidebarNavItems = [
     href: '/user/profile',
   },
   {
+    title: 'Player Profile',
+    href: '/user/player/profile',
+    role: 'user' || 'player',
+  },
+  {
     title: 'Referee Profile',
     href: '/user/referee/profile',
+    role: 'referee',
+  },
+  {
+    title: 'Team Statistics',
+    href: '/user/referee/team-stats',
     role: 'referee',
   },
   {
@@ -40,6 +50,21 @@ const sidebarNavItems = [
     href: '/user/admin/leagues',
     role: 'admin',
   },
+  {
+    title: 'Manage Players',
+    href: '/user/admin/players',
+    role: 'admin',
+  },
+  {
+    title: 'Manage Countries',
+    href: '/user/admin/countries',
+    role: 'admin',
+  },
+  {
+    title: 'Manage Stadiums',
+    href: '/user/admin/stadiums',
+    role: 'admin',
+  },
 ];
 
 const SidebarNav = ({ className, ...props }) => {
@@ -55,10 +80,8 @@ const SidebarNav = ({ className, ...props }) => {
       {...props}
     >
       {sidebarNavItems.map((item) => {
-        // Sprawdź, czy użytkownik ma wymaganą rolę
         const hasRequiredRole = currentUser?.role === item.role;
 
-        // Jeżeli użytkownik ma wymaganą rolę lub rola nie jest wymagana, renderuj link
         return hasRequiredRole || !item.role ? (
           <Link
             key={item.href}
