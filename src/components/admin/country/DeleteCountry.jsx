@@ -1,20 +1,20 @@
 /* eslint-disable react/prop-types */
-
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ModalDialog from '../../ModalDialog';
-import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
 
-const DeleteLeague = ({ row, onLeagueUpdated }) => {
+const DeleteCountry = ({ row, onCountryUpdated }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
 
-  useOnSuccessUpdate(updateSuccess, () => {
-    onLeagueUpdated();
-    setUpdateSuccess(false);
-  });
+  useEffect(() => {
+    if (updateSuccess) {
+      onCountryUpdated();
+      setUpdateSuccess(false);
+    }
+  }, [updateSuccess, onCountryUpdated]);
 
-  const handleDeleteLeague = async () => {
+  const handleDeleteCountry = async () => {
     try {
-      const res = await fetch(`/api/admin/leagues/delete/${row._id}`, {
+      const res = await fetch(`/api/admin/country/delete/${row._id}`, {
         method: 'DELETE',
       });
       const data = await res.json();
@@ -29,11 +29,11 @@ const DeleteLeague = ({ row, onLeagueUpdated }) => {
   return (
     <div className='flex items-center space-x-4'>
       <ModalDialog
-        description='Are you sure you want to delete this league?'
-        handleClick={handleDeleteLeague}
+        description='Are you sure you want to delete this country?'
+        handleClick={handleDeleteCountry}
       />
     </div>
   );
 };
 
-export default DeleteLeague;
+export default DeleteCountry;

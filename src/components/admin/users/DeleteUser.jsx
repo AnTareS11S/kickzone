@@ -5,12 +5,11 @@ import ModalDialog from '../../ModalDialog';
 import { useNavigate } from 'react-router-dom';
 
 const DeleteUser = ({ row }) => {
-  const id = row.original._id;
   const navigate = useNavigate();
 
   const handleDeleteUser = async () => {
     try {
-      const res = await fetch(`/api/admin/users/delete/${id}`, {
+      const res = await fetch(`/api/admin/users/delete/${row._id}`, {
         method: 'DELETE',
       });
       if (!res.ok) {

@@ -1,20 +1,27 @@
 /* eslint-disable react/prop-types */
 
+import { useState } from 'react';
 import ModalDialog from '../../ModalDialog';
+import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
 
-const DeleteTeam = ({ row }) => {
-  const id = row.original._id;
+const DeleteTeam = ({ row, onTeamUpdated }) => {
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+
+  useOnSuccessUpdate(updateSuccess, () => {
+    onTeamUpdated();
+    setUpdateSuccess(false);
+  });
 
   const handleDeleteTeam = async () => {
     try {
-      const res = await fetch(`/api/admin/teams/delete/${id}`, {
+      const res = await fetch(`/api/admin/teams/delete/${row._id}`, {
         method: 'DELETE',
       });
       if (!res.ok) {
         throw new Error(data.message || 'Failed to delete team!');
       }
       const data = await res.json();
-      window.location.reload();
+      setUpdateSuccess(true);
     } catch (error) {
       console.log(error);
     }

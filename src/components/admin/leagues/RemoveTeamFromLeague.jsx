@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import TableModal from '../../TableModal';
+import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
 
-const RemoveTeamFromLeague = ({ row, teams }) => {
+const RemoveTeamFromLeague = ({ row, teams, onLeagueUpdated }) => {
   const [team, setTeam] = useState([]);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const isEmpty = teams.some((team) => team === '');
+
+  useOnSuccessUpdate(updateSuccess, () => {
+    onLeagueUpdated();
+    setUpdateSuccess(false);
+  });
 
   useEffect(() => {
     if (!isEmpty) {
@@ -29,7 +36,7 @@ const RemoveTeamFromLeague = ({ row, teams }) => {
 
   const handleDeleteTeamFromLeague = async (teamId) => {
     try {
-      const res = await fetch(`/api/league/delete/${row.original._id}`, {
+      const res = await fetch(`/api/league/delete/${row._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ teamId }),
@@ -40,6 +47,7 @@ const RemoveTeamFromLeague = ({ row, teams }) => {
         console.log(data.message);
         return;
       }
+      setUpdateSuccess(true);
       setTeam(team.filter((team) => team._id !== teamId));
     } catch (error) {
       console.log(error);
