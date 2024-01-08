@@ -8,6 +8,7 @@ const PostPage = () => {
   const { id } = useParams();
   const { currentUser } = useSelector((state) => state.user);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
   const [post, setPost] = useState({});
 
   useEffect(() => {
@@ -21,7 +22,8 @@ const PostPage = () => {
       }
     };
     fetchPost();
-  }, [id, updateSuccess]);
+    setDeleteSuccess(false);
+  }, [id, updateSuccess, deleteSuccess]);
 
   return (
     <section className='relative'>
@@ -34,12 +36,14 @@ const PostPage = () => {
           content={post.postContent}
           author={post.author}
           createdAt={post.createdAt}
+          deleteSuccess={setDeleteSuccess}
           comments={post.children}
         />
       </div>
       <div className='mt-7'>
         <Comment
           postId={id}
+          isLogged={currentUser === null ? false : true}
           currentUserImg={currentUser.photo}
           setUpdateSuccess={setUpdateSuccess}
         />
@@ -55,6 +59,7 @@ const PostPage = () => {
             author={comment.author}
             createdAt={comment.createdAt}
             comments={comment.children}
+            setDeleteSuccess={setDeleteSuccess}
             isComment
           />
         ))}
