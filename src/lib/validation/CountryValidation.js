@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-export const leagueFormSchema = (isEdit) =>
+export const countryFormSchema = (isEdit) =>
   z.object({
     name: z
       .string()
@@ -12,7 +12,7 @@ export const leagueFormSchema = (isEdit) =>
       })
       .refine(
         async (value) => {
-          const res = await fetch('/api/league/check', {
+          const res = await fetch('/api/admin/country/check', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -23,16 +23,7 @@ export const leagueFormSchema = (isEdit) =>
           return data.success;
         },
         {
-          message: 'League name already exists.',
+          message: 'Country name already exists.',
         }
       ),
-    commissioner: z.string().min(1, {
-      message: 'Commissioner is required',
-    }),
-    country: z.string().min(1, {
-      message: 'Country is required',
-    }),
-    bio: z.string().min(1, {
-      message: 'Bio is required',
-    }),
   });

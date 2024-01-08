@@ -1,5 +1,6 @@
 import * as z from 'zod';
-export const teamFormSchema = (isEdit) =>
+
+export const stadiumFormSchema = (isEdit) =>
   z.object({
     name: z
       .string()
@@ -11,7 +12,7 @@ export const teamFormSchema = (isEdit) =>
       })
       .refine(
         async (value) => {
-          const res = await fetch('/api/team/check', {
+          const res = await fetch('/api/admin/stadium/check', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -22,33 +23,30 @@ export const teamFormSchema = (isEdit) =>
           return data.success;
         },
         {
-          message: 'Team name already exists.',
+          message: 'Stadium name already exists.',
         }
       ),
-
-    yearFounded: z.any().refine(
+    capacity: z.any().refine(
       (value) => {
-        // If the value is a string, try to parse it as an integer
         const parsedValue =
           typeof value === 'string' ? parseInt(value, 10) : value;
-        // Validate that the parsed value is a positive integer
+
         return !isNaN(parsedValue) && parsedValue > 0;
       },
       {
-        message: 'Year founded must be a positive integer',
+        message: 'Capacity must be a positive integer',
       }
     ),
-    coach: z.string().min(1, {
-      message: 'Coach is required',
+    country: z.string().min(1, {
+      message: 'Country is required',
     }),
     city: z.string().min(1, {
       message: 'City is required',
     }),
-    country: z.string().min(1, {
-      message: 'Country is required',
+    location: z.string().min(1, {
+      message: 'Location is required, coordinates are preferred',
     }),
-    logo: z.string().optional(),
-    bio: z.string().min(1, {
-      message: 'Bio is required',
+    history: z.string().min(1, {
+      message: 'History is required',
     }),
   });
