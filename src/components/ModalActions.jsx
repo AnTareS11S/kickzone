@@ -56,6 +56,8 @@ const ModalActions = ({
     }
   };
 
+  console.log();
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -66,7 +68,7 @@ const ModalActions = ({
         ) : (
           <Button
             variant='outline'
-            className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
+            className='bg-primary-500  text-white hover:bg-purple-500 hover:text-white'
           >
             {label}
           </Button>
@@ -90,6 +92,7 @@ const ModalActions = ({
                   form={form}
                   name={field.name}
                   items={field.items}
+                  defaultValue={field.defaultValue}
                   placeholder={field.placeholder}
                   idFlag={field.idFlag}
                   fileRef={field.type === 'file' ? fileRef : undefined}
@@ -102,7 +105,7 @@ const ModalActions = ({
                 <Dialog asChild>
                   <Button
                     type='submit'
-                    className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
+                    className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
                   >
                     {title}
                   </Button>
