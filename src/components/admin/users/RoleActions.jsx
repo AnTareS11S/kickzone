@@ -5,7 +5,7 @@ import { Form } from '../../ui/form';
 import FormArea from '../../FormArea';
 
 const RoleActions = ({ row }) => {
-  const role = row.getValue('role');
+  const role = row.role;
 
   const form = useForm({
     defaultValues: {
@@ -15,7 +15,7 @@ const RoleActions = ({ row }) => {
 
   const roles = ['user:1', 'admin:2', 'coach:3', 'referee:4', 'player:5'];
 
-  const id = row.original._id;
+  const id = row._id;
 
   const handleRoleChange = async (e) => {
     const newRole = e.target.value;
