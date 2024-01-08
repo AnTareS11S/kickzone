@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 
 const Comment = ({ postId, currentUserImg, setUpdateSuccess }) => {
   const { currentUser } = useSelector((state) => state.user);
+
   const form = useForm({
     resolver: zodResolver(CommentValidation),
     defaultValues: {
@@ -28,6 +29,7 @@ const Comment = ({ postId, currentUserImg, setUpdateSuccess }) => {
       author: currentUser,
       commentContent: formData.post,
     };
+
     try {
       const res = await fetch(`/api/post/comment/${postId}`, {
         method: 'POST',
@@ -76,6 +78,9 @@ const Comment = ({ postId, currentUserImg, setUpdateSuccess }) => {
           type='submit'
           className='comment-form_btn mt-2'
           disabled={!form.formState.isValid}
+          onClick={() => {
+            form.formState.isValid && setUpdateSuccess(false);
+          }}
         >
           Reply
         </Button>
