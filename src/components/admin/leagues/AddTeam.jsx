@@ -4,14 +4,22 @@
 import { useEffect, useState } from 'react';
 import ModalActions from '../../ModalActions';
 import { useForm } from 'react-hook-form';
+import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
+import { set } from 'mongoose';
 
-const AddTeam = ({ row }) => {
+const AddTeam = ({ row, onLeagueUpdated }) => {
   const [teams, setTeams] = useState([]);
+  const [updateSuccess, setUpdateSuccess] = useState(false);
   const form = useForm({
     defaultValues: {
       name: '',
     },
     mode: 'onChange',
+  });
+
+  useOnSuccessUpdate(updateSuccess, () => {
+    onLeagueUpdated();
+    setUpdateSuccess(false);
   });
 
   const getTeamId = (teamName) => {
@@ -22,9 +30,7 @@ const AddTeam = ({ row }) => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(
-          `/api/admin/teams/no-league/${row.original._id}`
-        );
+        const res = await fetch(`/api/admin/teams/no-league/${row._id}`);
         const data = await res.json();
         const teamss = data?.map((team) => team.name + ':' + team._id);
         setTeams(teamss);
@@ -34,7 +40,7 @@ const AddTeam = ({ row }) => {
       }
     };
     fetchTeams();
-  }, [row.original._id]);
+  }, [row]);
 
   const fields = [
     {
@@ -51,7 +57,7 @@ const AddTeam = ({ row }) => {
     const teamId = getTeamId(formData.names);
 
     try {
-      const res = await fetch(`/api/league/addTeam/${row.original._id}`, {
+      const res = await fetch(`/api/league/addTeam/${row._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,10 +65,7 @@ const AddTeam = ({ row }) => {
         body: JSON.stringify({ teamId }),
       });
       const data = await res.json();
-
-      if (res.status === 200) {
-        window.location.reload();
-      }
+      setUpdateSuccess(true);
     } catch (error) {
       console.log('Error updating team: ', error);
     }
@@ -76,7 +79,7 @@ const AddTeam = ({ row }) => {
         add={true}
         title='Add Team'
         desc='Add team to the league'
-        data={row.original}
+        data={row}
         form={form}
         fields={fields}
       />
