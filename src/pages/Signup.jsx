@@ -13,6 +13,7 @@ import {
 import { Button } from '../components/ui/button';
 import { Label } from '../components/ui/label';
 import { Input } from '../components/ui/input';
+import Header from '../components/Header';
 
 const Signup = () => {
   const [formData, setFormData] = useState({});
@@ -54,64 +55,69 @@ const Signup = () => {
   };
 
   return (
-    <div className='flex flex-col p-3 max-w-lg mx-auto mt-10'>
-      <form
-        className='flex justify-center items-center'
-        onSubmit={handleSubmit}
-      >
-        <Card>
-          <CardHeader className='space-y-1'>
-            <CardTitle className='text-2xl'>Create an account</CardTitle>
-            <CardDescription>
-              Enter your credentials below to create your account
-            </CardDescription>
-          </CardHeader>
-          <CardContent className='grid gap-4'>
-            <div className='grid grid-cols-1 gap-6'>
-              <OAuth />
-            </div>
-            <div className='relative'>
-              <div className='absolute inset-0 flex items-center'>
-                <span className='w-full border-t' />
+    <>
+      <Header />
+      <div className='flex flex-col p-3 max-w-lg mx-auto mt-28'>
+        <form
+          className='flex justify-center items-center'
+          onSubmit={handleSubmit}
+        >
+          <Card>
+            <CardHeader className='space-y-1'>
+              <CardTitle className='text-2xl'>Create an account</CardTitle>
+              <CardDescription>
+                Enter your credentials below to create your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent className='grid gap-4'>
+              <div className='grid grid-cols-1 gap-6'>
+                <OAuth />
               </div>
-              <div className='relative flex justify-center text-xs uppercase'>
-                <span className='bg-background px-2 text-muted-foreground'>
-                  Or continue with
-                </span>
+              <div className='relative'>
+                <div className='absolute inset-0 flex items-center'>
+                  <span className='w-full border-t' />
+                </div>
+                <div className='relative flex justify-center text-xs uppercase'>
+                  <span className='bg-background px-2 text-muted-foreground'>
+                    Or continue with
+                  </span>
+                </div>
               </div>
+              <div className='grid gap-2'>
+                <Label htmlFor='username'>Username</Label>
+                <Input id='username' type='text' onChange={handleChange} />
+              </div>
+              <div className='grid gap-2'>
+                <Label htmlFor='email'>Email</Label>
+                <Input
+                  id='email'
+                  type='email'
+                  placeholder='m@example.com'
+                  onChange={handleChange}
+                />
+              </div>
+              <div className='grid gap-2'>
+                <Label htmlFor='password'>Password</Label>
+                <Input id='password' type='password' onChange={handleChange} />
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Button className='w-full' disabled={loading}>
+                {loading ? 'Loading...' : 'Create account'}
+              </Button>
+            </CardFooter>
+            <div className='flex items-center justify-center mb-4'>
+              <span className='text-gray-600 px-2'>
+                Already have an account?
+              </span>
+              <Link to='/sign-in' className='text-blue-700 underline'>
+                Sign in
+              </Link>
             </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='username'>Username</Label>
-              <Input id='username' type='text' onChange={handleChange} />
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='email'>Email</Label>
-              <Input
-                id='email'
-                type='email'
-                placeholder='m@example.com'
-                onChange={handleChange}
-              />
-            </div>
-            <div className='grid gap-2'>
-              <Label htmlFor='password'>Password</Label>
-              <Input id='password' type='password' onChange={handleChange} />
-            </div>
-          </CardContent>
-          <CardFooter>
-            <Button className='w-full' disabled={loading}>
-              {loading ? 'Loading...' : 'Create account'}
-            </Button>
-          </CardFooter>
-          <div className='flex items-center justify-center mb-4'>
-            <span className='text-gray-600 px-2'>Already have an account?</span>
-            <Link to='/sign-in' className='text-blue-700 underline'>
-              Sign in
-            </Link>
-          </div>
-        </Card>
-      </form>
-    </div>
+          </Card>
+        </form>
+      </div>
+    </>
   );
 };
 
