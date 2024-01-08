@@ -1,37 +1,20 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
-import { Input } from '../../ui/input';
-
-import {
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
-import { Button } from '../../ui/button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '../../ui/table';
 import ModalActions from '../../ModalActions';
-import { fetchLeagueDataForTable } from '../../../lib/apiUtils';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Cross2Icon } from '@radix-ui/react-icons';
 import { leagueFormSchema } from '../../../lib/validation/LeagueValidation';
+import CustomDataTable from '../../CustomDataTable';
+import { useFetchCountries } from '../../hooks/useFetchCountries';
+import EditLeague from './EditLeague';
+import DeleteLeague from './DeleteLeague';
+import RemoveTeamFromLeague from './RemoveTeamFromLeague';
+import AddTeam from './AddTeam';
 
-const LeaguePanel = ({ columns }) => {
-  const [sorting, setSorting] = useState([]);
-  const [columnFilters, setColumnFilters] = useState([]);
-  const [rowSelection, setRowSelection] = useState({});
+const LeaguePanel = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const countries = useFetchCountries();
 
   const form = useForm({
     resolver: zodResolver(leagueFormSchema(false)),
@@ -43,6 +26,43 @@ const LeaguePanel = ({ columns }) => {
     },
     mode: 'onChange',
   });
+
+  const columns = [
+    {
+      name: 'No.',
+      selector: (row, index) => index + 1,
+      grow: 0,
+    },
+    {
+      name: 'League',
+      selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Teams',
+      selector: (row) => row.teams.length,
+      sortable: true,
+    },
+    {
+      name: 'Actions',
+      cell: (row) => {
+        const teams = row?.teams.map((team) => team?._id);
+
+        return (
+          <div className='flex items-center space-x-4'>
+            <EditLeague row={row} onLeagueUpdated={handleLeagueUpdated} />
+            <AddTeam row={row} onLeagueUpdated={handleLeagueUpdated} />
+            <RemoveTeamFromLeague
+              row={row}
+              teams={teams}
+              onLeagueUpdated={handleLeagueUpdated}
+            />
+            <DeleteLeague row={row} onLeagueUpdated={handleLeagueUpdated} />
+          </div>
+        );
+      },
+    },
+  ];
 
   const fields = [
     {
@@ -56,6 +76,9 @@ const LeaguePanel = ({ columns }) => {
       label: 'Country',
       type: 'select',
       name: 'country',
+      items: countries,
+      placeholder: 'Select a Country',
+      idFlag: true,
     },
     {
       id: 'commissioner',
@@ -71,27 +94,20 @@ const LeaguePanel = ({ columns }) => {
     },
   ];
 
+  const getLeagues = async () => {
+    try {
+      const res = await fetch('/api/admin/leagues');
+      const data = await res.json();
+      setTableData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
-    fetchLeagueDataForTable(setTableData, updateSuccess);
+    getLeagues();
     setUpdateSuccess(false);
   }, [updateSuccess]);
-
-  const table = useReactTable({
-    data: tableData,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
-    getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    getFilteredRowModel: getFilteredRowModel(),
-    onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      rowSelection,
-    },
-  });
 
   const onSubmit = async (formData) => {
     try {
@@ -108,155 +124,28 @@ const LeaguePanel = ({ columns }) => {
         console.log(data.message);
         return;
       }
-      form.reset();
       setUpdateSuccess(true);
+      form.reset();
     } catch (error) {
       console.log(error);
     }
   };
 
-  const isFiltered = table.getState().columnFilters.length > 0;
+  const handleLeagueUpdated = () => {
+    getLeagues();
+  };
 
   return (
     <>
-      <div className='flex items-center justify-between'>
-        <div className='flex flex-1 items-center space-x-2'>
-          <Input
-            placeholder='Search leagues...'
-            className='h-8 w-[250px] lg:w-[350px]'
-            value={table.getColumn('name')?.getFilterValue() ?? ''}
-            onChange={(e) =>
-              table.getColumn('name').setFilterValue(e.target.value)
-            }
-          />
-
-          {isFiltered && (
-            <Button
-              variant='ghost'
-              onClick={() => table.resetColumnFilters()}
-              className='h-8 pl-2'
-            >
-              Reset
-              <Cross2Icon className='ml-2 h-4 w-4' />
-            </Button>
-          )}
-        </div>
-        <ModalActions
-          label='Add'
-          onSubmit={onSubmit}
-          title='Add League'
-          desc='Add a new league'
-          form={form}
-          fields={fields}
-        />
-      </div>
-
-      <div className='rounded-md border'>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className='bg-gray-200'>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  );
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                  className='hover:bg-gray-300'
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className='p-2'>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className='h-24 text-center'
-                >
-                  No leagues found.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-        <div className='flex items-center justify-between px-4 py-3 bg-gray-50 sm:px-6'>
-          <div className='flex justify-between flex-1 sm:hidden'>
-            <Button
-              variant='secondary'
-              size='sm'
-              onClick={() => table.previousPage()}
-              disabled={!table.getCanPreviousPage()}
-            >
-              Previous
-            </Button>
-            <Button
-              variant='secondary'
-              size='sm'
-              onClick={() => table.nextPage()}
-              disabled={!table.getCanNextPage()}
-            >
-              Next
-            </Button>
-          </div>
-          <div className='hidden sm:flex-1 sm:flex sm:items-center sm:justify-between'>
-            <div>
-              <p className='text-sm text-muted-foreground'>
-                Showing{' '}
-                <span className='font-medium'>
-                  {table.getRowModel().rows.length}
-                </span>{' '}
-                of <span className='font-medium'>{tableData.length}</span>{' '}
-                results
-              </p>
-            </div>
-            <div>
-              <nav
-                className='relative z-0 inline-flex -space-x-px rounded-md shadow-sm'
-                aria-label='Pagination'
-              >
-                <Button
-                  variant='secondary'
-                  size='sm'
-                  onClick={() => table.previousPage()}
-                  disabled={!table.getCanPreviousPage()}
-                >
-                  Previous
-                </Button>
-                <Button
-                  variant='secondary'
-                  size='sm'
-                  onClick={() => table.nextPage()}
-                  disabled={!table.getCanNextPage()}
-                >
-                  Next
-                </Button>
-              </nav>
-            </div>
-          </div>
-        </div>
-      </div>
+      <ModalActions
+        label='Add'
+        onSubmit={onSubmit}
+        title='Add League'
+        desc='Add a new league'
+        form={form}
+        fields={fields}
+      />
+      <CustomDataTable columns={columns} data={tableData} pending />
     </>
   );
 };
