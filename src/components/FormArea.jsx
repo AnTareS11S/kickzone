@@ -21,6 +21,7 @@ const FormArea = ({
   items,
   setFile,
   placeholder,
+  defaultValue,
 }) => {
   return (
     <FormField
@@ -68,6 +69,7 @@ const FormArea = ({
               <SelectData
                 id={name}
                 items={items}
+                defaultValue={defaultValue}
                 placeholder={placeholder}
                 idFlag={idFlag}
                 onChange={field.onChange}
