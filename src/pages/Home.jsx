@@ -10,7 +10,6 @@ const Home = () => {
       try {
         const res = await fetch('/api/post/all');
         const data = await res.json();
-        console.log(data);
         setPosts(data);
       } catch (error) {
         console.log(error);
@@ -18,8 +17,6 @@ const Home = () => {
     };
     fetchPosts();
   }, []);
-
-  console.log(posts.map((post) => post.author._id));
 
   return (
     <>
