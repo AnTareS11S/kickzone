@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
+import DeletePost from './DeletePost';
+import { useState } from 'react';
 const PostCard = ({
   id,
   currentUserId,
@@ -10,7 +12,10 @@ const PostCard = ({
   author,
   comments,
   isComment,
+  setDeleteSuccess,
 }) => {
+  const link = currentUserId ? `/post/${id}` : '/sign-in';
+
   return (
     <article
       className={`flex w-full flex-col rounded-xl ${
@@ -31,7 +36,7 @@ const PostCard = ({
           </div>
           <div className='flex flex-col w-full'>
             <Link to={`/profile/${author?._id}`} className='w-fit'>
-              <h4 className='cursor-pointer text-black font-bold text-lg'>
+              <h4 className='cursor-pointer text-base-semibold text-dark-1'>
                 {author?.username}
               </h4>
             </Link>
@@ -46,7 +51,7 @@ const PostCard = ({
                   height={24}
                   className='cursor-pointer object-contain'
                 />
-                <Link to={`/post/${id}`}>
+                <Link to={link}>
                   <img
                     src='/reply.svg'
                     alt='reply'
@@ -56,17 +61,47 @@ const PostCard = ({
                   />
                 </Link>
               </div>
-              {isComment && comments.length > 0 && (
-                <Link to={`/post/${id}`}>
+              {isComment && comments?.length > 0 && (
+                <Link to={link}>
                   <p className='mt-1 text-subtle-medium text-gray-1'>
-                    {comments.length} replies
+                    {comments?.length} repl{comments?.length > 1 ? 'ies' : 'y'}
                   </p>
                 </Link>
               )}
             </div>
           </div>
         </div>
+        <DeletePost
+          postId={id}
+          currentUserId={currentUserId}
+          authorId={author?._id}
+          parentId={parentId}
+          isComment={isComment}
+          setDeleteSuccess={setDeleteSuccess}
+        />
       </div>
+
+      {!isComment && comments?.length > 0 && (
+        <div className='ml-1 mt-3 flex items-center gap-2'>
+          {comments?.slice(0, 2).map((comment, index) => (
+            <img
+              key={index}
+              src={comment.author.photo}
+              alt={`user_${index}`}
+              width={24}
+              height={24}
+              className={`${
+                index !== 0 && '-ml-5'
+              } rounded-full object-contain`}
+            />
+          ))}
+          <Link to={link}>
+            <p className='mt-1 text-subtle-medium text-gray-1'>
+              {comments?.length} repl{comments?.length > 1 ? 'ies' : 'y'}
+            </p>
+          </Link>
+        </div>
+      )}
     </article>
   );
 };
