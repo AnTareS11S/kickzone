@@ -1,15 +1,25 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ModalActions from '../../ModalActions';
 import { fetchCoaches } from '../../../lib/apiUtils';
 import { teamFormSchema } from '../../../lib/validation/TeamValidation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useFetchCountries } from '../../hooks/useFetchCountries';
+import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
 
-const EditTeam = ({ row }) => {
+const EditTeam = ({ row, onTeamUpdated }) => {
   const [coaches, setCoaches] = useState([]);
-  const coach = row.getValue('coach');
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const countries = useFetchCountries();
+  const coach = row.coach;
+
+  useOnSuccessUpdate(updateSuccess, () => {
+    onTeamUpdated();
+    setUpdateSuccess(false);
+  });
 
   const getCoachId = (coachName) => {
     const selectedCoach = coaches.find((coach) => coach.startsWith(coachName));
@@ -46,7 +56,7 @@ const EditTeam = ({ row }) => {
     };
 
     try {
-      const res = await fetch(`/api/team/edit/${row.original._id}`, {
+      const res = await fetch(`/api/team/edit/${row._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -54,9 +64,7 @@ const EditTeam = ({ row }) => {
         body: JSON.stringify(updatedTeam),
       });
       const data = await res.json();
-      if (res.status === 200) {
-        window.location.reload();
-      }
+      setUpdateSuccess(true);
     } catch (error) {
       console.log('Error updating team: ', error);
     }
@@ -107,6 +115,12 @@ const EditTeam = ({ row }) => {
       label: 'Country',
       type: 'select',
       name: 'country',
+      items: countries,
+      defaultValue: countries.find(
+        (country) => country.split(':')[1] === row.country
+      ),
+      placeholder: 'Select a Country',
+      idFlag: true,
     },
     {
       id: 'city',
@@ -124,7 +138,7 @@ const EditTeam = ({ row }) => {
         edit='true'
         title='Edit Team'
         desc='Edit a team'
-        data={row.original}
+        data={row}
         coaches={coaches}
         coach={coach}
         form={form}

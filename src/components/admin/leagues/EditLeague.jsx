@@ -1,12 +1,17 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-
 import ModalActions from '../../ModalActions';
 import { leagueFormSchema } from '../../../lib/validation/LeagueValidation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useFetchCountries } from '../../hooks/useFetchCountries';
+import { useState } from 'react';
+import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
 
-const EditLeague = ({ row }) => {
+const EditLeague = ({ row, onLeagueUpdated }) => {
+  const [updateSuccess, setUpdateSuccess] = useState(false);
+  const countries = useFetchCountries();
+
   const form = useForm({
     resolver: zodResolver(leagueFormSchema(true)),
     defaultValues: {
@@ -18,20 +23,25 @@ const EditLeague = ({ row }) => {
     mode: 'onChange',
   });
 
+  useOnSuccessUpdate(updateSuccess, () => {
+    onLeagueUpdated();
+    setUpdateSuccess(false);
+  });
+
   const onSubmit = async (formData) => {
     try {
-      const res = await fetch(`/api/league/edit/${row.original._id}`, {
+      const res = await fetch(`/api/league/edit/${row._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-
-      if (res.status === 200) {
-        window.location.reload();
+      if (!res.ok) {
+        throw new Error('Failed to edit stadium!');
       }
+
+      setUpdateSuccess(true);
     } catch (error) {
       console.log('Error updating team: ', error);
     }
@@ -49,6 +59,12 @@ const EditLeague = ({ row }) => {
       label: 'Country',
       type: 'select',
       name: 'country',
+      items: countries,
+      defaultValue: countries.find(
+        (country) => country.split(':')[1] === row.country
+      ),
+      placeholder: 'Select a Country',
+      idFlag: true,
     },
     {
       id: 'commissioner',
@@ -72,7 +88,7 @@ const EditLeague = ({ row }) => {
         edit='true'
         title='Edit League'
         desc='Edit a league'
-        data={row.original}
+        data={row}
         form={form}
         fields={fields}
       />
