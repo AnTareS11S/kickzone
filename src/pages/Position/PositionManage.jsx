@@ -1,10 +1,11 @@
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { Separator } from '../../components/ui/separator';
-import { countryFormSchema } from '../../lib/validation/CountryValidation';
 
-const CountryManage = () => {
+import { Separator } from '../../components/ui/separator';
+import { positionFormSchema } from '../../lib/validation/PositionValidation';
+
+const PositionManage = () => {
   const columns = [
     {
       name: 'No.',
@@ -12,7 +13,7 @@ const CountryManage = () => {
       grow: 0,
     },
     {
-      name: 'Country',
+      name: 'Position',
       selector: (row) => row.name,
       sortable: true,
     },
@@ -30,22 +31,22 @@ const CountryManage = () => {
   return (
     <div className='space-y-6'>
       <div>
-        <h3 className='text-lg font-medium'>Countries</h3>
-        <p className='text-sm text-muted-foreground'>Manage countries.</p>
+        <h3 className='text-lg font-medium'>Positions</h3>
+        <p className='text-sm text-muted-foreground'>Manage positions.</p>
       </div>
       <Separator />
       <CrudPanel
-        apiPath='country'
+        apiPath='position'
         columns={columns}
         fields={fields}
-        title='Country'
+        title='Position'
         onEditComponent={EditEntity}
         onDeleteComponent={DeleteEntity}
-        formSchema={countryFormSchema}
+        formSchema={positionFormSchema}
         defaultValues={{ name: '' }}
       />
     </div>
   );
 };
 
-export default CountryManage;
+export default PositionManage;
