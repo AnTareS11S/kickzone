@@ -51,4 +51,7 @@ export const teamFormSchema = (isEdit) =>
     bio: z.string().min(1, {
       message: 'Bio is required',
     }),
+    stadium: z.string().min(1, {
+      message: 'Stadium is required',
+    }),
   });
