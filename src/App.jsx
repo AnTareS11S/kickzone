@@ -27,6 +27,7 @@ import PlayerProfile from './pages/Player/PlayerProfile';
 import PlayerRoute from './pages/Player/PlayerRoute';
 import CountryManage from './pages/Country/CountryManage';
 import StadiumManage from './pages/Stadium/StadiumManage';
+import PositionManage from './pages/Position/PositionManage';
 
 const App = () => {
   return (
@@ -59,6 +60,7 @@ const App = () => {
             <Route path='/user/admin/players' element={<PlayerManage />} />
             <Route path='/user/admin/countries' element={<CountryManage />} />
             <Route path='/user/admin/stadiums' element={<StadiumManage />} />
+            <Route path='/user/admin/positions' element={<PositionManage />} />
           </Route>
           <Route path='/user/player' element={<PlayerRoute />}>
             <Route path='/user/player/profile' element={<PlayerProfile />} />
