@@ -57,7 +57,7 @@ const TableModal = ({ title, desc, items, handleDelete }) => {
 
         <DialogFooter>
           <DialogClose asChild>
-            <Button className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'>
+            <Button className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'>
               Close
             </Button>
           </DialogClose>
