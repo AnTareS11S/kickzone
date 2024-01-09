@@ -6,7 +6,7 @@ export const useFetchCountries = () => {
   useEffect(() => {
     const fetchCountriesData = async () => {
       try {
-        const res = await fetch('/api/admin/countries');
+        const res = await fetch('/api/admin/country');
         if (!res.ok) {
           throw new Error('Failed to fetch countries data!');
         }
