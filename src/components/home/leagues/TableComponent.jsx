@@ -1,0 +1,74 @@
+/* eslint-disable react/prop-types */
+import { Card } from '../../ui/card';
+import CustomDataTable from '../../CustomDataTable';
+
+const TableComponent = ({ data }) => {
+  const columns = [
+    {
+      name: '#',
+      selector: (row, index) => index + 1,
+      grow: 0.5,
+    },
+    {
+      name: 'Team',
+      selector: (row) => row.name,
+      sortable: true,
+      grow: 2,
+    },
+    {
+      name: 'Played',
+      selector: (row) => row.gamesPlayed,
+      sortable: true,
+      hide: 'sm',
+    },
+    {
+      name: 'Won',
+      selector: (row) => row.wins,
+      sortable: true,
+      hide: 'md',
+    },
+    {
+      name: 'Drawn',
+      selector: (row) => row.draws,
+      sortable: true,
+      hide: 'md',
+    },
+    {
+      name: 'Lost',
+      selector: (row) => row.losses,
+      sortable: true,
+      hide: 'md',
+    },
+    {
+      name: 'GF',
+      selector: (row) => row.goalsFor,
+      sortable: true,
+      hide: 'md',
+    },
+    {
+      name: 'GA',
+      selector: (row) => row.goalsAgainst,
+      sortable: true,
+      hide: 'md',
+    },
+    {
+      name: 'GD',
+      selector: (row) => row.goalDifference,
+      sortable: true,
+      hide: 'lg',
+    },
+    {
+      name: 'Points',
+      selector: (row) => row.points,
+      sortable: true,
+    },
+  ];
+
+  return (
+    <Card className='flex flex-col mt-5 w-full rounded-none shadow-md'>
+      <CustomDataTable columns={columns} data={data} pending />
+    </Card>
+  );
+};
+
+export default TableComponent;
