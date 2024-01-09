@@ -7,7 +7,7 @@ import SettingsLayout from './pages/SettingsLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import AdminRoute from './pages/AdminRoute';
-import UserManage from './pages/UserManage';
+import UserManage from './pages/User/UserManage';
 import RefereeProfile from './pages/Referee/RefereeProfile';
 import RefereeRoute from './pages/Referee/RefereeRoute';
 import CoachProfile from './pages/CoachProfile';
