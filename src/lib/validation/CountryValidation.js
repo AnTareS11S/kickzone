@@ -5,10 +5,10 @@ export const countryFormSchema = (isEdit) =>
     name: z
       .string()
       .min(1, {
-        message: 'Name must be at least 4 characters.',
+        message: 'Country name must be at least 4 characters.',
       })
       .max(30, {
-        message: 'Name must not be longer than 30 characters.',
+        message: 'Country name must not be longer than 30 characters.',
       })
       .refine(
         async (value) => {
