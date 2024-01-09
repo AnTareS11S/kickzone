@@ -65,6 +65,11 @@ const sidebarNavItems = [
     href: '/user/admin/stadiums',
     role: 'admin',
   },
+  {
+    title: 'Manage Positions',
+    href: '/user/admin/positions',
+    role: 'admin',
+  },
 ];
 
 const SidebarNav = ({ className, ...props }) => {
@@ -96,7 +101,7 @@ const SidebarNav = ({ className, ...props }) => {
           >
             {item.title}
           </Link>
-        ) : null; // W przeciwnym razie nie renderuj linku
+        ) : null;
       })}
     </nav>
   );
