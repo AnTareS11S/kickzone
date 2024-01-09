@@ -75,7 +75,7 @@ const ModalActions = ({
         )}
       </DialogTrigger>
 
-      <DialogContent className='sm:max-w-[525px]'>
+      <DialogContent className='sm:max-w-[825px]'>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{desc}</DialogDescription>
