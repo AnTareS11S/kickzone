@@ -14,6 +14,8 @@ const CrudPanel = ({
   title,
   onEditComponent: EditComponent,
   onDeleteComponent: DeleteComponent,
+  onAddTeamComponent: AddTeamComponent,
+  onRemoveTeamComponent: RemoveTeamComponent,
   defaultValues,
   formSchema,
 }) => {
@@ -80,28 +82,44 @@ const CrudPanel = ({
           ...columns,
           {
             name: 'Actions',
-            cell: (row) => (
-              <div className='flex items-center space-x-4'>
-                {EditComponent && (
-                  <EditComponent
-                    row={row}
-                    onEntityUpdated={handleEntityUpdated}
-                    apiEndpoint={apiPath}
-                    formSchema={formSchema}
-                    fields={fields}
-                    defaultValues={defaultValues}
-                  />
-                )}
-                {DeleteComponent && (
-                  <DeleteComponent
-                    row={row}
-                    onEntityDelete={handleEntityUpdated}
-                    apiEndpoint={apiPath}
-                  />
-                )}
-              </div>
-            ),
-            grow: 0,
+            cell: (row) => {
+              const teams = row?.teams?.map((team) => team?._id);
+              return (
+                <div className='flex items-center space-x-4'>
+                  {EditComponent && (
+                    <EditComponent
+                      row={row}
+                      onEntityUpdated={handleEntityUpdated}
+                      apiEndpoint={apiPath}
+                      formSchema={formSchema}
+                      fields={fields}
+                      defaultValues={defaultValues}
+                    />
+                  )}
+                  {AddTeamComponent && (
+                    <AddTeamComponent
+                      row={row}
+                      onEntityUpdated={handleEntityUpdated}
+                    />
+                  )}
+                  {RemoveTeamComponent && (
+                    <RemoveTeamComponent
+                      row={row}
+                      teams={teams}
+                      onEntityUpdated={handleEntityUpdated}
+                    />
+                  )}
+                  {DeleteComponent && (
+                    <DeleteComponent
+                      row={row}
+                      onEntityDelete={handleEntityUpdated}
+                      apiEndpoint={apiPath}
+                    />
+                  )}
+                </div>
+              );
+            },
+            grow: RemoveTeamComponent ? 0.5 : 0,
           },
         ]}
         data={data}
