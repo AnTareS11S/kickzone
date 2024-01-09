@@ -115,7 +115,7 @@ const ModalActions = ({
                 <DialogClose asChild>
                   <Button
                     type='submit'
-                    className='bg-blue-700 text-white hover:bg-blue-800 hover:text-white'
+                    className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
                   >
                     {title}
                   </Button>
