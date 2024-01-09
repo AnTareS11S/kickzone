@@ -5,9 +5,8 @@ import { useEffect, useState } from 'react';
 import ModalActions from '../../ModalActions';
 import { useForm } from 'react-hook-form';
 import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
-import { set } from 'mongoose';
 
-const AddTeam = ({ row, onLeagueUpdated }) => {
+const AddTeam = ({ row, onEntityUpdated }) => {
   const [teams, setTeams] = useState([]);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const form = useForm({
@@ -18,7 +17,7 @@ const AddTeam = ({ row, onLeagueUpdated }) => {
   });
 
   useOnSuccessUpdate(updateSuccess, () => {
-    onLeagueUpdated();
+    onEntityUpdated();
     setUpdateSuccess(false);
   });
 
