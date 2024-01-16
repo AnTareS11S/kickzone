@@ -29,7 +29,7 @@ const PostCard = ({
               <img
                 src={author?.photo}
                 alt='user'
-                className='cursor-pointer rounded-full'
+                className='cursor-pointer rounded-full h-11 w-11'
               />
             </Link>
             <div className='thread-card_bar' />
@@ -90,9 +90,7 @@ const PostCard = ({
               alt={`user_${index}`}
               width={24}
               height={24}
-              className={`${
-                index !== 0 && '-ml-5'
-              } rounded-full object-contain`}
+              className={`${index !== 0 && '-ml-5'} rounded-full w-6 h-6`}
             />
           ))}
           <Link to={link}>
