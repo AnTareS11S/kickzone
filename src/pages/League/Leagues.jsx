@@ -6,7 +6,7 @@ const Leagues = () => {
   useEffect(() => {
     const getLeagues = async () => {
       try {
-        const res = await fetch('/api/admin/leagues');
+        const res = await fetch('/api/admin/league');
         const data = await res.json();
         setLeagues(data);
       } catch (error) {
