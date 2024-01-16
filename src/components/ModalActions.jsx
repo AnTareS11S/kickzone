@@ -31,7 +31,20 @@ const ModalActions = ({
   add,
 }) => {
   const fileRef = useRef(null);
-  const [file, setFile] = useState(undefined);
+  const [file, setFile] = useState('');
+  const [uploadProgress, setUploadProgress] = useState(0);
+
+  useEffect(() => {
+    const handleFileUpload = async () => {
+      if (!file) return;
+
+      await uploadFile(file, setFile, setUploadProgress);
+
+      form.setValue('logo', file);
+    };
+
+    handleFileUpload();
+  }, [file, form, setFile, setUploadProgress]);
 
   useEffect(() => {
     if (data) {
@@ -40,23 +53,6 @@ const ModalActions = ({
       });
     }
   }, [data, form]);
-
-  useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
-  }, [file]);
-
-  const handleFileUpload = async (file) => {
-    try {
-      const downloadURL = await uploadFile(file);
-      form.setValue('logo', downloadURL);
-    } catch (error) {
-      console.log('Error uploading file: ', error);
-    }
-  };
-
-  console.log();
 
   return (
     <Dialog>
@@ -94,9 +90,10 @@ const ModalActions = ({
                   items={field.items}
                   defaultValue={field.defaultValue}
                   placeholder={field.placeholder}
+                  uploadProgress={uploadProgress}
                   idFlag={field.idFlag}
-                  fileRef={field.type === 'file' ? fileRef : undefined}
-                  setFile={field.type === 'file' ? setFile : undefined}
+                  fileRef={field.type === 'file' ? fileRef : null}
+                  setFile={field.type === 'file' ? setFile : null}
                 />
               ))}
             </div>
