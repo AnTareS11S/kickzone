@@ -71,7 +71,7 @@ const ChangePassword = () => {
         });
         return;
       }
-      if (response.success) {
+      if (res.status === 200) {
         form.reset();
       }
     } catch (error) {
