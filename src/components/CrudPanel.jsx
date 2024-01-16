@@ -69,14 +69,16 @@ const CrudPanel = ({
 
   return (
     <>
-      <ModalActions
-        label='Add'
-        onSubmit={onSubmit}
-        title={`Add ${title}`}
-        desc={`Add a new ${title}`}
-        form={form}
-        fields={fields}
-      />
+      {fields && (
+        <ModalActions
+          label='Add'
+          onSubmit={onSubmit}
+          title={`Add ${title}`}
+          desc={`Add a new ${title}`}
+          form={form}
+          fields={fields}
+        />
+      )}
       <CustomDataTable
         columns={[
           ...columns,
