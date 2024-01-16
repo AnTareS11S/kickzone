@@ -86,6 +86,11 @@ const Signup = () => {
               <div className='grid gap-2'>
                 <Label htmlFor='username'>Username</Label>
                 <Input id='username' type='text' onChange={handleChange} />
+                {error && (
+                  <span className='text-red-500 text-xs'>
+                    Username already exists
+                  </span>
+                )}
               </div>
               <div className='grid gap-2'>
                 <Label htmlFor='email'>Email</Label>
