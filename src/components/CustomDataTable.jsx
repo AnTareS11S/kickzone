@@ -27,7 +27,9 @@ const CustomDataTable = ({
     (item) =>
       (item.name && item.name.toLowerCase().includes(search.toLowerCase())) ||
       (item.username &&
-        item.username.toLowerCase().includes(search.toLowerCase()))
+        item.username.toLowerCase().includes(search.toLowerCase())) ||
+      (item.surname &&
+        item.surname.toLowerCase().includes(search.toLowerCase()))
   );
 
   const tableHeaderStyle = {
