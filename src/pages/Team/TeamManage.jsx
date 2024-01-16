@@ -25,10 +25,13 @@ const TeamManage = () => {
     },
     {
       name: 'Coach',
-      selector: (row) => row.coach,
+      selector: (row) => {
+        return row.coach?.name
+          ? row.coach?.name + ' ' + row.coach.surname
+          : 'No coach';
+      },
       sortable: true,
     },
-
     {
       name: 'Year Founded',
       selector: (row) => row.yearFounded,
