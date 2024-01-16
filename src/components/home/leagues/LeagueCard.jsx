@@ -7,7 +7,7 @@ const LeagueCard = ({ data }) => {
     <article className='flex flex-wrap gap-7'>
       {data.map((league) => (
         <Card key={league._id} className='w-[250px] h-[100px] max-sm:w-full'>
-          <Link to={`/leagues/${league._id}`}>
+          <Link to={`/league/${league._id}`}>
             <CardHeader className='items-center pt-10'>
               <CardTitle>{league.name}</CardTitle>
             </CardHeader>
