@@ -10,14 +10,18 @@ import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../../lib/uploadFile';
 import { playerFormSchema } from '../../lib/validation/PlayerValidation';
 import { Separator } from '../ui/separator';
+import { useFetchPositions } from '../hooks/useFetchPositions';
+import { useFetchCountries } from '../hooks/useFetchCountries';
 
 const PlayerForm = ({ currentUser, playerData }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const positions = useFetchPositions();
+  const countries = useFetchCountries();
 
   const form = useForm({
-    resolver: zodResolver(playerFormSchema),
+    resolver: zodResolver(playerFormSchema(false)),
     defaultValues: {
       name: '',
       surname: '',
@@ -32,6 +36,14 @@ const PlayerForm = ({ currentUser, playerData }) => {
     },
     mode: 'onChange',
   });
+
+  const positionName = positions?.find((position) =>
+    position.split(':')[1].includes(playerData?.position)
+  );
+
+  const countryName = countries?.find((country) =>
+    country.split(':')[1].includes(playerData?.nationality)
+  );
 
   useEffect(() => {
     if (playerData) {
@@ -71,12 +83,20 @@ const PlayerForm = ({ currentUser, playerData }) => {
     }
   };
 
-  const countries = ['Albania', 'Andorra', 'Austria', 'Poland', 'Portugal'];
-
   const onSubmit = async (formData) => {
+    const countryId = countries.find((country) =>
+      country.split(':')[1].includes(formData?.nationality)
+    );
+
+    const positionId = positions.find((position) =>
+      position.split(':')[1].includes(formData?.position)
+    );
+
     const updatedData = {
       ...formData,
       user: currentUser._id,
+      nationality: countryId?.split(':')[1],
+      position: positionId?.split(':')[1],
       photo: form.getValues('photo'),
     };
     try {
@@ -130,9 +150,10 @@ const PlayerForm = ({ currentUser, playerData }) => {
           form={form}
           items={countries}
           label='Nationality'
-          placeholder={playerData?.nationality || 'Select Nationality'}
+          placeholder={countryName?.split(':')[0] || 'Select Nationality'}
           name='nationality'
           className='w-full '
+          idFlag={true}
         />
         <Separator />
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 items-center justify-between'>
@@ -167,9 +188,12 @@ const PlayerForm = ({ currentUser, playerData }) => {
             <FormArea
               id='position'
               label='Position'
-              type='text'
+              type='select'
               form={form}
               name='position'
+              items={positions}
+              placeholder={positionName?.split(':')[0] || 'Select Position'}
+              idFlag={true}
             />
           </div>
           <div className='flex flex-col w-full'>
@@ -186,15 +210,17 @@ const PlayerForm = ({ currentUser, playerData }) => {
               id='footed'
               label='Footed'
               type='select'
-              items={['Left', 'Right']}
+              items={['Left:1', 'Right:2']}
+              placeholder={playerData?.footed || 'Select Foot'}
               form={form}
               name='footed'
+              idFlag={false}
             />
           </div>
         </div>
 
         <div className='flex justify-start items-center'>
-          <Button type='submit' disabled={!form.formState.isValid}>
+          <Button type='submit' className='bg-primary-500 hover:bg-purple-500'>
             Save
           </Button>
           {updateSuccess && <p className='text-green-700 ml-3'>Saved</p>}
