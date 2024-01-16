@@ -4,28 +4,16 @@
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '../ui/form';
-import { Input } from '../ui/input';
+import { Form } from '../ui/form';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Textarea } from '../ui/textarea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 
-import {
-  updateUserFailure,
-  updateUserStart,
-  updateUserSuccess,
-} from '../../redux/user/userSlice';
 import uploadFile from '../../lib/uploadFile';
+import FormArea from '../FormArea';
+import { updateUserSuccess } from '../../redux/user/userSlice';
 
 const profileFormSchema = z.object({
   username: z
@@ -50,8 +38,9 @@ const profileFormSchema = z.object({
 const ProfileForm = () => {
   const { currentUser } = useSelector((state) => state.user);
   const fileRef = useRef(null);
-  const [file, setFile] = useState(undefined);
+  const [file, setFile] = useState('');
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const dispatch = useDispatch();
 
   const form = useForm({
@@ -66,30 +55,30 @@ const ProfileForm = () => {
   });
 
   useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
+    const handleFileUpload = async () => {
+      if (!file) return;
+
+      await uploadFile(file, setFile, setUploadProgress);
+
+      form.setValue('photo', file);
+    };
+
+    handleFileUpload();
+  }, [file, form, setFile, setUploadProgress]);
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       setUpdateSuccess(false);
     }, 3000);
 
     return () => clearTimeout(timeoutId);
-  }, [updateSuccess, file]);
-
-  const handleFileUpload = async (file) => {
-    try {
-      const downloadURL = await uploadFile(file);
-      form.setValue('photo', downloadURL);
-    } catch (error) {
-      console.log('Error uploading file: ', error);
-    }
-  };
+  }, [updateSuccess]);
 
   const onSubmit = async (formData) => {
     const updatedData = { ...formData, photo: form.getValues('photo') };
+
     try {
-      dispatch(updateUserStart());
-      const res = await fetch(`/api/user/edit/${currentUser._id}`, {
+      const res = await fetch(`/api/user/edit/${currentUser?._id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -97,14 +86,16 @@ const ProfileForm = () => {
         body: JSON.stringify(updatedData),
       });
       const data = await res.json();
-      if (data.success === false) {
-        dispatch(updateUserFailure(data.message));
-        return;
+
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to update data!');
       }
-      dispatch(updateUserSuccess(data));
+
+      dispatch(updateUserSuccess({ ...currentUser, ...updatedData }));
+
       setUpdateSuccess(true);
     } catch (error) {
-      dispatch(updateUserFailure(error.message));
+      console.log(error);
     }
   };
 
@@ -112,95 +103,42 @@ const ProfileForm = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='space-y-8 max-w-screen-md mx-auto'
+        className='flex flex-col space-y-4'
       >
-        <FormField
-          control={form.control}
+        <FormArea
+          id='username'
+          label='Username'
+          type='text'
+          form={form}
           name='username'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input
-                  type='text'
-                  id='username'
-                  className='w-full'
-                  {...form.register('username')}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
         />
-        <FormField
-          control={form.control}
+        <FormArea
+          id='email'
+          label='Email'
+          type='text'
+          form={form}
           name='email'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input
-                  id='email'
-                  type='email'
-                  className='w-full'
-                  {...form.register('email')}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
         />
-        <FormField
-          control={form.control}
-          name='bio'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Bio</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder='Tell us a little bit about yourself'
-                  className='resize-none w-full'
-                  id='bio'
-                  {...form.register('bio')}
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
+        <FormArea id='bio' label='Bio' type='textarea' form={form} name='bio' />
+        <FormArea
+          id='photo'
+          label='Photo'
+          type='file'
+          form={form}
           name='photo'
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Photo</FormLabel>
-              <FormControl>
-                <div className='flex items-center'>
-                  <img
-                    src={currentUser.photo}
-                    alt='user'
-                    className='w-24 h-24 rounded-full object-cover mt-2 self-center mx-auto cursor-pointer'
-                    onClick={() => fileRef.current.click()}
-                  />
-                  <Input
-                    id='photo'
-                    type='file'
-                    ref={fileRef}
-                    accept='image/*'
-                    onChange={(e) => setFile(e.target.files[0])}
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          fileRef={fileRef}
+          setFile={setFile}
+          currentUserPhoto={currentUser?.photo}
+          uploadProgress={uploadProgress}
         />
-        <div className='flex items-center'>
-          <Button type='submit' disabled={!form.formState.isValid}>
-            Update profile
+
+        <div className='flex justify-start items-center'>
+          <Button
+            type='submit'
+            className='bg-primary-500 hover:bg-purple-500'
+            disabled={!form.formState.isValid}
+          >
+            Save
           </Button>
           {updateSuccess && <p className='text-green-700 ml-3'>Saved</p>}
         </div>
