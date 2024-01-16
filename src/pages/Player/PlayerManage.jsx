@@ -1,5 +1,7 @@
-import PlayersPanel from '../../components/admin/players/PlayersPanel';
+import CrudPanel from '../../components/CrudPanel';
+import DeleteEntity from '../../components/DeleteEntity';
 import { Separator } from '../../components/ui/separator';
+import { playerFormSchema } from '../../lib/validation/PlayerValidation';
 
 const columns = [
   {
@@ -13,27 +15,19 @@ const columns = [
     sortable: true,
   },
   {
-    name: 'Email',
-    selector: (row) => row.email,
+    name: 'Surname',
+    selector: (row) => row.surname,
     sortable: true,
   },
   {
-    name: 'Role',
-    selector: (row) => row.role,
+    name: 'Nationality',
+    selector: (row) => row.nationality,
     sortable: true,
   },
   {
-    name: 'Actions',
-    cell: (row) => (
-      <>
-        <button
-          className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'
-          onClick={() => console.log(row)}
-        >
-          Edit
-        </button>
-      </>
-    ),
+    name: 'Position',
+    selector: (row) => row.position,
+    sortable: true,
   },
 ];
 
@@ -45,7 +39,13 @@ const PlayerManage = () => {
         <p className='text-sm text-muted-foreground'>Manage players.</p>
       </div>
       <Separator />
-      <PlayersPanel columns={columns} />
+      <CrudPanel
+        apiPath='player'
+        columns={columns}
+        title='Player'
+        onDeleteComponent={DeleteEntity}
+        formSchema={playerFormSchema}
+      />
     </div>
   );
 };
