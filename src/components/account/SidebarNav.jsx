@@ -70,6 +70,11 @@ const sidebarNavItems = [
     href: '/user/admin/positions',
     role: 'admin',
   },
+  {
+    title: 'Manage Coaches',
+    href: '/user/admin/coaches',
+    role: 'admin',
+  },
 ];
 
 const SidebarNav = ({ className, ...props }) => {
