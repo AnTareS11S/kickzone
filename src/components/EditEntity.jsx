@@ -55,10 +55,10 @@ const EditEntity = ({
             item.split(':')[1] === row.country) ||
           (selectField.name === 'stadium' &&
             item.split(':')[1] === row.stadium) ||
-          (selectField.name === 'coach' && item.split(':')[0] === row.coach)
+          (selectField.name === 'coach' &&
+            item.split(':')[1] === row.coach?._id)
         );
       });
-
       selectField.defaultValue = matchingItem ? matchingItem.split(':')[0] : '';
     }
   });
