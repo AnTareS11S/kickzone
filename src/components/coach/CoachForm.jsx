@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
@@ -9,18 +10,22 @@ import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../../lib/uploadFile';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
+import { useFetchCountries } from '../hooks/useFetchCountries';
 
-const CoachForm = ({ currentUser, coachData }) => {
+const CoachForm = ({ currentUser }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const countries = useFetchCountries();
+  const [coachData, setCoachData] = useState(null);
 
   const form = useForm({
     resolver: zodResolver(usersFormSchema),
     defaultValues: {
       name: '',
       surname: '',
-      country: '',
+      nationality: '',
       city: '',
       bio: '',
       birthDate: '',
@@ -34,7 +39,7 @@ const CoachForm = ({ currentUser, coachData }) => {
       form.reset({
         name: coachData.name,
         surname: coachData.surname,
-        country: coachData.country,
+        nationality: coachData.nationality,
         city: coachData.city,
         bio: coachData.bio,
         birthDate: coachData.birthDate.slice(0, 10),
@@ -44,9 +49,36 @@ const CoachForm = ({ currentUser, coachData }) => {
   }, [coachData, form]);
 
   useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
+    const getCoach = async () => {
+      try {
+        const res = await fetch(`/api/coach/get/${currentUser?._id}`);
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to fetch data!');
+        }
+        const data = await res.json();
+
+        setCoachData(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getCoach();
+  }, [currentUser._id, updateSuccess]);
+
+  useEffect(() => {
+    const handleFileUpload = async () => {
+      if (!file) return;
+
+      await uploadFile(file, setFile, setUploadProgress);
+
+      form.setValue('photo', file);
+      setUpdateSuccess(true);
+    };
+
+    handleFileUpload();
+  }, [file, form, setFile, setUploadProgress]);
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       setUpdateSuccess(false);
     }, 3000);
@@ -54,28 +86,26 @@ const CoachForm = ({ currentUser, coachData }) => {
     return () => clearTimeout(timeoutId);
   }, [updateSuccess, file]);
 
-  const handleFileUpload = async (file) => {
-    try {
-      const downloadURL = await uploadFile(file);
-      form.setValue('photo', downloadURL);
-    } catch (error) {
-      console.log('Error uploading file: ', error);
-    }
-  };
-
-  const countries = ['Albania', 'Andorra', 'Austria', 'Poland'];
-
   const originalDate = form.getValues('birthDate');
-
   const formattedDate = new Date(originalDate);
 
+  const countryName = countries?.find((country) =>
+    country.split(':')[1].includes(coachData?.nationality)
+  );
+
   const onSubmit = async (formData) => {
+    const countryId = countries.find((country) =>
+      country.split(':')[0].includes(formData?.nationality)
+    );
+
     const updatedData = {
       ...formData,
       user: currentUser._id,
-      photo: form.getValues('photo'),
+      photo: form?.getValues('photo') || '',
+      nationality: countryId?.split(':')[1],
       dateOfBirth: formattedDate,
     };
+
     try {
       const res = await fetch('/api/coach/create', {
         method: 'POST',
@@ -85,10 +115,7 @@ const CoachForm = ({ currentUser, coachData }) => {
         body: JSON.stringify(updatedData),
       });
       const data = await res.json();
-      if (data.success === false) {
-        console.log(data.message);
-        return;
-      }
+
       setUpdateSuccess(true);
     } catch (error) {
       console.log(error);
@@ -125,22 +152,27 @@ const CoachForm = ({ currentUser, coachData }) => {
           fileRef={fileRef}
           setFile={setFile}
           currentUserPhoto={coachData?.photo}
+          uploadProgress={uploadProgress}
         />
         <FormArea id='bio' label='Bio' type='textarea' form={form} name='bio' />
         <FormArea
-          id='country'
+          id='nationality'
           type='select'
           form={form}
           items={countries}
-          label='Country'
-          placeholder={coachData?.country || 'Select country'}
-          name='country'
+          label='Nationality'
+          placeholder={countryName?.split(':')[0] || 'Select nationality'}
+          name='nationality'
           className='w-full'
         />
         <FormArea id='city' label='City' type='text' form={form} name='city' />
 
         <div className='flex justify-start items-center'>
-          <Button type='submit' disabled={!form.formState.isValid}>
+          <Button
+            type='submit'
+            disabled={!form.formState.isValid}
+            className='bg-primary-500 hover:bg-purple-500'
+          >
             Save
           </Button>
           {updateSuccess && <p className='text-green-700 ml-3'>Saved</p>}
