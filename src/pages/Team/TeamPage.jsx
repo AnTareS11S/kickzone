@@ -6,16 +6,20 @@ import { Separator } from '../../components/ui/separator';
 
 const TeamPage = () => {
   const [team, setTeam] = useState({});
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const pathname = window.location.pathname.split('/').pop();
 
   const getTeam = async () => {
     try {
+      setLoading(true);
       const res = await fetch(`/api/team/${pathname}`);
       const data = await res.json();
       setTeam(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,7 +36,7 @@ const TeamPage = () => {
         <span className='mr-1'>&#8592;</span> Back
       </div>
       <Separator />
-      <TeamDetails data={team} />
+      <TeamDetails data={team} isLoading={loading} />
     </>
   );
 };
