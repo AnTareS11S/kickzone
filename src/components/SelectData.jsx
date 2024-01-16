@@ -15,9 +15,8 @@ const SelectData = ({ placeholder, items, onChange, defaultValue, idFlag }) => {
       <FormControl>
         <SelectTrigger className='w-full'>
           <SelectValue
-            placeholder={
-              defaultValue ? defaultValue.split(':')[0] : placeholder
-            }
+            className='w-full'
+            placeholder={defaultValue ? defaultValue : placeholder}
           />
         </SelectTrigger>
       </FormControl>
