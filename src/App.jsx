@@ -28,6 +28,9 @@ import PlayerRoute from './pages/Player/PlayerRoute';
 import CountryManage from './pages/Country/CountryManage';
 import StadiumManage from './pages/Stadium/StadiumManage';
 import PositionManage from './pages/Position/PositionManage';
+import CoachManage from './pages/Coach/CoachManage';
+import CoachPage from './pages/Coach/CoachPage';
+import StadiumPage from './pages/Stadium/StadiumPage';
 
 const App = () => {
   return (
@@ -40,8 +43,10 @@ const App = () => {
           <Route path='/activity' element={<Activity />} />
           <Route path='/profile/:id' element={<HomeProfile />} />
           <Route path='/leagues' element={<Leagues />} />
-          <Route path='/leagues/:id' element={<LeaguePage />} />
-          <Route path='/leagues/team/:id' element={<TeamPage />} />
+          <Route path='/league/:id' element={<LeaguePage />} />
+          <Route path='/league/team/:id' element={<TeamPage />} />
+          <Route path='/coach/:id' element={<CoachPage />} />
+          <Route path='/stadium/:id' element={<StadiumPage />} />
         </Route>
         <Route path='/sign-in' element={<Signin />} />
         <Route path='/sign-up' element={<Signup />} />
@@ -61,6 +66,7 @@ const App = () => {
             <Route path='/user/admin/countries' element={<CountryManage />} />
             <Route path='/user/admin/stadiums' element={<StadiumManage />} />
             <Route path='/user/admin/positions' element={<PositionManage />} />
+            <Route path='/user/admin/coaches' element={<CoachManage />} />
           </Route>
           <Route path='/user/player' element={<PlayerRoute />}>
             <Route path='/user/player/profile' element={<PlayerProfile />} />
