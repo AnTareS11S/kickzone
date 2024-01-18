@@ -31,6 +31,7 @@ import PositionManage from './pages/Position/PositionManage';
 import CoachManage from './pages/Coach/CoachManage';
 import CoachPage from './pages/Coach/CoachPage';
 import StadiumPage from './pages/Stadium/StadiumPage';
+import CoachTeamView from './pages/Coach/CoachTeamView';
 
 const App = () => {
   return (
@@ -72,6 +73,8 @@ const App = () => {
             <Route path='/user/player/profile' element={<PlayerProfile />} />
           </Route>
           <Route path='/user/coach/profile' element={<CoachProfile />} />
+          <Route path='/user/coach/team' element={<CoachTeamView />} />
+          {/* <Route path='/user/coach/training' element={<CoachTeamView />} /> */}
         </Route>
 
         <Route element={<PrivateRoute />}>
