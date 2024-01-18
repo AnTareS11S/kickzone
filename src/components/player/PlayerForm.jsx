@@ -12,13 +12,39 @@ import { playerFormSchema } from '../../lib/validation/PlayerValidation';
 import { Separator } from '../ui/separator';
 import { useFetchPositions } from '../hooks/useFetchPositions';
 import { useFetchCountries } from '../hooks/useFetchCountries';
+import { useFetchTeams } from '../hooks/useFetchTeams';
+import Spinner from '../Spinner';
 
-const PlayerForm = ({ currentUser, playerData }) => {
+const PlayerForm = ({ currentUser }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const positions = useFetchPositions();
   const countries = useFetchCountries();
+  const teams = useFetchTeams();
+  const [playerData, setPlayerData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const getPlayer = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`/api/player/get/${currentUser?._id}`);
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to fetch data!');
+      }
+      const data = await res.json();
+      setPlayerData(data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getPlayer();
+  }, [currentUser?._id]);
 
   const form = useForm({
     resolver: zodResolver(playerFormSchema(false)),
@@ -26,11 +52,13 @@ const PlayerForm = ({ currentUser, playerData }) => {
       name: '',
       surname: '',
       nationality: '',
+      wantedTeam: '',
       height: '',
       weight: '',
       position: '',
       number: '',
       footed: '',
+      photo: '',
       age: '',
       bio: '',
     },
@@ -45,12 +73,21 @@ const PlayerForm = ({ currentUser, playerData }) => {
     country.split(':')[1].includes(playerData?.nationality)
   );
 
+  const teamName = teams?.find((team) =>
+    team.split(':')[1].includes(playerData?.wantedTeam)
+  );
+
+  const currentTeamName = teams?.find((team) =>
+    team.split(':')[1].includes(playerData?.currentTeam)
+  );
+
   useEffect(() => {
     if (playerData) {
       form.reset({
         name: playerData.name,
         surname: playerData.surname,
         nationality: playerData.nationality,
+        wantedTeam: playerData.wantedTeam || '',
         height: playerData.height,
         weight: playerData.weight,
         position: playerData.position,
@@ -64,24 +101,25 @@ const PlayerForm = ({ currentUser, playerData }) => {
   }, [playerData, form]);
 
   useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
+    const handleFileUpload = async () => {
+      if (!file) return;
+
+      await uploadFile(file, setFile, setUploadProgress);
+
+      form.setValue('photo', file);
+      setUpdateSuccess(true);
+    };
+
+    handleFileUpload();
+  }, [file, form, setFile, setUploadProgress]);
+
+  useEffect(() => {
     const timeoutId = setTimeout(() => {
       setUpdateSuccess(false);
     }, 3000);
 
     return () => clearTimeout(timeoutId);
-  }, [updateSuccess, file]);
-
-  const handleFileUpload = async (file) => {
-    try {
-      const downloadURL = await uploadFile(file);
-      form.setValue('photo', downloadURL);
-    } catch (error) {
-      console.log('Error uploading file: ', error);
-    }
-  };
+  }, [updateSuccess]);
 
   const onSubmit = async (formData) => {
     const countryId = countries.find((country) =>
@@ -92,12 +130,17 @@ const PlayerForm = ({ currentUser, playerData }) => {
       position.split(':')[1].includes(formData?.position)
     );
 
+    const teamId = teams.find((team) =>
+      team.split(':')[1].includes(formData?.wantedTeam)
+    );
+
     const updatedData = {
       ...formData,
       user: currentUser._id,
       nationality: countryId?.split(':')[1],
       position: positionId?.split(':')[1],
-      photo: form.getValues('photo'),
+      wantedTeam: teamId?.split(':')[1],
+      photo: form?.getValues('photo') || '',
     };
     try {
       const res = await fetch('/api/player/add', {
@@ -117,6 +160,14 @@ const PlayerForm = ({ currentUser, playerData }) => {
       console.log(error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -142,8 +193,32 @@ const PlayerForm = ({ currentUser, playerData }) => {
           fileRef={fileRef}
           setFile={setFile}
           currentUserPhoto={playerData?.photo}
+          uploadProgress={uploadProgress}
         />
         <FormArea id='bio' label='Bio' type='textarea' form={form} name='bio' />
+        {playerData?.currentTeam ? (
+          <FormArea
+            id='currentTeam'
+            type='text'
+            form={form}
+            isDisabled={true}
+            placeholder={currentTeamName?.split(':')[0] || 'No team'}
+            label='Current Team'
+            name='currentTeam'
+          />
+        ) : (
+          <FormArea
+            id='wantedTeam'
+            type='select'
+            form={form}
+            items={teams}
+            label='Team where you play/you want to play'
+            placeholder={teamName?.split(':')[0] || 'Select Team'}
+            name='wantedTeam'
+            className='w-full '
+            idFlag={true}
+          />
+        )}
         <FormArea
           id='nationality'
           type='select'
