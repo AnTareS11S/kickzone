@@ -51,6 +51,8 @@ export const playerFormSchema = (isEdit) =>
     footed: z.string().min(1, {
       message: 'Footed is required',
     }),
+    wantedTeam: z.string().optional(),
+    currentTeam: z.string().optional(),
     age: z.any().refine(
       (value) => {
         const parsedValue =
@@ -62,6 +64,7 @@ export const playerFormSchema = (isEdit) =>
         message: 'Age must be a positive integer',
       }
     ),
+    photo: z.string().optional(),
     bio: z.string().min(1, {
       message: 'Bio is required',
     }),
