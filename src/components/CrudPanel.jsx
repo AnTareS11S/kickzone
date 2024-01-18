@@ -32,6 +32,7 @@ const CrudPanel = ({
     try {
       const res = await fetch(`/api/admin/${apiPath}`);
       const data = await res.json();
+
       setData(data);
     } catch (error) {
       console.log(error);
