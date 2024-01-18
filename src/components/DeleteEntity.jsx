@@ -13,9 +13,12 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
 
   const handleDeleteEntity = async () => {
     try {
-      const res = await fetch(`/api/admin/${apiEndpoint}/delete/${row._id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(
+        `/api/admin/${apiEndpoint?.split('/')[0]}/delete/${row._id}`,
+        {
+          method: 'DELETE',
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || `Failed to delete ${apiEndpoint}!`);
@@ -29,7 +32,9 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
   return (
     <div className='flex items-center space-x-4'>
       <ModalDialog
-        description={`Are you sure you want to delete this ${apiEndpoint}?`}
+        description={`Are you sure you want to delete this ${
+          apiEndpoint?.split('/')[0]
+        }?`}
         handleClick={handleDeleteEntity}
       />
     </div>
