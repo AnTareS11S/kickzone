@@ -32,6 +32,16 @@ const sidebarNavItems = [
     role: 'coach',
   },
   {
+    title: 'Team Manage',
+    href: '/user/coach/team',
+    role: 'coach',
+  },
+  {
+    title: 'Training Manage',
+    href: '/user/coach/training',
+    role: 'coach',
+  },
+  {
     title: 'Settings',
     href: '/user/settings',
   },
