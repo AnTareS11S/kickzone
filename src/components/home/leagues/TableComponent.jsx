@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Card } from '../../ui/card';
 import CustomDataTable from '../../CustomDataTable';
+import { Link } from 'react-router-dom';
 
 const TableComponent = ({ data }) => {
   const columns = [
@@ -11,8 +12,18 @@ const TableComponent = ({ data }) => {
     },
     {
       name: 'Team',
-      selector: (row) => row.name,
-      sortable: true,
+      selector: (row) => {
+        return (
+          <div className='flex items-center'>
+            <img
+              src={row.logo}
+              alt={row.name}
+              className='w-8 h-8 object-contain rounded-full mr-2'
+            />
+            <Link to={`/league/team/${row.team}`}>{row.name}</Link>
+          </div>
+        );
+      },
       grow: 2,
     },
     {
