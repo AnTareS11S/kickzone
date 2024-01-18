@@ -5,6 +5,7 @@ import { Badge } from '../../ui/badge';
 import Spinner from '../../Spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import { Separator } from '../../ui/separator';
+import SquadTable from './SquadTable';
 
 const profileTabs = [
   { value: 'results', label: 'Results', icon: '/results.png' },
@@ -91,6 +92,9 @@ const TeamDetails = ({ data, isLoading }) => {
             <div className=''>
               <p>Matches</p>
             </div>
+          </TabsContent>
+          <TabsContent value='squad'>
+            <SquadTable />
           </TabsContent>
         </Tabs>
       </Card>
