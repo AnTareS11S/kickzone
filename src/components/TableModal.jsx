@@ -27,7 +27,7 @@ const TableModal = ({ title, desc, items, handleDelete }) => {
       <DialogTrigger asChild>
         <MinusCircledIcon className='w-5 h-5 cursor-pointer' />
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[525px]'>
+      <DialogContent className='sm:max-w-[525px] overflow-y-auto max-h-[400px]'>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{desc}</DialogDescription>
