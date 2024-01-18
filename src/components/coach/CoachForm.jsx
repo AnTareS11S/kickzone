@@ -48,20 +48,21 @@ const CoachForm = ({ currentUser }) => {
     }
   }, [coachData, form]);
 
-  useEffect(() => {
-    const getCoach = async () => {
-      try {
-        const res = await fetch(`/api/coach/get/${currentUser?._id}`);
-        if (!res.ok) {
-          throw new Error(data.message || 'Failed to fetch data!');
-        }
-        const data = await res.json();
-
-        setCoachData(data);
-      } catch (error) {
-        console.log(error);
+  const getCoach = async () => {
+    try {
+      const res = await fetch(`/api/coach/get/${currentUser?._id}`);
+      if (!res.ok) {
+        throw new Error(data.message || 'Failed to fetch data!');
       }
-    };
+      const data = await res.json();
+
+      setCoachData(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
     getCoach();
   }, [currentUser._id, updateSuccess]);
 
@@ -84,7 +85,7 @@ const CoachForm = ({ currentUser }) => {
     }, 3000);
 
     return () => clearTimeout(timeoutId);
-  }, [updateSuccess, file]);
+  }, [updateSuccess]);
 
   const originalDate = form.getValues('birthDate');
   const formattedDate = new Date(originalDate);
