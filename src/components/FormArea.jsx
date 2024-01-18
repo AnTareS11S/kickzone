@@ -24,6 +24,7 @@ const FormArea = ({
   placeholder,
   defaultValue,
   uploadProgress,
+  isDisabled,
 }) => {
   return (
     <FormField
@@ -82,11 +83,13 @@ const FormArea = ({
               />
             ) : (
               <Input
+                {...field}
                 id={name}
                 type={type}
                 className='w-full flex ring-2 ring-white hover:ring-primary-500 transition duration-300'
+                disabled={isDisabled}
+                placeholder={placeholder}
                 {...form.register(name)}
-                {...field}
               />
             )}
           </FormControl>
