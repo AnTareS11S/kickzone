@@ -13,8 +13,6 @@ const RefereeStats = () => {
       item.name && item.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  console.log(data);
-
   const getStats = async () => {
     try {
       const res = await fetch('/api/team/team-stats');
@@ -34,6 +32,7 @@ const RefereeStats = () => {
       name: 'No.',
       selector: (row, index) => index + 1,
       sortable: true,
+      grow: 0,
     },
     {
       name: 'Team',
@@ -69,6 +68,7 @@ const RefereeStats = () => {
       highlightOnHover
       persistTableHead
       subHeader
+      pagination
       subHeaderComponent={
         <Input
           placeholder='Search...'
