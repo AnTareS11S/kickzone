@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../../lib/uploadFile';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
 import { useFetchCountries } from '../hooks/useFetchCountries';
+import Spinner from '../../components/Spinner';
 
 const CoachForm = ({ currentUser }) => {
   const fileRef = useRef(null);
@@ -19,6 +20,7 @@ const CoachForm = ({ currentUser }) => {
   const [uploadProgress, setUploadProgress] = useState(0);
   const countries = useFetchCountries();
   const [coachData, setCoachData] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(usersFormSchema),
@@ -50,6 +52,7 @@ const CoachForm = ({ currentUser }) => {
 
   const getCoach = async () => {
     try {
+      setLoading(true);
       const res = await fetch(`/api/coach/get/${currentUser?._id}`);
       if (!res.ok) {
         throw new Error(data.message || 'Failed to fetch data!');
@@ -59,6 +62,8 @@ const CoachForm = ({ currentUser }) => {
       setCoachData(data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,6 +127,14 @@ const CoachForm = ({ currentUser }) => {
       console.log(error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
