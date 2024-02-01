@@ -52,11 +52,13 @@ const EditEntity = ({
       const matchingItem = selectField.items.find((item) => {
         return (
           (selectField.name === 'country' &&
-            item.split(':')[1] === row.country) ||
+            item.split(':')[1] === row?.country) ||
           (selectField.name === 'stadium' &&
-            item.split(':')[1] === row.stadium) ||
+            item.split(':')[1] === row?.stadium) ||
           (selectField.name === 'coach' &&
-            item.split(':')[1] === row.coach?._id)
+            item.split(':')[1] === row.coach?._id) ||
+          (selectField.name === 'trainingType' &&
+            item.split(':')[1] === row?.trainingType)
         );
       });
       selectField.defaultValue = matchingItem ? matchingItem.split(':')[0] : '';
