@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from '../../ui/card';
+import { Card, CardHeader, CardTitle } from '../../ui/card';
 
 const LeagueCard = ({ data }) => {
   return (
@@ -11,7 +11,6 @@ const LeagueCard = ({ data }) => {
             <CardHeader className='items-center pt-10'>
               <CardTitle>{league.name}</CardTitle>
             </CardHeader>
-            <CardContent></CardContent>
           </Link>
         </Card>
       ))}
