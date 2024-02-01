@@ -25,47 +25,88 @@ const sidebarLinks = [
     label: 'Leagues',
   },
   {
-    imgURL: '/user.svg',
-    label: 'Profile',
+    imgURL: '/training.png',
+    label: 'Training',
+    route: '/training',
   },
 ];
 
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 const Bottombar = () => {
   const { pathname } = useLocation();
   const { currentUser } = useSelector((state) => state.user);
 
+  const [player, setPlayer] = useState({});
+
+  useEffect(() => {
+    const getPlayer = async () => {
+      try {
+        if (!currentUser?._id) {
+          return;
+        }
+
+        const res = await fetch(`/api/player/get/${currentUser?._id}`);
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to fetch data!');
+        }
+        const data = await res.json();
+        setPlayer(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getPlayer();
+  }, [currentUser?._id]);
+
+  const isAdminOrCoachOrReferee =
+    currentUser && ['admin', 'coach', 'referee'].includes(currentUser?.role);
+
+  const isCoachWithTeam =
+    (currentUser && currentUser?.role === 'coach') ||
+    player?.currentTeam !== undefined;
+
   return (
     <section className='bottombar'>
       <div className='bottombar_container'>
         {sidebarLinks.map((link) => {
-          const isActive =
-            (pathname.includes(link.route) && link.route.length) > 1 ||
-            pathname === link.route;
-          return (
-            <Link
-              to={
-                link.label === 'Profile'
-                  ? `/profile/${currentUser?._id}`
-                  : link.route
-              }
-              key={link.label}
-              className={`bottombar_link ${isActive && 'bg-primary-500'}`}
-            >
-              <img
-                src={link.imgURL}
-                alt={link.label}
-                width={16}
-                height={16}
-                className='object-contain'
-              />
-              <p className='text-subtle-medium text-dark-1 max-sm:hidden'>
-                {link.label.split(/\s+/)[0]}
-              </p>
-            </Link>
-          );
+          const isActive = pathname === link.route;
+
+          if (
+            (link.route === '/post/create' &&
+              currentUser &&
+              isAdminOrCoachOrReferee) ||
+            (link.route === '/training' && currentUser && isCoachWithTeam) ||
+            currentUser?.role === 'coach' ||
+            (link.route === '/activity' &&
+              currentUser &&
+              ['admin', 'coach', 'player', 'referee'].includes(
+                currentUser?.role
+              )) ||
+            ['/', '/search', '/leagues'].includes(link.route)
+          ) {
+            return (
+              <Link
+                to={link.route}
+                key={link.label}
+                className={`leftsidebar_link ${isActive && 'bg-primary-500'}`}
+              >
+                <img
+                  src={link.imgURL}
+                  alt={link.label}
+                  width={24}
+                  height={24}
+                  className='text-dark-2'
+                />
+                <p className='text-dark-2 max-sm:hidden'>{link.label}</p>
+              </Link>
+            );
+          }
+
+          return null;
         })}
       </div>
     </section>
