@@ -4,8 +4,10 @@ import EditEntity from '../../components/EditEntity';
 
 import { Separator } from '../../components/ui/separator';
 import { positionFormSchema } from '../../lib/validation/PositionValidation';
+import { useNavigate } from 'react-router-dom';
 
 const PositionManage = () => {
+  const navigate = useNavigate();
   const columns = [
     {
       name: 'No.',
@@ -30,8 +32,14 @@ const PositionManage = () => {
 
   return (
     <div className='space-y-6'>
+      <div
+        className='cursor-pointer mb-2 inline-flex items-center justify-center bg-primary-500 hover:bg-purple-500 text-white font-bold py-1 px-3 rounded'
+        onClick={() => navigate(-1)}
+      >
+        <span className='mr-1'>&#8592;</span> Back
+      </div>
       <div>
-        <h3 className='text-lg font-medium'>Positions</h3>
+        <div className='text-heading2-bold'>Positions</div>
         <p className='text-sm text-muted-foreground'>Manage positions.</p>
       </div>
       <Separator />

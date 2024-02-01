@@ -6,11 +6,13 @@ import { useFetchCountries } from '../../components/hooks/useFetchCountries';
 import { useFetchStadiums } from '../../components/hooks/useFetchStadiums';
 import { Separator } from '../../components/ui/separator';
 import { teamFormSchema } from '../../lib/validation/TeamValidation';
+import { useNavigate } from 'react-router-dom';
 
 const TeamManage = () => {
   const countries = useFetchCountries();
   const coaches = useFetchCoaches();
   const stadiums = useFetchStadiums();
+  const navigate = useNavigate();
 
   const columns = [
     {
@@ -104,9 +106,15 @@ const TeamManage = () => {
 
   return (
     <div className='space-y-6'>
+      <div
+        className='cursor-pointer mb-2 inline-flex items-center justify-center bg-primary-500 hover:bg-purple-500 text-white font-bold py-1 px-3 rounded'
+        onClick={() => navigate(-1)}
+      >
+        <span className='mr-1'>&#8592;</span> Back
+      </div>
       <div>
-        <h3 className='text-lg font-medium'>Teams</h3>
-        <p className='text-sm text-muted-foreground'>Manage teams</p>
+        <div className='text-heading2-bold'>Teams</div>
+        <p className='text-sm text-muted-foreground'>Manage teams.</p>
       </div>
       <Separator />
       <CrudPanel
