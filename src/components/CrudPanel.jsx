@@ -18,6 +18,7 @@ const CrudPanel = ({
   onRemoveTeamComponent: RemoveTeamComponent,
   defaultValues,
   formSchema,
+  objectId,
 }) => {
   const [data, setData] = useState([]);
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -30,7 +31,9 @@ const CrudPanel = ({
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`/api/admin/${apiPath}`);
+      const res = await fetch(
+        `/api/admin/${objectId ? `${apiPath}/${objectId}` : apiPath}`
+      );
       const data = await res.json();
 
       setData(data);
@@ -42,17 +45,20 @@ const CrudPanel = ({
   useEffect(() => {
     fetchData();
     setUpdateSuccess(false);
-  }, [updateSuccess]);
+  }, [updateSuccess, objectId]);
 
   const onSubmit = async (formData) => {
     try {
-      const res = await fetch(`/api/admin/${apiPath}/add`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        `/api/admin/${objectId ? `${apiPath}/${objectId}` : apiPath}/add`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       if (!res.ok) {
         throw new Error('Failed to fetch data!');
       }
