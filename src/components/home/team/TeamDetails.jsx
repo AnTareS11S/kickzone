@@ -94,7 +94,7 @@ const TeamDetails = ({ data, isLoading }) => {
             </div>
           </TabsContent>
           <TabsContent value='squad'>
-            <SquadTable />
+            <SquadTable data={data} />
           </TabsContent>
         </Tabs>
       </Card>
