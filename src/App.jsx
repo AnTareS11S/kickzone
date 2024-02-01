@@ -41,6 +41,8 @@ import RefereeDashboard from './pages/Referee/RefereeDashboard';
 import ScheduleManagement from './pages/Referee/ScheduleManagement';
 import LeagueScheduleCard from './pages/League/LeagueScheduleCard';
 import AdminDashboard from './pages/Admin/AdminDashboard';
+import CoachRoute from './pages/CoachRoute';
+import CoachDashboard from './pages/Coach/CoachDashboard';
 
 const App = () => {
   return (
@@ -97,6 +99,18 @@ const App = () => {
             <Route
               path='/dashboard/admin/countries'
               element={<CountryManage />}
+            />
+          </Route>
+          <Route path='/dashboard/coach' element={<CoachRoute />}>
+            <Route path='/dashboard/coach' element={<CoachDashboard />} />
+            <Route path='/dashboard/coach/team' element={<CoachTeamView />} />
+            <Route
+              path='/dashboard/coach/training'
+              element={<TrainingManage />}
+            />
+            <Route
+              path='/dashboard/coach/training-type'
+              element={<TrainingTypeManage />}
             />
           </Route>
         </Route>
