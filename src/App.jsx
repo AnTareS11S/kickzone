@@ -29,9 +29,18 @@ import CountryManage from './pages/Country/CountryManage';
 import StadiumManage from './pages/Stadium/StadiumManage';
 import PositionManage from './pages/Position/PositionManage';
 import CoachManage from './pages/Coach/CoachManage';
-import CoachPage from './pages/Coach/CoachPage';
+import CoachDetails from './pages/Coach/CoachDetails';
 import StadiumPage from './pages/Stadium/StadiumPage';
 import CoachTeamView from './pages/Coach/CoachTeamView';
+import PlayerDetails from './pages/Player/PlayerDetails';
+import TrainingManage from './pages/Coach/TrainingManage';
+import TrainingTypeManage from './pages/Coach/TrainingTypeManage';
+import TrainingPage from './pages/Training/TrainingPage';
+import TrainingDetails from './pages/Training/TrainingDetails';
+import RefereeDashboard from './pages/Referee/RefereeDashboard';
+import ScheduleManagement from './pages/Referee/ScheduleManagement';
+import LeagueScheduleCard from './pages/League/LeagueScheduleCard';
+import AdminDashboard from './pages/Admin/AdminDashboard';
 
 const App = () => {
   return (
@@ -46,8 +55,50 @@ const App = () => {
           <Route path='/leagues' element={<Leagues />} />
           <Route path='/league/:id' element={<LeaguePage />} />
           <Route path='/league/team/:id' element={<TeamPage />} />
-          <Route path='/coach/:id' element={<CoachPage />} />
+          <Route path='/coach/:id' element={<CoachDetails />} />
           <Route path='/stadium/:id' element={<StadiumPage />} />
+          <Route path='/player/:id' element={<PlayerDetails />} />
+          <Route path='/training' element={<TrainingPage />} />
+          <Route path='/training/:id' element={<TrainingDetails />} />
+          <Route path='/dashboard/referee' element={<RefereeRoute />}>
+            <Route path='/dashboard/referee' element={<LeagueScheduleCard />} />
+            <Route
+              path='/dashboard/referee/league/:id'
+              element={<RefereeDashboard />}
+            />
+            <Route
+              path='/dashboard/referee/league/schedule/:id'
+              element={<ScheduleManagement />}
+            />
+            <Route
+              path='/dashboard/referee/league/results/:id'
+              element={<ScheduleManagement />}
+            />
+            <Route
+              path='/dashboard/referee/league/player-stats/:id'
+              element={<ScheduleManagement />}
+            />
+          </Route>
+          <Route path='/dashboard/admin' element={<AdminRoute />}>
+            <Route path='/dashboard/admin' element={<AdminDashboard />} />
+            <Route path='/dashboard/admin/users' element={<UserManage />} />
+            <Route path='/dashboard/admin/teams' element={<TeamManage />} />
+            <Route path='/dashboard/admin/leagues' element={<LeagueManage />} />
+            <Route path='/dashboard/admin/players' element={<PlayerManage />} />
+            <Route
+              path='/dashboard/admin/stadiums'
+              element={<StadiumManage />}
+            />
+            <Route path='/dashboard/admin/coaches' element={<CoachManage />} />
+            <Route
+              path='/dashboard/admin/positions'
+              element={<PositionManage />}
+            />
+            <Route
+              path='/dashboard/admin/countries'
+              element={<CountryManage />}
+            />
+          </Route>
         </Route>
         <Route path='/sign-in' element={<Signin />} />
         <Route path='/sign-up' element={<Signup />} />
@@ -59,22 +110,16 @@ const App = () => {
             <Route path='/user/referee/team-stats' element={<RefereeStats />} />
           </Route>
           <Route path='/user/settings' element={<Settings />} />
-          <Route path='/user/admin' element={<AdminRoute />}>
-            <Route path='/user/admin/users' element={<UserManage />} />
-            <Route path='/user/admin/teams' element={<TeamManage />} />
-            <Route path='/user/admin/leagues' element={<LeagueManage />} />
-            <Route path='/user/admin/players' element={<PlayerManage />} />
-            <Route path='/user/admin/countries' element={<CountryManage />} />
-            <Route path='/user/admin/stadiums' element={<StadiumManage />} />
-            <Route path='/user/admin/positions' element={<PositionManage />} />
-            <Route path='/user/admin/coaches' element={<CoachManage />} />
-          </Route>
           <Route path='/user/player' element={<PlayerRoute />}>
             <Route path='/user/player/profile' element={<PlayerProfile />} />
           </Route>
           <Route path='/user/coach/profile' element={<CoachProfile />} />
           <Route path='/user/coach/team' element={<CoachTeamView />} />
-          {/* <Route path='/user/coach/training' element={<CoachTeamView />} /> */}
+          <Route path='/user/coach/training' element={<TrainingManage />} />
+          <Route
+            path='/user/coach/training-type'
+            element={<TrainingTypeManage />}
+          />
         </Route>
 
         <Route element={<PrivateRoute />}>
