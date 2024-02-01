@@ -4,6 +4,7 @@ import EditEntity from '../../components/EditEntity';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import { Separator } from '../../components/ui/separator';
 import { trainingTypeValidationSchema } from '../../lib/validation/TrainingValidation';
+import { useNavigate } from 'react-router-dom';
 
 const columns = [
   {
@@ -20,6 +21,7 @@ const columns = [
 
 const TrainingTypeManage = () => {
   const coach = useFetchCoachByUserId();
+  const navigate = useNavigate();
   const fields = [
     {
       id: 'name',
@@ -36,11 +38,15 @@ const TrainingTypeManage = () => {
   ];
   return (
     <div className='space-y-6'>
+      <div
+        className='cursor-pointer mb-2 inline-flex items-center justify-center bg-primary-500 hover:bg-purple-500 text-white font-bold py-1 px-3 rounded'
+        onClick={() => navigate(-1)}
+      >
+        <span className='mr-1'>&#8592;</span> Back
+      </div>
       <div>
-        <h3 className='text-lg font-medium'>Training Types Manage</h3>
-        <p className='text-sm text-muted-foreground'>
-          Manage your trainings types
-        </p>
+        <div className='text-heading2-bold'>Training types</div>
+        <p className='text-sm text-muted-foreground'>Manage training types.</p>
       </div>
 
       <Separator />
