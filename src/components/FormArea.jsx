@@ -1,4 +1,5 @@
 /* eslint-disable react/prop-types */
+import MyDatePicker from './MyDatePicker';
 import SelectData from './SelectData';
 import {
   FormControl,
@@ -20,6 +21,7 @@ const FormArea = ({
   name,
   idFlag,
   items,
+
   setFile,
   placeholder,
   defaultValue,
@@ -81,12 +83,18 @@ const FormArea = ({
                 idFlag={idFlag}
                 onChange={field.onChange}
               />
+            ) : type === 'date' ? (
+              <MyDatePicker
+                id={name}
+                selected={field.value}
+                onChange={field.onChange}
+              />
             ) : (
               <Input
                 {...field}
                 id={name}
                 type={type}
-                className='w-full flex ring-2 ring-white hover:ring-primary-500 transition duration-300'
+                className='w-full flex ring-2 ring-white hover:ring-primary-500 transition duration-300 '
                 disabled={isDisabled}
                 placeholder={placeholder}
                 {...form.register(name)}
