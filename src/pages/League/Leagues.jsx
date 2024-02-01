@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import LeagueCard from '../../components/home/leagues/LeagueCard';
+import { Separator } from '../../components/ui/separator';
 
 const Leagues = () => {
   const [leagues, setLeagues] = useState([]);
@@ -18,7 +19,8 @@ const Leagues = () => {
 
   return (
     <>
-      <h1 className='head-text text-dark-2 text-left'>Leagues</h1>
+      <div className='text-heading2-bold mb-4'>Leagues</div>
+      <Separator />
       <section className='mt-9 gap-10'>
         <LeagueCard data={leagues} />
       </section>

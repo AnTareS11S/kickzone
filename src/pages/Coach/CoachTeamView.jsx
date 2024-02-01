@@ -3,10 +3,10 @@ import { useEffect, useState } from 'react';
 import SquadManagement from '../../components/coach/SquadManagement';
 import { Separator } from '../../components/ui/separator';
 import Spinner from '../../components/Spinner';
-import { useFetchCoachById } from '../../components/hooks/useFetchCoachById';
+import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 
 const CoachTeamView = () => {
-  const coach = useFetchCoachById();
+  const coach = useFetchCoachByUserId();
   const [team, setTeam] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -49,7 +49,7 @@ const CoachTeamView = () => {
         <p className='text-sm text-muted-foreground'>Manage your team squad</p>
       </div>
       <div className='flex items-center justify-between'>
-        <h4 className='text-heading3-bold'>Team: {team?.name}</h4>
+        <h4 className='text-heading3-bold text-gray-800'>Team: {team?.name}</h4>
         <p className='text-sm text-muted-foreground'>
           Coach: {coach?.name} {coach?.surname}{' '}
         </p>
