@@ -14,16 +14,16 @@ const sidebarNavItems = [
   {
     title: 'Player Profile',
     href: '/user/player/profile',
-    role: 'user' || 'player',
+    role: 'player',
+  },
+  {
+    title: 'Player Profile',
+    href: '/user/player/profile',
+    role: 'user',
   },
   {
     title: 'Referee Profile',
     href: '/user/referee/profile',
-    role: 'referee',
-  },
-  {
-    title: 'Team Statistics',
-    href: '/user/referee/team-stats',
     role: 'referee',
   },
   {
@@ -32,58 +32,8 @@ const sidebarNavItems = [
     role: 'coach',
   },
   {
-    title: 'Team Manage',
-    href: '/user/coach/team',
-    role: 'coach',
-  },
-  {
-    title: 'Training Manage',
-    href: '/user/coach/training',
-    role: 'coach',
-  },
-  {
     title: 'Settings',
     href: '/user/settings',
-  },
-  {
-    title: 'Manage Users',
-    href: '/user/admin/users',
-    role: 'admin',
-  },
-  {
-    title: 'Manage Teams',
-    href: '/user/admin/teams',
-    role: 'admin',
-  },
-  {
-    title: 'Manage Leagues',
-    href: '/user/admin/leagues',
-    role: 'admin',
-  },
-  {
-    title: 'Manage Players',
-    href: '/user/admin/players',
-    role: 'admin',
-  },
-  {
-    title: 'Manage Countries',
-    href: '/user/admin/countries',
-    role: 'admin',
-  },
-  {
-    title: 'Manage Stadiums',
-    href: '/user/admin/stadiums',
-    role: 'admin',
-  },
-  {
-    title: 'Manage Positions',
-    href: '/user/admin/positions',
-    role: 'admin',
-  },
-  {
-    title: 'Manage Coaches',
-    href: '/user/admin/coaches',
-    role: 'admin',
   },
 ];
 
