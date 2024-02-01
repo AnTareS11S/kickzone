@@ -11,16 +11,19 @@ import {
 import TeamCard from '../../components/home/leagues/TeamCard';
 import { Separator } from '../../components/ui/separator';
 import { useNavigate } from 'react-router-dom';
+import Spinner from '../../components/Spinner';
 
 const LeaguePage = () => {
   const [teamsStats, setTeamsStats] = useState([]);
   const [teams, setTeams] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const pathname = window.location.pathname;
 
   const getTeamsStats = async () => {
     try {
+      setLoading(true);
       const res = await fetch(
         `/api/league/teams-stats/${pathname.split('/').pop()}`
       );
@@ -29,12 +32,22 @@ const LeaguePage = () => {
       setTeams(data.teams);
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getTeamsStats();
   }, []);
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <>
