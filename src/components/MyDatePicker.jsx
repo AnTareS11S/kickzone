@@ -8,12 +8,11 @@ import range from 'lodash/range';
 import 'react-datepicker/dist/react-datepicker.css';
 
 const MyDatePicker = forwardRef(function MyDatePicker(
-  { onChange, selected, ...rest },
+  { onChange, selected, time, ...rest },
   ref
 ) {
-  const initialDate = isValid(parseISO(selected))
-    ? parseISO(selected)
-    : new Date();
+  const initialDate = isValid(parseISO(selected)) ? parseISO(selected) : null;
+
   const [startDate, setStartDate] = useState(initialDate);
   const years = range(1990, getYear(new Date()) + 1, 1);
   const months = [
@@ -42,8 +41,8 @@ const MyDatePicker = forwardRef(function MyDatePicker(
 
   return (
     <DatePicker
-      className='border p-2 rounded-md  grid w-[380px] h-[36px]'
-      showTimeSelect
+      className='border p-2 rounded-md shadow-sm w-full resize-none ring-2 ring-white hover:ring-primary-500 transition duration-300'
+      showTimeSelect={time}
       renderCustomHeader={({
         date,
         changeYear,
@@ -53,9 +52,9 @@ const MyDatePicker = forwardRef(function MyDatePicker(
         prevMonthButtonDisabled,
         nextMonthButtonDisabled,
       }) => (
-        <div className='flex items-center justify-center gap-4'>
+        <div className='flex flex-col md:flex-row items-center justify-center gap-4'>
           <button
-            className='border  p-2 rounded-md shadow-md'
+            className='border p-2 rounded-md shadow-md mb-2 md:mb-0'
             onClick={decreaseMonth}
             disabled={prevMonthButtonDisabled}
           >
@@ -63,7 +62,7 @@ const MyDatePicker = forwardRef(function MyDatePicker(
           </button>
           <div className='flex w-full gap-2'>
             <select
-              className='border p-2 rounded-md shadow-md'
+              className='border p-2 rounded-md shadow-md w-1/2 md:w-auto'
               value={getYear(date)}
               onChange={({ target: { value } }) => changeYear(value)}
             >
@@ -75,7 +74,7 @@ const MyDatePicker = forwardRef(function MyDatePicker(
             </select>
 
             <select
-              className='border p-2 rounded-md shadow-md'
+              className='border p-2 rounded-md shadow-md w-1/2 md:w-auto'
               value={months[getMonth(date)]}
               onChange={({ target: { value } }) =>
                 changeMonth(months.indexOf(value))
