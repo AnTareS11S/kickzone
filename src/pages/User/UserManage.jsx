@@ -1,8 +1,8 @@
+import BackButton from '../../components/BackButton';
 import DeleteUser from '../../components/admin/users/DeleteUser';
 import RoleActions from '../../components/admin/users/RoleActions';
 import UsersPanel from '../../components/admin/users/UsersPanel';
 import { Separator } from '../../components/ui/separator';
-import { useNavigate } from 'react-router-dom';
 
 const columns = [
   {
@@ -40,15 +40,9 @@ const columns = [
 ];
 
 const UserManage = () => {
-  const navigate = useNavigate();
   return (
     <div className='space-y-6'>
-      <div
-        className='cursor-pointer mb-2 inline-flex items-center justify-center bg-primary-500 hover:bg-purple-500 text-white font-bold py-1 px-3 rounded'
-        onClick={() => navigate(-1)}
-      >
-        <span className='mr-1'>&#8592;</span> Back
-      </div>
+      <BackButton />
       <div>
         <div className='text-heading2-bold'>Users</div>
         <p className='text-sm text-muted-foreground'>Manage users.</p>

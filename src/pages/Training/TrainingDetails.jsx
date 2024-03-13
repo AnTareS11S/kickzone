@@ -15,12 +15,12 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useFetchPlayerById } from '../../components/hooks/useFetchPlayerById';
-import { useNavigate } from 'react-router-dom';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import { Separator } from '../../components/ui/separator';
 import { useFetchTeamPlayers } from '../../components/hooks/useFetchTeamPlayers';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
+import BackButton from '../../components/BackButton';
 
 const formSchema = z.object({
   attendance: z.boolean(),
@@ -53,7 +53,6 @@ const TrainingDetails = () => {
   const player = useFetchPlayerById();
   const coach = useFetchCoachByUserId();
   const players = useFetchTeamPlayers(coach?.currentTeam);
-  const navigate = useNavigate();
   const pathname = window.location.pathname.split('/')[2];
 
   const form = useForm({
@@ -133,12 +132,7 @@ const TrainingDetails = () => {
 
   return (
     <>
-      <div
-        className='cursor-pointer mb-2 inline-flex items-center justify-center bg-primary-500 hover:bg-purple-500 text-white font-bold py-1 px-3 rounded'
-        onClick={() => navigate(-1)}
-      >
-        <span className='mr-1'>&#8592;</span> Back
-      </div>
+      <BackButton />
       <div className=' mt-8'>
         <Card className='p-2 shadow-md space-y-6 w-full bg-slate-400'>
           <CardHeader className='text-white py-2'>

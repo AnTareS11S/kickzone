@@ -1,16 +1,17 @@
+import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
 import AddTeam from '../../components/admin/leagues/AddTeam';
 import RemoveTeamFromLeague from '../../components/admin/leagues/RemoveTeamFromLeague';
 import { useFetchCountries } from '../../components/hooks/useFetchCountries';
+import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
 import { Separator } from '../../components/ui/separator';
 import { leagueFormSchema } from '../../lib/validation/LeagueValidation';
-import { useNavigate } from 'react-router-dom';
 
 const LeagueManage = () => {
   const countries = useFetchCountries();
-  const navigate = useNavigate();
+  const seasons = useFetchSeasons();
 
   const columns = [
     {
@@ -58,15 +59,19 @@ const LeagueManage = () => {
       type: 'textarea',
       name: 'bio',
     },
+    {
+      id: 'season',
+      label: 'Season',
+      type: 'select',
+      name: 'season',
+      items: seasons,
+      placeholder: 'Select a Season',
+      idFlag: true,
+    },
   ];
   return (
     <div className='space-y-6'>
-      <div
-        className='cursor-pointer mb-2 inline-flex items-center justify-center bg-primary-500 hover:bg-purple-500 text-white font-bold py-1 px-3 rounded'
-        onClick={() => navigate(-1)}
-      >
-        <span className='mr-1'>&#8592;</span> Back
-      </div>
+      <BackButton />
       <div>
         <div className='text-heading2-bold'>Leagues</div>
         <p className='text-sm text-muted-foreground'>Manage leagues.</p>
@@ -87,7 +92,10 @@ const LeagueManage = () => {
           bio: '',
           commissioner: '',
           country: '',
+          season: '',
         }}
+        isExpandable={false}
+        isAction={true}
       />
     </div>
   );
