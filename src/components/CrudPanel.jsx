@@ -18,7 +18,10 @@ const CrudPanel = ({
   onRemoveTeamComponent: RemoveTeamComponent,
   defaultValues,
   formSchema,
+  isExpandable,
   objectId,
+  isAction,
+  ...rest
 }) => {
   const [data, setData] = useState([]);
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -89,7 +92,7 @@ const CrudPanel = ({
       <CustomDataTable
         columns={[
           ...columns,
-          {
+          isAction && {
             name: 'Actions',
             cell: (row) => {
               const teams = row?.teams?.map((team) => team?._id);
@@ -134,6 +137,8 @@ const CrudPanel = ({
         data={data}
         pagination
         pending
+        isExpandable={isExpandable}
+        {...rest}
       />
     </>
   );
