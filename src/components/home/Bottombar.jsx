@@ -29,6 +29,21 @@ const sidebarLinks = [
     label: 'Training',
     route: '/training',
   },
+  {
+    imgURL: '/dashboard.png',
+    route: '/dashboard/referee',
+    label: 'Dashboard ',
+  },
+  {
+    imgURL: '/dashboard.png',
+    route: '/dashboard/admin',
+    label: 'Dashboard ',
+  },
+  {
+    imgURL: '/dashboard.png',
+    route: '/dashboard/coach',
+    label: 'Dashboard ',
+  },
 ];
 
 import { Link, useLocation } from 'react-router-dom';
