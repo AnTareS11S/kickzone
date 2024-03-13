@@ -58,7 +58,8 @@ const EditEntity = ({
           (selectField.name === 'coach' &&
             item.split(':')[1] === row.coach?._id) ||
           (selectField.name === 'trainingType' &&
-            item.split(':')[1] === row?.trainingType)
+            item.split(':')[1] === row?.trainingType) ||
+          (selectField.name === 'season' && item.split(':')[1] === row?.season)
         );
       });
       selectField.defaultValue = matchingItem ? matchingItem.split(':')[0] : '';
