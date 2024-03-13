@@ -43,10 +43,16 @@ import LeagueScheduleCard from './pages/League/LeagueScheduleCard';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import CoachRoute from './pages/CoachRoute';
 import CoachDashboard from './pages/Coach/CoachDashboard';
+import SeasonManagement from './pages/Referee/SeasonManagement';
+import { Toaster } from './components/ui/toaster';
+import ResultsManagement from './pages/Referee/ResultsManagement';
+import AddResult from './pages/Referee/AddResult';
+import EditResult from './pages/Referee/EditResult';
 
 const App = () => {
   return (
     <BrowserRouter>
+      <Toaster />
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route path='/' element={<Home />} />
@@ -74,11 +80,15 @@ const App = () => {
             />
             <Route
               path='/dashboard/referee/league/results/:id'
-              element={<ScheduleManagement />}
+              element={<ResultsManagement />}
             />
             <Route
-              path='/dashboard/referee/league/player-stats/:id'
-              element={<ScheduleManagement />}
+              path='/dashboard/referee/league/result/:id'
+              element={<AddResult />}
+            />
+            <Route
+              path='/dashboard/referee/league/result/edit/:id'
+              element={<EditResult />}
             />
           </Route>
           <Route path='/dashboard/admin' element={<AdminRoute />}>
@@ -99,6 +109,10 @@ const App = () => {
             <Route
               path='/dashboard/admin/countries'
               element={<CountryManage />}
+            />
+            <Route
+              path='/dashboard/admin/seasons'
+              element={<SeasonManagement />}
             />
           </Route>
           <Route path='/dashboard/coach' element={<CoachRoute />}>
