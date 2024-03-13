@@ -17,10 +17,6 @@ const RefereeDashboard = () => {
           title='Results'
           linkTo={`/dashboard/referee/league/results/${pathname}`}
         />
-        <AdminCard
-          title='Player Stats'
-          linkTo={`/dashboard/referee/league/player-stats/${pathname}`}
-        />
       </div>
     </>
   );
