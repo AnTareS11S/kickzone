@@ -35,4 +35,7 @@ export const leagueFormSchema = (isEdit) =>
     bio: z.string().min(1, {
       message: 'Bio is required',
     }),
+    season: z.string().min(1, {
+      message: 'Season is required',
+    }),
   });
