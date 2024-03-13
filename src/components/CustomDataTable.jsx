@@ -4,10 +4,13 @@ import { Card } from './ui/card';
 import DataTable from 'react-data-table-component';
 import { Input } from './ui/input';
 import Spinner from './Spinner';
+import { FaArrowDownLong } from 'react-icons/fa6';
+import ExpandedStatsComponent from './ExpandedStatsComponent';
 
 const CustomDataTable = ({
   columns,
   data,
+  isExpandable = false,
   searchable = true,
   pending = false,
   pagination = false,
@@ -52,12 +55,13 @@ const CustomDataTable = ({
     headRow: {
       style: {
         border: 'none',
+        backgroundColor: '#e2e8f0',
       },
     },
   };
 
   return (
-    <Card className='flex flex-col mt-5 w-full rounded-none shadow-md'>
+    <Card className='flex flex-col mt-5 w-full  rounded-none shadow-md overflow-hidden'>
       <DataTable
         columns={columns}
         data={filteredData}
@@ -69,7 +73,7 @@ const CustomDataTable = ({
             <Input
               type='text'
               placeholder='Search...'
-              className='w-25'
+              className='flex w-25 p-2 max-md:mr-auto ring-2 ring-white hover:ring-primary-500 transition duration-300 bg-white'
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -79,6 +83,12 @@ const CustomDataTable = ({
         progressComponent={<Spinner />}
         persistTableHead
         pagination={pagination}
+        sortIcon={<FaArrowDownLong />}
+        expandableRows={isExpandable}
+        expandableRowsComponent={ExpandedStatsComponent}
+        expandOnRowClicked={true}
+        responsive={true}
+        noHeader={true}
       />
     </Card>
   );
