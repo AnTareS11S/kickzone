@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import MyDatePicker from './MyDatePicker';
 import SelectData from './SelectData';
+import { Checkbox } from './ui/checkbox';
 import {
   FormControl,
   FormField,
@@ -21,12 +22,13 @@ const FormArea = ({
   name,
   idFlag,
   items,
-
+  time,
   setFile,
   placeholder,
   defaultValue,
   uploadProgress,
   isDisabled,
+  styles,
 }) => {
   return (
     <FormField
@@ -34,7 +36,7 @@ const FormArea = ({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          <FormLabel className='flex flex-col w-full '>{label}</FormLabel>
           <FormControl>
             {type === 'file' ? (
               <div className='flex flex-col items-center'>
@@ -86,15 +88,27 @@ const FormArea = ({
             ) : type === 'date' ? (
               <MyDatePicker
                 id={name}
-                selected={field.value}
+                selected={field.value || placeholder}
                 onChange={field.onChange}
+                time={time}
+              />
+            ) : type === 'checkbox' ? (
+              <Checkbox
+                id={name}
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                className='w-8 h-8 justify-center'
               />
             ) : (
               <Input
                 {...field}
                 id={name}
                 type={type}
-                className='w-full flex ring-2 ring-white hover:ring-primary-500 transition duration-300 '
+                className={
+                  styles
+                    ? `${styles} ring-2 ring-white hover:ring-primary-500 transition duration-300 bg-white`
+                    : 'w-full ring-2 ring-white hover:ring-primary-500 transition duration-300 bg-white'
+                }
                 disabled={isDisabled}
                 placeholder={placeholder}
                 {...form.register(name)}
