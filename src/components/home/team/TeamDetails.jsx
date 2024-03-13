@@ -6,6 +6,7 @@ import Spinner from '../../Spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
 import { Separator } from '../../ui/separator';
 import SquadTable from './SquadTable';
+import TeamMatches from './TeamMatches';
 
 const profileTabs = [
   { value: 'results', label: 'Results', icon: '/results.png' },
@@ -20,6 +21,7 @@ const TeamDetails = ({ data, isLoading }) => {
         <Spinner />
       </div>
     );
+
   return (
     <article>
       <Card className='mx-auto mt-8 p-8 w-full'>
@@ -89,9 +91,7 @@ const TeamDetails = ({ data, isLoading }) => {
           </TabsList>
           <TabsContent value='results'></TabsContent>
           <TabsContent value='matches'>
-            <div className=''>
-              <p>Matches</p>
-            </div>
+            <TeamMatches />
           </TabsContent>
           <TabsContent value='squad'>
             <SquadTable data={data} />
