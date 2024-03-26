@@ -47,7 +47,6 @@ import SeasonManagement from './pages/Referee/SeasonManagement';
 import { Toaster } from './components/ui/toaster';
 import ResultsManagement from './pages/Referee/ResultsManagement';
 import AddResult from './pages/Referee/AddResult';
-import EditResult from './pages/Referee/EditResult';
 
 const App = () => {
   return (
@@ -85,10 +84,6 @@ const App = () => {
             <Route
               path='/dashboard/referee/league/result/:id'
               element={<AddResult />}
-            />
-            <Route
-              path='/dashboard/referee/league/result/edit/:id'
-              element={<EditResult />}
             />
           </Route>
           <Route path='/dashboard/admin' element={<AdminRoute />}>
