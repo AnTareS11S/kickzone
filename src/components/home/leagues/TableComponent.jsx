@@ -1,9 +1,10 @@
-/* eslint-disable react/prop-types */
 import { Card } from '../../ui/card';
 import CustomDataTable from '../../CustomDataTable';
 import { Link } from 'react-router-dom';
+import { useFetchTeamStatsByLeagueId } from '../../hooks/useFetchTeamStatsByLeagueId';
 
-const TableComponent = ({ data }) => {
+const TableComponent = ({ leagueId }) => {
+  const { teamStats } = useFetchTeamStatsByLeagueId(leagueId);
   const columns = [
     {
       name: '#',
@@ -77,7 +78,7 @@ const TableComponent = ({ data }) => {
 
   return (
     <Card className='flex flex-col mt-5 w-full rounded-none shadow-md'>
-      <CustomDataTable columns={columns} data={data} pending />
+      <CustomDataTable columns={columns} data={teamStats} pending />
     </Card>
   );
 };

@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
@@ -52,6 +50,7 @@ const RefereeForm = ({ currentUser, refereeData }) => {
     }, 3000);
 
     return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateSuccess, file]);
 
   const handleFileUpload = async (file) => {

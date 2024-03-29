@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
@@ -26,23 +24,23 @@ const PlayerForm = ({ currentUser }) => {
   const [playerData, setPlayerData] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const getPlayer = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/player/get/${currentUser?._id}`);
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to fetch data!');
-      }
-      const data = await res.json();
-      setPlayerData(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getPlayer = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/player/get/${currentUser?._id}`);
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to fetch data!');
+        }
+        const data = await res.json();
+        setPlayerData(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getPlayer();
   }, [currentUser?._id]);
 
