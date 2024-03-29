@@ -1,7 +1,6 @@
-/* eslint-disable no-unused-vars */
 import * as z from 'zod';
 
-export const playerFormSchema = (isEdit) =>
+export const playerFormSchema = () =>
   z.object({
     name: z.string().min(1, {
       message: 'Name is required',

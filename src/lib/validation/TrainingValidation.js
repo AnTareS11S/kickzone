@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import * as z from 'zod';
 
 export const trainingValidationSchema = () =>

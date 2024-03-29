@@ -1,36 +1,27 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 
 export const useFetchTeamById = (id) => {
-  const [team, setTeam] = useState({});
-  const [loading, setLoading] = useState(false);
-
-  const fetchTeamById = async () => {
-    try {
-      if (!id) {
-        return;
-      }
-      setLoading(true);
-      const res = await fetch(`/api/team/${id}`);
-      if (!res.ok) {
-        throw new Error('Failed to fetch team data!');
-      }
-      const data = await res.json();
-      setTeam(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [team, setTeam] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (loading) {
-      return;
-    }
+    const fetchTeamById = async () => {
+      try {
+        const res = await fetch(`/api/team/${id}`);
+        const data = await res.json();
+        setTeam(data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchTeamById();
   }, [id]);
 
-  return team;
+  return { team, loading, error };
 };

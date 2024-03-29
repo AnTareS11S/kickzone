@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../firebase';
 
