@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Separator } from '../components/ui/separator';
 import SidebarNav from '../components/account/SidebarNav';
 import { Outlet } from 'react-router-dom';

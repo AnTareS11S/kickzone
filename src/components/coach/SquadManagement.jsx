@@ -1,8 +1,8 @@
-/* eslint-disable react/prop-types */
 import CrudPanel from '../CrudPanel';
 import DeleteEntity from '../DeleteEntity';
 import * as z from 'zod';
 import { useFetchTeamPlayersByWantedTeam } from '../hooks/useFetchTeamPlayersByWantedTeam';
+import Spinner from '../Spinner';
 
 const columns = [
   {
@@ -40,8 +40,7 @@ const playerAddFormSchema = () =>
   });
 
 const SquadManagement = ({ data }) => {
-  const id = data?._id;
-  const players = useFetchTeamPlayersByWantedTeam();
+  const { players, loading } = useFetchTeamPlayersByWantedTeam(data?._id);
 
   const fields = [
     {
@@ -50,27 +49,31 @@ const SquadManagement = ({ data }) => {
       type: 'select',
       name: 'player',
       items: players,
-      defaultValue: '',
       placeholder: 'Select a Player',
       idFlag: true,
     },
   ];
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <Spinner />
+      </div>
+    );
+  }
   return (
-    <>
-      {id && (
-        <CrudPanel
-          apiPath={`team-player/${id}`}
-          columns={columns}
-          fields={fields}
-          title='Player'
-          onDeleteComponent={DeleteEntity}
-          formSchema={playerAddFormSchema}
-          defaultValues={{
-            player: '',
-          }}
-        />
-      )}
-    </>
+    <CrudPanel
+      apiPath={`team-player/${data?._id}`}
+      columns={columns}
+      fields={fields}
+      title='Player'
+      onDeleteComponent={DeleteEntity}
+      formSchema={playerAddFormSchema}
+      isAction={true}
+      defaultValues={{
+        player: '',
+      }}
+    />
   );
 };
 

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 import { Card } from '../../components/ui/card';
 
@@ -7,7 +6,7 @@ const FilledMatches = ({ matches }) => {
     <>
       {matches?.map((match) => (
         <Link
-          to={`/dashboard/referee/league/result/edit/${match._id}`}
+          to={`/dashboard/referee/league/result/${match._id}`}
           key={match._id}
         >
           <Card className='w-full flex p-5 my-5'>

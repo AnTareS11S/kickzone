@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import FormArea from '../../components/FormArea';
@@ -19,7 +18,7 @@ import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
 import { Separator } from '../../components/ui/separator';
 import { useToast } from '../../components/ui/use-toast';
 import ScheduleModal from '../../components/referee/ScheduleModal';
-import { useFetchTeamByLeagueId } from '../../components/hooks/useFetchTeamsByLeagueId';
+import { useFetchTeamsByLeagueId } from '../../components/hooks/useFetchTeamsByLeagueId';
 import BackButton from '../../components/BackButton';
 
 const schema = z.object({
@@ -40,7 +39,7 @@ const ScheduleManagement = () => {
   const [showGeneratedSchedule, setShowGeneratedSchedule] = useState(false);
   const seasons = useFetchSeasons();
   const { toast } = useToast();
-  const teams = useFetchTeamByLeagueId(pathname);
+  const { selectTeams } = useFetchTeamsByLeagueId(pathname);
 
   useEffect(() => {
     if (!showGeneratedSchedule) {
@@ -233,7 +232,10 @@ const ScheduleManagement = () => {
                                   }
                                 )}
                               </span>
-                              <ScheduleModal match={match} teams={teams} />
+                              <ScheduleModal
+                                match={match}
+                                teams={selectTeams}
+                              />
                             </div>
                           ))}
                         </div>

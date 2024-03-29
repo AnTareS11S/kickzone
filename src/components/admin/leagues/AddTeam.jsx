@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-
 import { useEffect, useState } from 'react';
 import ModalActions from '../../ModalActions';
 import { useForm } from 'react-hook-form';
@@ -63,7 +60,9 @@ const AddTeam = ({ row, onEntityUpdated }) => {
         },
         body: JSON.stringify({ teamId }),
       });
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch data!');
+      }
       setUpdateSuccess(true);
     } catch (error) {
       console.log('Error updating team: ', error);

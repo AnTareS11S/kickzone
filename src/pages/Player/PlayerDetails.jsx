@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import Spinner from '../../components/Spinner';
 import {
@@ -13,22 +12,22 @@ const PlayerDetails = () => {
   const [loading, setLoading] = useState(false);
   const pathname = window.location.pathname.split('/').pop();
 
-  const getPlayer = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/player/${pathname}`);
-      const data = await res.json();
-      setPlayer(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getPlayer = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/player/${pathname}`);
+        const data = await res.json();
+        setPlayer(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getPlayer();
-  }, []);
+  }, [pathname]);
 
   console.log(player);
 

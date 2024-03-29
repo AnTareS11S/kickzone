@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import ModalActions from './ModalActions';
 import { useForm } from 'react-hook-form';

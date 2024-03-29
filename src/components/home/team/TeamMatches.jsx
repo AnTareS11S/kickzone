@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
@@ -6,17 +5,17 @@ const TeamMatches = () => {
   const [matches, setMatches] = useState([]);
   const pathname = useLocation().pathname.split('/')[3];
 
-  const getMatches = async () => {
-    try {
-      const res = await fetch(`/api/team/matches/${pathname}`);
-      const data = await res.json();
-      setMatches(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
+    const getMatches = async () => {
+      try {
+        const res = await fetch(`/api/team/matches/${pathname}`);
+        const data = await res.json();
+        setMatches(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     getMatches();
   }, [pathname]);
 

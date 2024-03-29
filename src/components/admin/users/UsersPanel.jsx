@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { useEffect, useState } from 'react';
 import CustomDataTable from '../../CustomDataTable';
 import { fetchUsersDataForTable } from '../../../lib/apiUtils';

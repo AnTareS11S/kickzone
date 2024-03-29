@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 import DeletePost from './DeletePost';
-import { useState } from 'react';
+
 const PostCard = ({
   id,
   currentUserId,

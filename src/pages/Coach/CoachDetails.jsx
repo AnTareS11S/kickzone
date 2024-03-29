@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import {
   Card,
@@ -14,22 +13,22 @@ const CoachDetails = () => {
   const [loading, setLoading] = useState(false);
   const pathname = window.location.pathname.split('/').pop();
 
-  const getCoach = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/coach/${pathname}`);
-      const data = await res.json();
-      setCoach(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getCoach = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/coach/${pathname}`);
+        const data = await res.json();
+        setCoach(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getCoach();
-  }, []);
+  }, [pathname]);
 
   if (loading)
     return (

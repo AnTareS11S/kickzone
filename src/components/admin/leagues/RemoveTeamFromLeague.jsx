@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { useEffect, useState } from 'react';
 import TableModal from '../../TableModal';
 import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';

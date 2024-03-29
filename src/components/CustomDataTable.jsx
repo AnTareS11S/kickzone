@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from 'react';
 import { Card } from './ui/card';
 import DataTable from 'react-data-table-component';
@@ -14,6 +13,7 @@ const CustomDataTable = ({
   searchable = true,
   pending = false,
   pagination = false,
+  defaultSortFieldId,
 }) => {
   const [search, setSearch] = useState('');
   const [isPending, setIsPending] = useState(pending);
@@ -87,6 +87,8 @@ const CustomDataTable = ({
         expandableRows={isExpandable}
         expandableRowsComponent={ExpandedStatsComponent}
         expandOnRowClicked={true}
+        defaultSortFieldId={defaultSortFieldId}
+        defaultSortAsc={false}
         responsive={true}
         noHeader={true}
       />

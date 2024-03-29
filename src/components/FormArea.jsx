@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import MyDatePicker from './MyDatePicker';
 import SelectData from './SelectData';
 import { Checkbox } from './ui/checkbox';

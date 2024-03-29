@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Form } from '../../ui/form';
@@ -37,6 +35,7 @@ const PostForm = () => {
     }, 3000);
 
     return () => clearTimeout(timeoutId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [updateSuccess, file]);
 
   const handleFileUpload = async (file) => {
@@ -58,7 +57,9 @@ const PostForm = () => {
         },
         body: JSON.stringify(updatedData),
       });
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch data!');
+      }
       form.reset();
       setUpdateSuccess(true);
       navigate('/');

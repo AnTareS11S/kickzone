@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
 import { CommentValidation } from '../../../lib/validation/PostValidation';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -38,7 +36,9 @@ const Comment = ({ postId, currentUserImg, setUpdateSuccess }) => {
         },
         body: JSON.stringify(updatedData),
       });
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch data!');
+      }
       setUpdateSuccess(true);
       form.reset();
     } catch (error) {

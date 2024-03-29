@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-
 import { cn } from '../../lib/utils';
 import { buttonVariants } from '../ui/button';
 

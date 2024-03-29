@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle } from '../../components/ui/card';
 import { useEffect, useState } from 'react';

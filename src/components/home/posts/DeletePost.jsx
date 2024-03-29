@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
-import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 const DeletePost = ({
@@ -25,7 +22,9 @@ const DeletePost = ({
         },
         body: JSON.stringify({ id: postId }),
       });
-      const data = await res.json();
+      if (!res.ok) {
+        throw new Error('Failed to fetch data!');
+      }
       setDeleteSuccess(true);
       if (!parentId || !isComment) navigate('/');
     } catch (error) {

@@ -1,5 +1,3 @@
-/* eslint-disable react/prop-types */
-// MyDatePicker.js
 import { getMonth, getYear, isValid, parseISO } from 'date-fns';
 import { useState, forwardRef, useImperativeHandle } from 'react';
 import DatePicker from 'react-datepicker';

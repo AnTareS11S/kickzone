@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from 'react';
 import Spinner from '../../components/Spinner';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
@@ -50,7 +49,7 @@ const columns = [
 const TrainingDetails = () => {
   const [training, setTraining] = useState({});
   const [loading, setLoading] = useState(false);
-  const player = useFetchPlayerById();
+  const { player } = useFetchPlayerById();
   const coach = useFetchCoachByUserId();
   const players = useFetchTeamPlayers(coach?.currentTeam);
   const pathname = window.location.pathname.split('/')[2];

@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from 'react';
 import { useOnSuccessUpdate } from './hooks/useOnSuccessUpdate';
 import ModalDialog from './ModalDialog';

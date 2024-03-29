@@ -1,7 +1,4 @@
-/* eslint-disable react/prop-types */
-
 import ModalDialog from '../../ModalDialog';
-
 import { useNavigate } from 'react-router-dom';
 
 const DeleteUser = ({ row }) => {

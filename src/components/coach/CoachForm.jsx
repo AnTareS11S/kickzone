@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
@@ -50,24 +47,24 @@ const CoachForm = ({ currentUser }) => {
     }
   }, [coachData, form]);
 
-  const getCoach = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/coach/get/${currentUser?._id}`);
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to fetch data!');
-      }
-      const data = await res.json();
-
-      setCoachData(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const getCoach = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/coach/get/${currentUser?._id}`);
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to fetch data!');
+        }
+        const data = await res.json();
+
+        setCoachData(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     getCoach();
   }, [currentUser._id, updateSuccess]);
 
@@ -120,8 +117,9 @@ const CoachForm = ({ currentUser }) => {
         },
         body: JSON.stringify(updatedData),
       });
-      const data = await res.json();
-
+      if (!res.ok) {
+        throw new Error('Failed to fetch data!');
+      }
       setUpdateSuccess(true);
     } catch (error) {
       console.log(error);
