@@ -54,7 +54,6 @@ const RemoveTeamFromLeague = ({ row, teams, onEntityUpdated }) => {
 
   return (
     <TableModal
-      label='Remove Team'
       title='Remove Team'
       desc='Remove Team From League'
       row={row}
