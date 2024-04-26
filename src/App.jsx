@@ -20,7 +20,6 @@ import Activity from './pages/Activity';
 import HomeProfile from './pages/HomeProfile';
 import Leagues from './pages/League/Leagues';
 import LeaguePage from './pages/League/LeaguePage';
-import RefereeStats from './pages/Referee/RefereeStats';
 import TeamPage from './pages/Team/TeamPage';
 import PlayerManage from './pages/Player/PlayerManage';
 import PlayerProfile from './pages/Player/PlayerProfile';
@@ -47,6 +46,7 @@ import SeasonManagement from './pages/Referee/SeasonManagement';
 import { Toaster } from './components/ui/toaster';
 import ResultsManagement from './pages/Referee/ResultsManagement';
 import AddResult from './pages/Referee/AddResult';
+import Search from './pages/Search';
 
 const App = () => {
   return (
@@ -58,6 +58,7 @@ const App = () => {
           <Route path='/post/create' element={<AddPost />} />
           <Route path='/post/:id' element={<PostPage />} />
           <Route path='/activity' element={<Activity />} />
+          <Route path='/search' element={<Search />} />
           <Route path='/profile/:id' element={<HomeProfile />} />
           <Route path='/leagues' element={<Leagues />} />
           <Route path='/league/:id' element={<LeaguePage />} />
@@ -130,7 +131,6 @@ const App = () => {
           <Route path='/user/profile' element={<Profile />} />
           <Route path='/user/referee' element={<RefereeRoute />}>
             <Route path='/user/referee/profile' element={<RefereeProfile />} />
-            <Route path='/user/referee/team-stats' element={<RefereeStats />} />
           </Route>
           <Route path='/user/settings' element={<Settings />} />
           <Route path='/user/player' element={<PlayerRoute />}>
