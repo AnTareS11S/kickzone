@@ -6,6 +6,8 @@ import {
   CardFooter,
   CardHeader,
 } from '../../components/ui/card';
+import BackButton from '../../components/BackButton';
+import { Separator } from '../../components/ui/separator';
 
 const PlayerDetails = () => {
   const [player, setPlayer] = useState({});
@@ -29,8 +31,6 @@ const PlayerDetails = () => {
     getPlayer();
   }, [pathname]);
 
-  console.log(player);
-
   if (loading)
     return (
       <div className='flex items-center justify-center h-full'>
@@ -39,10 +39,15 @@ const PlayerDetails = () => {
     );
   return (
     <article>
+      <BackButton />
+      <Separator />
       <Card className='max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg'>
         <CardHeader>
           <img
-            src={player.photo}
+            src={
+              player.photo ||
+              'https://firebasestorage.googleapis.com/v0/b/futbolistapro.appspot.com/o/avatars%2Fblank-profile-picture-973460_960_720.webp?alt=media&token=5779eb88-d84b-46f3-bef6-3c2648a8fc9c'
+            }
             alt={`${player.name} ${player.surname}`}
             className='w-48 h-48 mx-auto object-cover rounded-full shadow-md border-4 border-primary-500'
           />

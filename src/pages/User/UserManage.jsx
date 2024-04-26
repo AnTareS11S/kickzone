@@ -31,7 +31,6 @@ const columns = [
       return <div className=''>{date.toLocaleDateString()}</div>;
     },
   },
-
   {
     name: 'Actions',
     cell: (row) => <DeleteUser row={row} />,

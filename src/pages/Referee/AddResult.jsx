@@ -10,6 +10,9 @@ import { Button } from '../../components/ui/button';
 import { resultFormSchema } from '../../lib/validation/ResultValidation';
 import CrudPanel from '../../components/CrudPanel';
 import { useToast } from '../../components/ui/use-toast';
+import { useFetchMatchResultById } from '../../components/hooks/useFetchMatchResultById';
+import { useEffect } from 'react';
+import Spinner from '../../components/Spinner';
 
 const columns = [
   {
@@ -47,8 +50,9 @@ const columns = [
 ];
 
 const AddResult = () => {
-  const pathname = useLocation().pathname.split('/')[5];
-  const match = useFetchMatchById(pathname);
+  const pathname = useLocation().pathname.split('/').pop();
+  const { match } = useFetchMatchById(pathname);
+  const { result, loading } = useFetchMatchResultById(pathname);
   const { toast } = useToast();
 
   const form = useForm({
@@ -59,6 +63,15 @@ const AddResult = () => {
     },
     mode: 'onChange',
   });
+
+  useEffect(() => {
+    if (result) {
+      form.reset({
+        homeTeamScore: result?.result?.homeTeamScore,
+        awayTeamScore: result?.result?.awayTeamScore,
+      });
+    }
+  }, [result, form]);
 
   const onSubmit = async (data) => {
     const updatedData = { ...data, match: match?._id, season: match?.season };
@@ -87,6 +100,14 @@ const AddResult = () => {
       console.log(error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <>

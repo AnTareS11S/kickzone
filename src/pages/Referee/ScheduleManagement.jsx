@@ -22,24 +22,19 @@ import { useFetchTeamsByLeagueId } from '../../components/hooks/useFetchTeamsByL
 import BackButton from '../../components/BackButton';
 
 const schema = z.object({
-  startDate: z.coerce
-    .date()
-    .refine(
-      (val) => val.toLocaleDateString() >= new Date().toLocaleDateString(),
-      {
-        message: 'Date must be in the future or today',
-      }
-    ),
+  startDate: z.coerce.date().refine({
+    message: 'Date is required',
+  }),
   season: z.string().min(1, { message: 'Season is required' }),
 });
 
 const ScheduleManagement = () => {
-  const pathname = useLocation().pathname.split('/')[5];
+  const leagueId = useLocation().pathname.split('/')[5];
   const [rounds, setRounds] = useState([]);
   const [showGeneratedSchedule, setShowGeneratedSchedule] = useState(false);
   const seasons = useFetchSeasons();
   const { toast } = useToast();
-  const { selectTeams } = useFetchTeamsByLeagueId(pathname);
+  const { selectTeams, loading } = useFetchTeamsByLeagueId(leagueId);
 
   useEffect(() => {
     if (!showGeneratedSchedule) {
@@ -90,7 +85,7 @@ const ScheduleManagement = () => {
     const { startDate, season } = getValues();
 
     const newSchedule = await fetchFromApi(
-      `/api/referee/generate-schedule/${pathname}`,
+      `/api/referee/generate-schedule/${leagueId}`,
       'POST',
       { startDate, seasonId: season }
     );
@@ -107,7 +102,7 @@ const ScheduleManagement = () => {
   };
 
   const handleDeleteRounds = async () => {
-    await fetchFromApi(`/api/referee/delete-rounds/${pathname}`, 'DELETE');
+    await fetchFromApi(`/api/referee/delete-rounds/${leagueId}`, 'DELETE');
     toast({
       title: 'Rounds Deleted!',
       description: 'All rounds have been deleted successfully.',
@@ -116,7 +111,7 @@ const ScheduleManagement = () => {
 
   const handleGetRounds = async () => {
     const fetchedRounds = await fetchFromApi(
-      `/api/referee/get-rounds/${pathname}`
+      `/api/referee/get-rounds/${leagueId}`
     );
 
     if (fetchedRounds.length === 0) {
@@ -157,6 +152,8 @@ const ScheduleManagement = () => {
             type='date'
             form={form}
             name='startDate'
+            placeholder='Select date'
+            initialDate={new Date()}
           />
           <FormArea
             id='season'
@@ -235,6 +232,7 @@ const ScheduleManagement = () => {
                               <ScheduleModal
                                 match={match}
                                 teams={selectTeams}
+                                loading={loading}
                               />
                             </div>
                           ))}

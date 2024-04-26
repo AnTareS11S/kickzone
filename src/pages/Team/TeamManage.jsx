@@ -25,15 +25,6 @@ const TeamManage = () => {
       sortable: true,
     },
     {
-      name: 'Coach',
-      selector: (row) => {
-        return row.coach?.name
-          ? row.coach?.name + ' ' + row.coach.surname
-          : 'No coach';
-      },
-      sortable: true,
-    },
-    {
       name: 'Year Founded',
       selector: (row) => row.yearFounded,
       sortable: true,
@@ -65,7 +56,6 @@ const TeamManage = () => {
       type: 'select',
       name: 'coach',
       items: coaches,
-      defaultValue: '',
       placeholder: 'Select a coach',
       idFlag: true,
     },
@@ -75,7 +65,6 @@ const TeamManage = () => {
       type: 'select',
       name: 'stadium',
       items: stadiums,
-      defaultValue: '',
       placeholder: 'Select a Stadium',
       idFlag: true,
     },
@@ -91,7 +80,6 @@ const TeamManage = () => {
       type: 'select',
       name: 'country',
       items: countries,
-      defaultValue: '',
       placeholder: 'Select a Country',
       idFlag: true,
     },

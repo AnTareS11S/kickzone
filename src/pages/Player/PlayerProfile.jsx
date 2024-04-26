@@ -1,10 +1,7 @@
-import { useSelector } from 'react-redux';
 import { Separator } from '../../components/ui/separator';
 import PlayerForm from '../../components/player/PlayerForm';
 
 const PlayerProfile = () => {
-  const { currentUser } = useSelector((state) => state.user);
-
   return (
     <div className='space-y-6 max-w-screen-md mx-auto'>
       <div>
@@ -14,7 +11,7 @@ const PlayerProfile = () => {
         </p>
       </div>
       <Separator />
-      <PlayerForm currentUser={currentUser} />
+      <PlayerForm />
     </div>
   );
 };

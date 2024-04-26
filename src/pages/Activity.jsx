@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { Separator } from '../components/ui/separator';
 
 const Activity = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [activity, setActivity] = useState([]);
-
-  console.log(currentUser);
 
   useEffect(() => {
     const getActivity = async () => {
@@ -25,6 +24,7 @@ const Activity = () => {
   return (
     <section>
       <h1 className='head-text text-dark-2 mb-10'>Activity</h1>
+      <Separator />
       <section className='mt-10 flex flex-col gap-5'>
         {activity.length > 0 ? (
           <>

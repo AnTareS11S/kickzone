@@ -37,7 +37,7 @@ const columns = [
 
 const TrainingManage = () => {
   const [types, setTypes] = useState([]);
-  const coach = useFetchCoachByUserId();
+  const { coach } = useFetchCoachByUserId();
 
   useEffect(() => {
     const getTypes = async () => {
@@ -77,6 +77,11 @@ const TrainingManage = () => {
       label: 'Training Date',
       type: 'date',
       name: 'trainingDate',
+      initialDate: new Date(),
+      placeholder: 'Select a Date',
+      time: true,
+      isEdit: true,
+      isPortal: false,
     },
     {
       id: 'duration',
@@ -129,6 +134,7 @@ const TrainingManage = () => {
         onDeleteComponent={DeleteEntity}
         formSchema={trainingValidationSchema}
         objectId={coach?._id}
+        isAction={true}
         defaultValues={{
           name: '',
           trainingType: '',

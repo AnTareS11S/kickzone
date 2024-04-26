@@ -20,7 +20,7 @@ const columns = [
 ];
 
 const TrainingTypeManage = () => {
-  const coach = useFetchCoachByUserId();
+  const { coach } = useFetchCoachByUserId();
 
   const fields = [
     {
@@ -54,6 +54,7 @@ const TrainingTypeManage = () => {
         onEditComponent={EditEntity}
         onDeleteComponent={DeleteEntity}
         formSchema={trainingTypeValidationSchema}
+        isAction={true}
         defaultValues={{
           name: '',
           description: '',
