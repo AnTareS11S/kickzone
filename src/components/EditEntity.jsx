@@ -44,40 +44,35 @@ const EditEntity = ({
     }
   };
 
-  const fieldsWithSelect = fields.filter((field) => field.type === 'select');
-
-  fieldsWithSelect.forEach((selectField) => {
-    if (selectField && selectField.items) {
-      const matchingItem = selectField.items.find((item) => {
-        return (
-          (selectField.name === 'country' &&
-            item.split(':')[1] === row?.country) ||
-          (selectField.name === 'stadium' &&
-            item.split(':')[1] === row?.stadium) ||
-          (selectField.name === 'coach' &&
-            item.split(':')[1] === row.coach?._id) ||
-          (selectField.name === 'trainingType' &&
-            item.split(':')[1] === row?.trainingType) ||
-          (selectField.name === 'season' && item.split(':')[1] === row?.season)
+  const updateFieldDefaults = (fields, row) => {
+    return fields.map((field) => {
+      if (field.type === 'select') {
+        const matchingItem = field.items.find(
+          (item) => item.split(':')[1] === row[field.name]
         );
-      });
-      selectField.defaultValue = matchingItem ? matchingItem.split(':')[0] : '';
-    }
-  });
+        field.defaultValue = matchingItem ? matchingItem.split(':')[0] : '';
+      } else if (field.type === 'date') {
+        field.initialDate = row[field.name] ? new Date(row[field.name]) : null;
+      }
+      return field;
+    });
+  };
+
+  const updatedFields = updateFieldDefaults([...fields], row);
 
   return (
     <div className='flex items-center space-x-4'>
       <ModalActions
         onSubmit={onSubmit}
         label='Edit'
-        edit='true'
+        edit={true}
         title={`Edit ${
           apiEndpoint.toString().charAt(0).toUpperCase() +
           apiEndpoint.toString().slice(1)
         }`}
         desc={`Edit a ${apiEndpoint}`}
         data={row}
-        fields={fields}
+        fields={updatedFields}
         form={form}
       />
     </div>
