@@ -11,15 +11,18 @@ export const teamFormSchema = (isEdit) =>
       })
       .refine(
         async (value) => {
-          const res = await fetch('/api/team/check', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: value, isEdit }),
-          });
-          const data = await res.json();
-          return data.success;
+          if (!isEdit) {
+            const res = await fetch('/api/team/check', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ name: value, isEdit }),
+            });
+            const data = await res.json();
+            return data.success;
+          }
+          return true; // For edit mode, skip the check
         },
         {
           message: 'Team name already exists.',

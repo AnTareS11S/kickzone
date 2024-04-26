@@ -98,5 +98,15 @@ export const playerStatsFormSchema = () =>
         }
       )
       .optional(),
-    isPlayed: z.boolean().optional(),
+    minutesPlayed: z.any().refine(
+      (value) => {
+        const parsedValue =
+          typeof value === 'string' ? parseInt(value, 10) : value;
+
+        return !isNaN(parsedValue) && parsedValue >= 0;
+      },
+      {
+        message: 'Minutes must be a positive number',
+      }
+    ),
   });
