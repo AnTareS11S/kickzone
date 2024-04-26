@@ -1,15 +1,8 @@
-import { useEffect, useState } from 'react';
 import CustomDataTable from '../../CustomDataTable';
-import { fetchUsersDataForTable } from '../../../lib/apiUtils';
+import { useFetchUsers } from '../../hooks/useFetchUsers';
 
 const UsersPanel = ({ columns }) => {
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    fetchUsersDataForTable(setUsers, updateSuccess);
-    setUpdateSuccess(false);
-  }, [updateSuccess]);
+  const users = useFetchUsers();
 
   return <CustomDataTable columns={columns} data={users} pending pagination />;
 };
