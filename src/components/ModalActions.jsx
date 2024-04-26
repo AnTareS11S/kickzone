@@ -8,13 +8,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from './ui/dialog';
-
 import { Button } from './ui/button';
 import { Form } from './ui/form';
 import FormArea from './FormArea';
 import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../lib/uploadFile';
-
 import { Pencil1Icon, PlusCircledIcon } from '@radix-ui/react-icons';
 
 const ModalActions = ({
@@ -87,8 +85,12 @@ const ModalActions = ({
                   name={field.name}
                   items={field.items}
                   defaultValue={field.defaultValue}
+                  initialDate={field.initialDate}
+                  isPortal={field.isPortal}
                   placeholder={field.placeholder}
                   uploadProgress={uploadProgress}
+                  isEdit={edit}
+                  time={field.time}
                   idFlag={field.idFlag}
                   fileRef={field.type === 'file' ? fileRef : null}
                   setFile={field.type === 'file' ? setFile : null}
