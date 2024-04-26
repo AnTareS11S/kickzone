@@ -20,11 +20,14 @@ const FormArea = ({
   form,
   name,
   idFlag,
+  isEdit,
   items,
   time,
   setFile,
   placeholder,
+  isPortal,
   defaultValue,
+  initialDate,
   uploadProgress,
   isDisabled,
   styles,
@@ -83,13 +86,17 @@ const FormArea = ({
                 placeholder={placeholder}
                 idFlag={idFlag}
                 onChange={field.onChange}
+                isEdit={isEdit}
               />
             ) : type === 'date' ? (
               <MyDatePicker
                 id={name}
-                selected={field.value || placeholder}
-                onChange={field.onChange}
+                initialDate={initialDate}
                 time={time}
+                onChange={(date) => field.onChange(date)}
+                placeholderText={placeholder}
+                isPortal={isPortal}
+                isEdit={isEdit}
               />
             ) : type === 'checkbox' ? (
               <Checkbox
