@@ -33,11 +33,9 @@ const CrudPanel = ({
 
   const fetchData = async () => {
     try {
-      const res = await fetch(
-        `/api/admin/${objectId ? `${apiPath}/${objectId}` : apiPath}`
-      );
+      const endpoint = objectId ? `${apiPath}/${objectId}` : apiPath;
+      const res = await fetch(`/api/admin/${endpoint}`);
       const data = await res.json();
-
       setData(data);
     } catch (error) {
       console.log(error);
@@ -51,16 +49,14 @@ const CrudPanel = ({
 
   const onSubmit = async (formData) => {
     try {
-      const res = await fetch(
-        `/api/admin/${objectId ? `${apiPath}/${objectId}` : apiPath}/add`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+      const endpoint = objectId ? `${apiPath}/${objectId}` : apiPath;
+      const res = await fetch(`/api/admin/${endpoint}/add`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
       if (!res.ok) {
         throw new Error('Failed to fetch data!');
       }
