@@ -32,17 +32,17 @@ const sidebarLinks = [
   {
     imgURL: '/dashboard.png',
     route: '/dashboard/referee',
-    label: 'Dashboard ',
+    label: 'Referee Dashboard',
   },
   {
     imgURL: '/dashboard.png',
     route: '/dashboard/admin',
-    label: 'Dashboard ',
+    label: 'Admin Dashboard',
   },
   {
     imgURL: '/dashboard.png',
     route: '/dashboard/coach',
-    label: 'Dashboard ',
+    label: 'Coach Dashboard',
   },
 ];
 
