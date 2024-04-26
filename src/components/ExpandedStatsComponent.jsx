@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useForm } from 'react-hook-form';
 import { Button } from './ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,18 +8,14 @@ import { useToast } from './ui/use-toast';
 import { useLocation } from 'react-router-dom';
 import { useFetchSeasonByMatchId } from './hooks/useFetchSeasonByMatchId';
 import { useEffect, useState } from 'react';
+import Spinner from './Spinner';
 
 const ExpandedStatsComponent = ({ data }) => {
-  const isEdit = useLocation().pathname.split('/')[5] === 'edit';
   const matchId = useLocation().pathname.split('/')[5];
   const seasonId = useFetchSeasonByMatchId(matchId);
   const { toast } = useToast();
-  const [playerStats, setPlayerStats] = useState(null);
-
-  console.log(isEdit);
-
-  console.log(data);
-  console.log(playerStats);
+  const [isReset, setIsReset] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(playerStatsFormSchema()),
@@ -31,7 +26,7 @@ const ExpandedStatsComponent = ({ data }) => {
       redCards: 0,
       ownGoals: 0,
       cleanSheets: 0,
-      isPlayed: true,
+      minutesPlayed: 90,
     },
     mode: 'onChange',
   });
@@ -39,16 +34,21 @@ const ExpandedStatsComponent = ({ data }) => {
   useEffect(() => {
     const fetchPlayerStats = async () => {
       try {
+        setLoading(true);
         const res = await fetch(
-          `/api/referee/player-stats/${matchId}/${data?._id}`
+          `/api/referee/match-stats/${matchId}/${data?._id}`
         );
         if (res.ok) {
           const data = await res.json();
-          setPlayerStats(data);
-          form.reset(data);
+          if (data) {
+            setIsReset(true);
+            form.reset(data);
+          }
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -57,7 +57,7 @@ const ExpandedStatsComponent = ({ data }) => {
 
   const onSubmit = async (formData) => {
     try {
-      const res = await fetch('/api/referee/add-player-stats', {
+      const res = await fetch('/api/referee/add-match-stats', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,6 +71,7 @@ const ExpandedStatsComponent = ({ data }) => {
       });
 
       if (res.ok) {
+        setIsReset(true);
         toast({
           title: 'Success!',
           description: 'Player stats added successfully',
@@ -87,9 +88,41 @@ const ExpandedStatsComponent = ({ data }) => {
     }
   };
 
-  const handleResetStats = () => {
-    form.reset();
+  const handleResetStats = async () => {
+    try {
+      const res = await fetch(
+        `/api/referee/delete-stats/${matchId}/${data?._id}`,
+        {
+          method: 'DELETE',
+        }
+      );
+
+      if (res.ok) {
+        setIsReset(false);
+        form.reset();
+        toast({
+          title: 'Success!',
+          description: 'Player stats removed successfully',
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to remove player stats',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -98,11 +131,12 @@ const ExpandedStatsComponent = ({ data }) => {
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className='grid grid-cols-6 w-full items-center max-md:grid-cols-4 max-sm:grid-cols-1 xl:grid-cols-7 gap-4 mb-4 max-[936px]:grid-cols-4'>
               <FormArea
-                id='isPlayed'
-                label='Did He Play?'
-                type='checkbox'
+                id='minutesPlayed'
+                label='Minutes Played'
+                type='number'
                 form={form}
-                name='isPlayed'
+                name='minutesPlayed'
+                styles='w-28 text-center max-sm:w-[270px]'
               />
               <FormArea
                 id='goals'
@@ -161,13 +195,15 @@ const ExpandedStatsComponent = ({ data }) => {
             <Button
               type='submit'
               className='w-28 bg-primary-500 text-white hover:bg-purple-500 max-sm:w-[270px]'
-              disabled={!form.getValues('isPlayed')}
+              disabled={form.getValues('minutesPlayed') === '0'}
             >
               Save
             </Button>
             <Button
+              type='button'
               variant='destructive'
               className='w-28 max-sm:w-[270px] ml-4'
+              disabled={!isReset}
               onClick={handleResetStats}
             >
               Reset Stats
