@@ -11,7 +11,7 @@ export const useFetchStadiums = () => {
           throw new Error('Failed to fetch stadium data!');
         }
         const data = await res.json();
-        setStadiums(data.map((coach) => coach.name + ':' + coach._id));
+        setStadiums(data.map((stadium) => stadium.name + ':' + stadium._id));
       } catch (error) {
         console.log(error);
       }

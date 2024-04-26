@@ -8,6 +8,7 @@ export const useFetchTeamById = (id) => {
   useEffect(() => {
     const fetchTeamById = async () => {
       try {
+        if (!id) return;
         const res = await fetch(`/api/team/${id}`);
         const data = await res.json();
         setTeam(data);

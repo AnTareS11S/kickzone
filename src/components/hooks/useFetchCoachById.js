@@ -1,24 +1,20 @@
 import { useEffect, useState } from 'react';
 
 export const useFetchCoachById = (id) => {
-  const [coach, setCoach] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [coach, setCoach] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchCoachById = async () => {
       try {
-        if (!id) {
-          return;
-        }
-        setLoading(true);
+        if (!id) return;
         const res = await fetch(`/api/coach/${id}`);
-        if (!res.ok) {
-          throw new Error('Failed to fetch coach data!');
-        }
         const data = await res.json();
         setCoach(data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
