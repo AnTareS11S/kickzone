@@ -3,12 +3,12 @@ import { useLocation } from 'react-router-dom';
 
 const TeamMatches = () => {
   const [matches, setMatches] = useState([]);
-  const pathname = useLocation().pathname.split('/')[3];
+  const teamId = useLocation().pathname.split('/')[3];
 
   useEffect(() => {
     const getMatches = async () => {
       try {
-        const res = await fetch(`/api/team/matches/${pathname}`);
+        const res = await fetch(`/api/team/matches/${teamId}`);
         const data = await res.json();
         setMatches(data);
       } catch (error) {
@@ -17,7 +17,7 @@ const TeamMatches = () => {
     };
 
     getMatches();
-  }, [pathname]);
+  }, [teamId]);
 
   return (
     <div className='container mx-auto mt-8 items-center rounded-lg'>
