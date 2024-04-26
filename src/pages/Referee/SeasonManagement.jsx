@@ -41,12 +41,16 @@ const SeasonManagement = () => {
       label: 'Start Date',
       type: 'date',
       name: 'startDate',
+      placeholder: 'Select Start Date',
+      isPortal: false,
     },
     {
       id: 'endDate',
       label: 'End Date',
       type: 'date',
       name: 'endDate',
+      placeholder: 'Select End Date',
+      isPortal: false,
     },
   ];
   return (

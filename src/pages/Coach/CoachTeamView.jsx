@@ -1,23 +1,25 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
 import SquadManagement from '../../components/coach/SquadManagement';
 import { Separator } from '../../components/ui/separator';
 import Spinner from '../../components/Spinner';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import BackButton from '../../components/BackButton';
+import { useEffect, useState } from 'react';
 
 const CoachTeamView = () => {
-  const coach = useFetchCoachByUserId();
-  const [team, setTeam] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { coach } = useFetchCoachByUserId();
+  const [team, setTeam] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const fetchTeam = async () => {
+  useEffect(() => {
+    if (coach?.currentTeam) {
+      fetchTeamById(coach.currentTeam);
+    }
+  }, [coach]);
+
+  const fetchTeamById = async (id) => {
     try {
-      if (!coach?.currentTeam) {
-        return;
-      }
       setLoading(true);
-      const res = await fetch(`/api/team/${coach?.currentTeam}`);
+      const res = await fetch(`/api/team/${id}`);
       if (!res.ok) {
         throw new Error('Failed to fetch team data!');
       }
@@ -30,10 +32,6 @@ const CoachTeamView = () => {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchTeam();
-  }, [coach?.currentTeam]);
 
   if (loading) {
     return (

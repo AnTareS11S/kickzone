@@ -3,19 +3,18 @@ import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUse
 import { useFetchPlayerById } from '../../components/hooks/useFetchPlayerById';
 import { useFetchTeamById } from '../../components/hooks/useFetchTeamById';
 import { useFetchTrainingsByCoachId } from '../../components/hooks/useFetchTrainingsByCoachId';
-
 import Spinner from '../../components/Spinner';
 import ActiveTrainings from '../../components/training/ActiveTrainings';
 import { Card } from '../../components/ui/card';
 
 const TrainingPage = () => {
-  const player = useFetchPlayerById();
-  const coachId = useFetchCoachByUserId();
-  const team = useFetchTeamById(player?.currentTeam || coachId?.currentTeam);
-  const coach = useFetchCoachById(team?.coach?.split(':')[1]);
-  const { trainings, loading } = useFetchTrainingsByCoachId(
-    coach?._id || coachId?._id
+  const { player } = useFetchPlayerById();
+  const { coach: coachId } = useFetchCoachByUserId();
+  const { team, loading } = useFetchTeamById(
+    player?.currentTeam || coachId?.currentTeam
   );
+  const { coach } = useFetchCoachById(team?.coach?.split(':')[1]);
+  const { trainings } = useFetchTrainingsByCoachId(coach?._id || coachId?._id);
 
   const activeTrainings = trainings?.filter((training) => training?.isActive);
 
