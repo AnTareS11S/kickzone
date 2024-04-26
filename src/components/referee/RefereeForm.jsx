@@ -1,24 +1,30 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
-
 import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../../lib/uploadFile';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
+import { useFetchCountries } from '../hooks/useFetchCountries';
+import { useToast } from '../ui/use-toast';
+import { useFetchRefereeByUserId } from '../hooks/useFetchReferee';
+import Spinner from '../Spinner';
 
-const RefereeForm = ({ currentUser, refereeData }) => {
+const RefereeForm = ({ currentUser }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const countries = useFetchCountries();
+  const { referee: refereeData, loading } = useFetchRefereeByUserId();
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(usersFormSchema),
     defaultValues: {
       name: '',
       surname: '',
-      country: '',
+      nationality: '',
       city: '',
       bio: '',
       birthDate: '',
@@ -30,13 +36,13 @@ const RefereeForm = ({ currentUser, refereeData }) => {
   useEffect(() => {
     if (refereeData) {
       form.reset({
-        name: refereeData.name,
-        surname: refereeData.surname,
-        country: refereeData.country,
-        city: refereeData.city,
-        bio: refereeData.bio,
-        birthDate: refereeData.birthDate.slice(0, 10),
-        photo: refereeData.photo,
+        name: refereeData?.name || '',
+        surname: refereeData?.surname || '',
+        nationality: refereeData?.nationality || '',
+        city: refereeData?.city || '',
+        bio: refereeData?.bio || '',
+        birthDate: refereeData?.birthDate || '',
+        photo: refereeData?.photo || '',
       });
     }
   }, [refereeData, form]);
@@ -62,17 +68,23 @@ const RefereeForm = ({ currentUser, refereeData }) => {
     }
   };
 
-  const countries = ['Albania', 'Andorra', 'Austria', 'Poland'];
-
   const originalDate = form.getValues('birthDate');
-
   const formattedDate = new Date(originalDate);
 
+  const countryName = countries?.find((country) =>
+    country.split(':')[1].includes(refereeData?.nationality)
+  );
+
   const onSubmit = async (formData) => {
+    const countryId = countries.find((country) =>
+      country.split(':')[0].includes(formData?.nationality)
+    );
+
     const updatedData = {
       ...formData,
-      user: currentUser._id,
+      user: currentUser?._id,
       photo: form.getValues('photo'),
+      nationality: countryId?.split(':')[1],
       dateOfBirth: formattedDate,
     };
     try {
@@ -83,16 +95,32 @@ const RefereeForm = ({ currentUser, refereeData }) => {
         },
         body: JSON.stringify(updatedData),
       });
-      const data = await res.json();
-      if (data.success === false) {
-        console.log(data.message);
-        return;
+
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Referee profile updated successfully',
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to update referee profile',
+          variant: 'destructive',
+        });
       }
       setUpdateSuccess(true);
     } catch (error) {
       console.log(error);
     }
   };
+
+  if (loading) {
+    return (
+      <div className='flex items-center justify-center h-full'>
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <Form {...form}>
@@ -114,6 +142,9 @@ const RefereeForm = ({ currentUser, refereeData }) => {
           type='date'
           form={form}
           name='birthDate'
+          isEdit={true}
+          initialDate={refereeData?.birthDate}
+          placeholder='Select date'
         />
         <FormArea
           id='photo'
@@ -127,22 +158,20 @@ const RefereeForm = ({ currentUser, refereeData }) => {
         />
         <FormArea id='bio' label='Bio' type='textarea' form={form} name='bio' />
         <FormArea
-          id='country'
+          id='nationality'
           type='select'
           form={form}
           items={countries}
-          label='Country'
-          placeholder={refereeData?.country || 'Select country'}
-          name='country'
-          className='w-full'
+          label='Nationality'
+          placeholder={countryName?.split(':')[0] || 'Select nationality'}
+          name='nationality'
         />
         <FormArea id='city' label='City' type='text' form={form} name='city' />
 
         <div className='flex justify-start items-center'>
-          <Button type='submit' disabled={!form.formState.isValid}>
+          <Button type='submit' className='bg-primary-500 hover:bg-purple-500'>
             Save
           </Button>
-          {updateSuccess && <p className='text-green-700 ml-3'>Saved</p>}
         </div>
       </form>
     </Form>

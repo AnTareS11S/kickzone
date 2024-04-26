@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { useSelector } from 'react-redux';
 
 import { z } from 'zod';
+import { useToast } from '../ui/use-toast';
 
 const passwordSchema = z
   .object({
@@ -44,6 +45,7 @@ const passwordSchema = z
 
 const ChangePassword = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
@@ -72,7 +74,17 @@ const ChangePassword = () => {
         return;
       }
       if (res.status === 200) {
+        toast({
+          title: 'Success!',
+          description: 'Password updated successfully',
+        });
         form.reset();
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to update password',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.log(error);
@@ -141,8 +153,7 @@ const ChangePassword = () => {
         />
         <Button
           type='submit'
-          className='btn btn-primary '
-          disabled={!form.formState.isValid}
+          className='btn bg-primary-500 hover:bg-purple-500'
         >
           Save
         </Button>

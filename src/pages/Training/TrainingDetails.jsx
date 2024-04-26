@@ -20,6 +20,8 @@ import { Separator } from '../../components/ui/separator';
 import { useFetchTeamPlayers } from '../../components/hooks/useFetchTeamPlayers';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import BackButton from '../../components/BackButton';
+import { useLocation } from 'react-router-dom';
+import { useToast } from '../../components/ui/use-toast';
 
 const formSchema = z.object({
   attendance: z.boolean(),
@@ -47,12 +49,13 @@ const columns = [
 ];
 
 const TrainingDetails = () => {
-  const [training, setTraining] = useState({});
+  const [training, setTraining] = useState([]);
   const [loading, setLoading] = useState(false);
   const { player } = useFetchPlayerById();
-  const coach = useFetchCoachByUserId();
-  const players = useFetchTeamPlayers(coach?.currentTeam);
-  const pathname = window.location.pathname.split('/')[2];
+  const { coach } = useFetchCoachByUserId();
+  const { playersToSelect: players } = useFetchTeamPlayers(coach?.currentTeam);
+  const trainingId = useLocation().pathname.split('/').pop();
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -61,37 +64,35 @@ const TrainingDetails = () => {
     },
   });
 
-  const getTraining = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/admin/training/get/${pathname}`);
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to fetch data!');
-      }
-      const data = await res.json();
-      setTraining(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (loading) {
-      return;
-    }
+    const getTraining = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`/api/admin/training/get/${trainingId}`);
+        if (!res.ok) {
+          throw new Error(data.message || 'Failed to fetch data!');
+        }
+        const data = await res.json();
+        setTraining(data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     getTraining();
-  }, [pathname]);
+  }, [trainingId]);
+
+  const participants = training?.participants?.includes(player?._id);
 
   useEffect(() => {
     form.setValue('attendance', training?.participants?.includes(player?._id));
-  }, [training?.participants?.includes(player?._id)]);
+  }, [participants, player?._id, form, training]);
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch(`/api/admin/training/attendace/${pathname}`, {
+      const res = await fetch(`/api/admin/training/attendace/${trainingId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -101,8 +102,17 @@ const TrainingDetails = () => {
           playerId: player?._id,
         }),
       });
-      if (!res.ok) {
-        throw new Error('Failed to submit data!');
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Attendance marked successfully',
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to mark attendance',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.log(error);
@@ -250,10 +260,11 @@ const TrainingDetails = () => {
               columns={columns}
               fields={fields}
               title='Participant'
-              objectId={pathname}
+              objectId={trainingId}
               onDeleteComponent={DeleteEntity}
               formSchema={playerFormSchema}
               defaultValues={{ player: '' }}
+              isAction={true}
             />
           </>
         )}

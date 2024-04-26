@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from 'react';
 import uploadFile from '../../lib/uploadFile';
 import FormArea from '../FormArea';
 import { updateUserSuccess } from '../../redux/user/userSlice';
+import { useToast } from '../ui/use-toast';
 
 const profileFormSchema = z.object({
   username: z
@@ -39,6 +40,7 @@ const ProfileForm = () => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const dispatch = useDispatch();
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(profileFormSchema),
@@ -82,10 +84,18 @@ const ProfileForm = () => {
         },
         body: JSON.stringify(updatedData),
       });
-      const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.message || 'Failed to update data!');
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'User profile updated successfully',
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to update user profile',
+          variant: 'destructive',
+        });
       }
 
       dispatch(updateUserSuccess({ ...currentUser, ...updatedData }));
@@ -130,14 +140,9 @@ const ProfileForm = () => {
         />
 
         <div className='flex justify-start items-center'>
-          <Button
-            type='submit'
-            className='bg-primary-500 hover:bg-purple-500'
-            disabled={!form.formState.isValid}
-          >
+          <Button type='submit' className='bg-primary-500 hover:bg-purple-500'>
             Save
           </Button>
-          {updateSuccess && <p className='text-green-700 ml-3'>Saved</p>}
         </div>
       </form>
     </Form>

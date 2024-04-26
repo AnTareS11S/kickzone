@@ -1,7 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
-
 import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
@@ -12,40 +11,21 @@ import { useFetchPositions } from '../hooks/useFetchPositions';
 import { useFetchCountries } from '../hooks/useFetchCountries';
 import { useFetchTeams } from '../hooks/useFetchTeams';
 import Spinner from '../Spinner';
+import { useToast } from '../ui/use-toast';
+import { useFetchPlayerByUserId } from '../hooks/useFetchPlayerByUserId';
 
-const PlayerForm = ({ currentUser }) => {
+const PlayerForm = () => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
   const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const positions = useFetchPositions();
   const countries = useFetchCountries();
   const teams = useFetchTeams();
-  const [playerData, setPlayerData] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const getPlayer = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/player/get/${currentUser?._id}`);
-        if (!res.ok) {
-          throw new Error(data.message || 'Failed to fetch data!');
-        }
-        const data = await res.json();
-        setPlayerData(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getPlayer();
-  }, [currentUser?._id]);
+  const { player: playerData, loading, currentUser } = useFetchPlayerByUserId();
+  const { toast } = useToast();
 
   const form = useForm({
-    resolver: zodResolver(playerFormSchema(false)),
+    resolver: zodResolver(playerFormSchema()),
     defaultValues: {
       name: '',
       surname: '',
@@ -81,43 +61,30 @@ const PlayerForm = ({ currentUser }) => {
 
   useEffect(() => {
     if (playerData) {
-      form.reset({
-        name: playerData.name,
-        surname: playerData.surname,
-        nationality: playerData.nationality,
-        wantedTeam: playerData.wantedTeam || '',
-        height: playerData.height,
-        weight: playerData.weight,
-        position: playerData.position,
-        number: playerData.number,
-        footed: playerData.footed,
-        age: playerData.age,
-        bio: playerData.bio,
-        photo: playerData.photo,
-      });
+      form.reset({ ...playerData, currentTeam: '' });
     }
   }, [playerData, form]);
 
   useEffect(() => {
-    const handleFileUpload = async () => {
-      if (!file) return;
-
-      await uploadFile(file, setFile, setUploadProgress);
-
-      form.setValue('photo', file);
-      setUpdateSuccess(true);
-    };
-
-    handleFileUpload();
-  }, [file, form, setFile, setUploadProgress]);
-
-  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
     const timeoutId = setTimeout(() => {
       setUpdateSuccess(false);
     }, 3000);
 
     return () => clearTimeout(timeoutId);
-  }, [updateSuccess]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateSuccess, file]);
+
+  const handleFileUpload = async (file) => {
+    try {
+      const downloadURL = await uploadFile(file);
+      form.setValue('photo', downloadURL);
+    } catch (error) {
+      console.log('Error uploading file: ', error);
+    }
+  };
 
   const onSubmit = async (formData) => {
     const countryId = countries.find((country) =>
@@ -134,7 +101,7 @@ const PlayerForm = ({ currentUser }) => {
 
     const updatedData = {
       ...formData,
-      user: currentUser._id,
+      user: currentUser?._id,
       nationality: countryId?.split(':')[1],
       position: positionId?.split(':')[1],
       wantedTeam: teamId?.split(':')[1],
@@ -148,10 +115,18 @@ const PlayerForm = ({ currentUser }) => {
         },
         body: JSON.stringify(updatedData),
       });
-      const data = await res.json();
-      if (data.success === false) {
-        console.log(data.message);
-        return;
+
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Referee profile updated successfully',
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to update referee profile',
+          variant: 'destructive',
+        });
       }
       setUpdateSuccess(true);
     } catch (error) {
@@ -191,7 +166,6 @@ const PlayerForm = ({ currentUser }) => {
           fileRef={fileRef}
           setFile={setFile}
           currentUserPhoto={playerData?.photo}
-          uploadProgress={uploadProgress}
         />
         <FormArea id='bio' label='Bio' type='textarea' form={form} name='bio' />
         {playerData?.currentTeam ? (
@@ -296,7 +270,6 @@ const PlayerForm = ({ currentUser }) => {
           <Button type='submit' className='bg-primary-500 hover:bg-purple-500'>
             Save
           </Button>
-          {updateSuccess && <p className='text-green-700 ml-3'>Saved</p>}
         </div>
       </form>
     </Form>
