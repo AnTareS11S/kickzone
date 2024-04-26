@@ -26,7 +26,7 @@ const AddTeam = ({ row, onEntityUpdated }) => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(`/api/admin/teams/no-league/${row._id}`);
+        const res = await fetch(`/api/admin/teams/no-league`);
         const data = await res.json();
         const teamss = data?.map((team) => team.name + ':' + team._id);
         setTeams(teamss);
