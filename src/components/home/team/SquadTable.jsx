@@ -1,5 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import { useEffect, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,38 +6,14 @@ import {
   TableHeader,
   TableRow,
 } from '../../ui/table';
-
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Spinner from '../../Spinner';
+import { useFetchTeamPlayers } from '../../hooks/useFetchTeamPlayers';
 
-const SquadTable = ({ data }) => {
-  const [playersData, setPlayersData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const { players } = data;
+const SquadTable = () => {
+  const teamId = useLocation().pathname.split('/').pop();
   const navigate = useNavigate();
-
-  const fetchPlayers = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch('/api/player/get-players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ playerIds: players }),
-      });
-      const data = await res.json();
-      setPlayersData(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPlayers();
-  }, [players]);
+  const { players: playersData, loading } = useFetchTeamPlayers(teamId);
 
   const playerPositions = {
     Goalkeepers: ['Goalkeeper'],
@@ -65,7 +39,7 @@ const SquadTable = ({ data }) => {
         </h2>
         <div className='overflow-x-auto'>
           <Table className='min-w-full'>
-            <TableHeader className='border-b '>
+            <TableHeader className='border-b'>
               <TableRow>
                 <TableHead className='py-3 px-4 w-1/6 max-sm:hidden'></TableHead>
                 <TableHead className='py-3 px-4 w-2/6'>Name</TableHead>
@@ -82,9 +56,12 @@ const SquadTable = ({ data }) => {
                 >
                   <TableCell className='py-2 px-4 max-sm:hidden'>
                     <img
-                      src={player.photo}
-                      alt=''
-                      className='object-contain w-10 h-10 rounded-full '
+                      src={
+                        player.photo ||
+                        'https://firebasestorage.googleapis.com/v0/b/futbolistapro.appspot.com/o/avatars%2Fblank-profile-picture-973460_960_720.webp?alt=media&token=5779eb88-d84b-46f3-bef6-3c2648a8fc9c'
+                      }
+                      alt={player.name}
+                      className='object-cover w-12 h-12 rounded-full'
                     />
                   </TableCell>
                   <TableCell className='py-2 px-4'>{player.name}</TableCell>
