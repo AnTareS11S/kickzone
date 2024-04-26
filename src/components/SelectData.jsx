@@ -8,15 +8,21 @@ import {
 } from './ui/select';
 import { FormControl } from './ui/form';
 
-const SelectData = ({ placeholder, items, onChange, defaultValue, idFlag }) => {
-  console.log(defaultValue);
+const SelectData = ({
+  placeholder,
+  items,
+  onChange,
+  defaultValue,
+  idFlag,
+  isEdit,
+}) => {
   return (
     <Select onValueChange={onChange}>
       <FormControl>
         <SelectTrigger className='w-full h-[41.6px] shadow-sm resize-none  ring-2 ring-white hover:ring-primary-500 transition duration-300'>
           <SelectValue
             className='w-full'
-            placeholder={defaultValue ? defaultValue : placeholder}
+            placeholder={isEdit ? defaultValue : placeholder}
           />
         </SelectTrigger>
       </FormControl>
