@@ -40,5 +40,5 @@ For any questions or issues regarding kickZone, feel free to [open an issue](htt
 - This project was inspired by the need for a comprehensive soccer management solution.
 
 ## Stay in Touch
-- Connect with me on LinkedIn (https://www.linkedin.com/in/krzysztof-zieli%C5%84ski-84267a202/)
+- Connect with me on LinkedIn [LinkedIn](https://www.linkedin.com/in/krzysztof-zieli%C5%84ski-84267a202/)
 
