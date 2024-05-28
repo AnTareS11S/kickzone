@@ -14,7 +14,6 @@ import CoachProfile from './pages/CoachProfile';
 import TeamManage from './pages/Team/TeamManage';
 import LeagueManage from './pages/League/LeagueManage';
 import Layout from './pages/Layout';
-import AddPost from './pages/AddPost';
 import PostPage from './pages/PostPage';
 import Activity from './pages/Activity';
 import HomeProfile from './pages/HomeProfile';
@@ -47,6 +46,15 @@ import { Toaster } from './components/ui/toaster';
 import ResultsManagement from './pages/Referee/ResultsManagement';
 import AddResult from './pages/Referee/AddResult';
 import Search from './pages/Search';
+import ResultDetails from './pages/Referee/ResultDetails';
+import PostEdit from './pages/PostEdit';
+import CommentEdit from './pages/CommentEdit';
+import PostForm from './components/home/posts/PostForm';
+import RefereeDetails from './pages/Referee/RefereeDetails';
+import AssignReferee from './pages/Referee/AssignReferee';
+import PageNotFound from './pages/PageNotFound';
+import SponsorManage from './pages/Sponsor/SponsorMange';
+import MatchDetails from './pages/Referee/MatchDetails';
 
 const App = () => {
   return (
@@ -55,8 +63,11 @@ const App = () => {
       <Routes>
         <Route path='/' element={<Layout />}>
           <Route path='/' element={<Home />} />
-          <Route path='/post/create' element={<AddPost />} />
+          <Route path='*' element={<PageNotFound />} />
+          <Route path='/post/create' element={<PostForm />} />
           <Route path='/post/:id' element={<PostPage />} />
+          <Route path='/post/edit/:id' element={<PostEdit />} />
+          <Route path='/post/comment/edit/:id' element={<CommentEdit />} />
           <Route path='/activity' element={<Activity />} />
           <Route path='/search' element={<Search />} />
           <Route path='/profile/:id' element={<HomeProfile />} />
@@ -64,10 +75,12 @@ const App = () => {
           <Route path='/league/:id' element={<LeaguePage />} />
           <Route path='/league/team/:id' element={<TeamPage />} />
           <Route path='/coach/:id' element={<CoachDetails />} />
+          <Route path='/referee/:id' element={<RefereeDetails />} />
           <Route path='/stadium/:id' element={<StadiumPage />} />
           <Route path='/player/:id' element={<PlayerDetails />} />
           <Route path='/training' element={<TrainingPage />} />
           <Route path='/training/:id' element={<TrainingDetails />} />
+          <Route path='/results/:id' element={<ResultDetails />} />
           <Route path='/dashboard/referee' element={<RefereeRoute />}>
             <Route path='/dashboard/referee' element={<LeagueScheduleCard />} />
             <Route
@@ -85,6 +98,14 @@ const App = () => {
             <Route
               path='/dashboard/referee/league/result/:id'
               element={<AddResult />}
+            />
+            <Route
+              path='/dashboard/referee/league/assign-referee/:id'
+              element={<AssignReferee />}
+            />
+            <Route
+              path='/dashboard/referee/league/match-details/:id'
+              element={<MatchDetails />}
             />
           </Route>
           <Route path='/dashboard/admin' element={<AdminRoute />}>
@@ -109,6 +130,10 @@ const App = () => {
             <Route
               path='/dashboard/admin/seasons'
               element={<SeasonManagement />}
+            />
+            <Route
+              path='/dashboard/admin/sponsors'
+              element={<SponsorManage />}
             />
           </Route>
           <Route path='/dashboard/coach' element={<CoachRoute />}>
