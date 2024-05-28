@@ -4,6 +4,7 @@ import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
 import { useFetchCoaches } from '../../components/hooks/useFetchCoaches';
 import { useFetchCountries } from '../../components/hooks/useFetchCountries';
+import { useFetchSponsors } from '../../components/hooks/useFetchSponsors';
 import { useFetchStadiums } from '../../components/hooks/useFetchStadiums';
 import { Separator } from '../../components/ui/separator';
 import { teamFormSchema } from '../../lib/validation/TeamValidation';
@@ -12,6 +13,7 @@ const TeamManage = () => {
   const countries = useFetchCountries();
   const coaches = useFetchCoaches();
   const stadiums = useFetchStadiums();
+  const sponsors = useFetchSponsors();
 
   const columns = [
     {
@@ -84,6 +86,15 @@ const TeamManage = () => {
       idFlag: true,
     },
     {
+      id: 'sponsor',
+      label: 'Sponsor',
+      type: 'select',
+      name: 'sponsor',
+      items: sponsors,
+      placeholder: 'Select a Sponsor',
+      idFlag: true,
+    },
+    {
       id: 'city',
       label: 'City',
       type: 'text',
@@ -114,8 +125,10 @@ const TeamManage = () => {
           city: '',
           country: '',
           yearFounded: '',
+          sponsor: '',
           logo: '',
           stadium: '',
+          bio: '',
         }}
         isExpandable={false}
         isAction={true}
