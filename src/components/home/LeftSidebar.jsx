@@ -77,7 +77,7 @@ const LeftSidebar = () => {
   useEffect(() => {
     const getPlayer = async () => {
       try {
-        if (!currentUser?._id) {
+        if (!currentUser?._id || currentUser?.role !== 'player') {
           return;
         }
 
@@ -93,7 +93,7 @@ const LeftSidebar = () => {
     };
 
     getPlayer();
-  }, [currentUser?._id]);
+  }, [currentUser?._id, currentUser?.role]);
 
   const isAdminOrCoachOrReferee =
     currentUser && ['admin', 'coach', 'referee'].includes(currentUser?.role);
@@ -148,8 +148,8 @@ const LeftSidebar = () => {
   };
 
   return (
-    <section className='custom-scrollbar leftsidebar'>
-      <div className='flex w-full flex-1 flex-col gap-6 px-6'>
+    <aside className='custom-scrollbar leftsidebar'>
+      <div className='flex flex-1 flex-col gap-2 px-4'>
         {sidebarLinks.map((link) => {
           const isActive = pathname === link.route;
 
@@ -167,7 +167,7 @@ const LeftSidebar = () => {
           return null;
         })}
       </div>
-    </section>
+    </aside>
   );
 };
 

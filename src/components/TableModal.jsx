@@ -45,7 +45,7 @@ const TableModal = ({ title, desc, items, handleDelete }) => {
                   <TableCell>{item.name}</TableCell>
                   <TableCell>
                     <TrashIcon
-                      className='w-5 h-5 cursor-pointer'
+                      className='w-5 h-5 cursor-pointer text-red-600'
                       onClick={() => handleDelete(item._id)}
                     />
                   </TableCell>

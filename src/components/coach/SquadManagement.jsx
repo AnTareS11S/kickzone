@@ -55,12 +55,9 @@ const SquadManagement = ({ data }) => {
   ];
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
+
   return (
     <CrudPanel
       apiPath={`team-player/${data?._id}`}

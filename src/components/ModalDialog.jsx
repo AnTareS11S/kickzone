@@ -24,7 +24,7 @@ const ModalDialog = ({ title, description, handleClick, type }) => {
             {title}
           </Button>
         ) : (
-          <TrashIcon className='w-5 h-5 cursor-pointer' />
+          <TrashIcon className='w-5 h-5 p-0 cursor-pointer text-red-600' />
         )}
       </AlertDialogTrigger>
       <AlertDialogContent>

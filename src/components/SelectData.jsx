@@ -19,7 +19,7 @@ const SelectData = ({
   return (
     <Select onValueChange={onChange}>
       <FormControl>
-        <SelectTrigger className='w-full h-[41.6px] shadow-sm resize-none  ring-2 ring-white hover:ring-primary-500 transition duration-300'>
+        <SelectTrigger className='w-full h-[36px] shadow-sm resize-none ring-2 ring-white hover:ring-primary-500 transition duration-300'>
           <SelectValue
             className='w-full'
             placeholder={isEdit ? defaultValue : placeholder}
@@ -28,7 +28,7 @@ const SelectData = ({
       </FormControl>
       <SelectContent>
         {Array.isArray(items) && items.length > 0 ? (
-          <SelectGroup>
+          <SelectGroup className={items.length > 4 ? 'h-48' : ''}>
             {items.map((item) => (
               <SelectItem
                 key={item.split(':')[1]}

@@ -22,7 +22,7 @@ const columns = [
   },
   {
     name: 'Nationality',
-    selector: (row) => row.nationality,
+    selector: (row) => row.nationality.name,
     sortable: true,
   },
 ];

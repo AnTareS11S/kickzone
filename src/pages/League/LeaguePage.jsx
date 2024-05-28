@@ -10,20 +10,16 @@ import TeamCard from '../../components/home/leagues/TeamCard';
 import { Separator } from '../../components/ui/separator';
 import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useFetchTeamsByLeagueId } from '../../components/hooks/useFetchTeamsByLeagueId';
 import PlayerStats from '../../components/player/PlayerStats';
 
 const LeaguePage = () => {
-  const leagueId = useLocation().pathname.split('/').pop();
+  const leagueId = useParams().id;
   const { teams, loading, leagueName } = useFetchTeamsByLeagueId(leagueId);
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (

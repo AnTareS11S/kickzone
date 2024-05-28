@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router-dom';
+import ModalDialog from '../../ModalDialog';
 
 const DeletePost = ({
   postId,
@@ -33,13 +34,9 @@ const DeletePost = ({
   };
 
   return (
-    <img
-      src='/delete.svg'
-      alt='delete'
-      width={18}
-      height={18}
-      className='cursor-pointer object-contain'
-      onClick={handleDeletePost}
+    <ModalDialog
+      description='Are you sure you want to delete this post?'
+      handleClick={() => handleDeletePost() && setDeleteSuccess(false)}
     />
   );
 };

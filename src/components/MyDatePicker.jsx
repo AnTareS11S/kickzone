@@ -18,7 +18,7 @@ const MyDatePicker = ({
 
   return (
     <DatePicker
-      className='border p-2 rounded-md w-full shadow-sm ring-2 ring-white hover:ring-primary-500 transition duration-300'
+      className='border p-2 ml-2 h-[36px] rounded-md w-full shadow-sm ring-2 ring-white hover:ring-primary-500 transition duration-300'
       showTimeSelect={time}
       showMonthDropdown
       showYearDropdown

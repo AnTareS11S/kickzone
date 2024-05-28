@@ -24,11 +24,7 @@ const Home = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
@@ -44,7 +40,10 @@ const Home = () => {
                 id={post._id}
                 currentUserId={currentUser?._id || ''}
                 parentId={post.parentId}
+                title={post.title}
+                initialLikes={post.likes}
                 content={post.postContent}
+                postPhoto={post.imageUrl}
                 author={post.author}
                 createdAt={post.createdAt}
                 comments={post.children}

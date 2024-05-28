@@ -28,8 +28,8 @@ const AddTeam = ({ row, onEntityUpdated }) => {
       try {
         const res = await fetch(`/api/admin/teams/no-league`);
         const data = await res.json();
-        const teamss = data?.map((team) => team.name + ':' + team._id);
-        setTeams(teamss);
+
+        setTeams(data?.map((team) => team.name + ':' + team._id));
       } catch (error) {
         console.log(error);
         return [];

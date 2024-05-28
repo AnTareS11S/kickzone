@@ -53,13 +53,12 @@ import { useEffect, useState } from 'react';
 const Bottombar = () => {
   const { pathname } = useLocation();
   const { currentUser } = useSelector((state) => state.user);
-
   const [player, setPlayer] = useState({});
 
   useEffect(() => {
     const getPlayer = async () => {
       try {
-        if (!currentUser?._id) {
+        if (!currentUser?._id || currentUser?.role !== 'player') {
           return;
         }
 
@@ -75,7 +74,7 @@ const Bottombar = () => {
     };
 
     getPlayer();
-  }, [currentUser?._id]);
+  }, [currentUser?._id, currentUser?.role]);
 
   const isAdminOrCoachOrReferee =
     currentUser && ['admin', 'coach', 'referee'].includes(currentUser?.role);

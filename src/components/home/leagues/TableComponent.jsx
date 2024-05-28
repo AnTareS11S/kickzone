@@ -24,6 +24,7 @@ const TableComponent = ({ leagueId }) => {
       name: '#',
       selector: (row, index) => index + 1,
       grow: 0.5,
+      className: 'text-sm font-semibold',
     },
     {
       name: 'Team',
@@ -31,79 +32,96 @@ const TableComponent = ({ leagueId }) => {
         return (
           <div className='flex items-center'>
             <img
-              src={row.logo}
+              src={
+                row.logoUrl ||
+                'https://d3awt09vrts30h.cloudfront.net/team_img_default.png'
+              }
               alt={row.name}
-              className='w-8 h-8 object-contain rounded-full mr-2'
+              className='h-8 w-8 rounded-full object-contain mr-2'
             />
-            <Link to={`/league/team/${row.team}`}>{row.name}</Link>
+            <Link
+              to={`/league/team/${row.team}`}
+              className=' hover:text-purple-500'
+            >
+              {row.name}
+            </Link>
           </div>
         );
       },
       grow: 2,
+      className: 'text-sm',
     },
     {
       name: 'Played',
       selector: (row) => row.gamesPlayed,
       sortable: true,
       hide: 'sm',
+      className: 'text-sm',
     },
     {
       name: 'Won',
       selector: (row) => row.wins,
       sortable: true,
       hide: 'md',
+      className: 'text-sm',
     },
     {
       name: 'Drawn',
       selector: (row) => row.draws,
       sortable: true,
       hide: 'md',
+      className: 'text-sm',
     },
     {
       name: 'Lost',
       selector: (row) => row.losses,
       sortable: true,
       hide: 'md',
+      className: 'text-sm',
     },
     {
       name: 'GF',
       selector: (row) => row.goalsFor,
       sortable: true,
       hide: 'md',
+      className: 'text-sm',
     },
     {
       name: 'GA',
       selector: (row) => row.goalsAgainst,
       sortable: true,
       hide: 'md',
+      className: 'text-sm',
     },
     {
       name: 'GD',
       selector: (row) => row.goalDifference,
       sortable: true,
       hide: 'lg',
+      className: 'text-sm',
     },
     {
       name: 'Points',
       selector: (row) => row.points,
       sortable: true,
+      className: 'text-sm font-semibold',
     },
   ];
 
   return (
-    <>
-      <div className='flex max-sm:my-10 justify-end'>
+    <div className='p-4 md:p-8'>
+      <div className='flex max-sm:my-10 justify-end mb-4'>
         <Button
-          className='bg-primary-500 hover:bg-purple-500'
+          className='bg-primary-500 hover:bg-purple-500 text-white font-semibold py-2 px-4 rounded transition-colors duration-300'
           onClick={handleDownloadXLSX}
         >
           Download Standings.xlsx
         </Button>
       </div>
-      <Card className='flex flex-col mt-5 w-full rounded-none shadow-md'>
+      <Card className='rounded-lg shadow-md grid overflow-hidden'>
         <CustomDataTable columns={columns} data={teamStats} pending />
       </Card>
-    </>
+    </div>
   );
 };
 

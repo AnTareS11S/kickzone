@@ -26,7 +26,7 @@ const Loader = styled.div`
 
 const Spinner = () => {
   return (
-    <div className='p-6'>
+    <div className='flex p-6 items-center justify-center h-full'>
       <Loader />
     </div>
   );
