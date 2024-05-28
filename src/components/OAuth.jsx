@@ -36,7 +36,7 @@ const OAuth = () => {
     }
   };
   return (
-    <Button variant='outline' onClick={handleGoogleAuth}>
+    <Button type='button' variant='outline' onClick={handleGoogleAuth}>
       <Icons.google className='mr-2 h-4 w-4' />
       Google
     </Button>
