@@ -38,45 +38,48 @@ const CustomDataTable = ({
   const tableHeaderStyle = {
     headCells: {
       style: {
-        color: '#1F2937',
-        fontSize: '14px',
-        fontWeight: 'bold',
-        backgroundColor: '#e2e8f0',
+        color: '#333333', // Dark gray color for better readability
+        fontSize: '16px', // Slightly larger font size
+        fontWeight: '600', // Semi-bold font weight
+        backgroundColor: '#F8F9FA', // Light gray background color
+        padding: '12px', // Equal padding for left and right
+        borderBottom: '1px solid #D1D5DB', // Thinner bottom border with a slightly darker color
       },
     },
     rows: {
-      highlightOnHoverStyle: {
-        backgroundColor: 'rgb(230, 244, 244)',
-        borderBottomColor: '#FFFFFF',
-        borderRadius: '25px',
-        outline: '1px solid #FFFFFF',
-      },
-    },
-    headRow: {
       style: {
-        border: 'none',
-        backgroundColor: '#e2e8f0',
+        backgroundColor: '#FFFFFF', // White background color for rows
+        borderBottom: '1px solid #E5E7EB', // Light gray bottom border for rows
+        borderRadius: '6px', // Slightly smaller border radius
+        cursor: 'pointer', // Pointer cursor on hover
+        transition: 'box-shadow 0.3s', // Transition for the box-shadow effect
+        '&:hover': {
+          boxShadow:
+            '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Box-shadow effect on hover
+        },
       },
     },
   };
 
   return (
-    <Card className='flex flex-col mt-5 w-full  rounded-none shadow-md overflow-hidden'>
+    <Card className='w-full overflow-hidden rounded-md shadow-md'>
       <DataTable
         columns={columns}
-        data={filteredData}
+        data={searchable ? filteredData : data}
         customStyles={tableHeaderStyle}
         highlightOnHover
         subHeader={searchable}
         subHeaderComponent={
           searchable && (
-            <Input
-              type='text'
-              placeholder='Search...'
-              className='flex w-25 p-2 max-md:mr-auto ring-2 ring-white hover:ring-primary-500 transition duration-300 bg-white'
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
+            <div className='flex justify-end w-full p-2'>
+              <Input
+                type='text'
+                placeholder='Search...'
+                className='w-full md:w-64 p-2 rounded-md ring-2 ring-gray-300 focus:ring-primary-500 transition duration-300 bg-white'
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
           )
         }
         progressPending={isPending}
