@@ -5,13 +5,13 @@ import { Form } from './ui/form';
 import { playerStatsFormSchema } from '../lib/validation/ResultValidation';
 import FormArea from './FormArea';
 import { useToast } from './ui/use-toast';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useFetchSeasonByMatchId } from './hooks/useFetchSeasonByMatchId';
 import { useEffect, useState } from 'react';
 import Spinner from './Spinner';
 
 const ExpandedStatsComponent = ({ data }) => {
-  const matchId = useLocation().pathname.split('/')[5];
+  const matchId = useParams().id;
   const seasonId = useFetchSeasonByMatchId(matchId);
   const { toast } = useToast();
   const [isReset, setIsReset] = useState(false);
@@ -39,11 +39,13 @@ const ExpandedStatsComponent = ({ data }) => {
           `/api/referee/match-stats/${matchId}/${data?._id}`
         );
         if (res.ok) {
-          const data = await res.json();
-          if (data) {
-            setIsReset(true);
-            form.reset(data);
-          }
+          const playerData = await res.json();
+          setIsReset(true);
+          form.reset(playerData);
+          setLoading(false);
+        } else if (res.status === 404) {
+          setIsReset(false);
+          form.reset();
         }
       } catch (error) {
         console.log(error);
@@ -99,7 +101,18 @@ const ExpandedStatsComponent = ({ data }) => {
 
       if (res.ok) {
         setIsReset(false);
-        form.reset();
+        form.reset(
+          {
+            goals: 0,
+            assists: 0,
+            yellowCards: 0,
+            redCards: 0,
+            ownGoals: 0,
+            cleanSheets: 0,
+            minutesPlayed: 90,
+          },
+          { keepValues: false }
+        );
         toast({
           title: 'Success!',
           description: 'Player stats removed successfully',
@@ -117,26 +130,23 @@ const ExpandedStatsComponent = ({ data }) => {
   };
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
-    <>
-      <div className='flex flex-row w-full max-md:flex-col min-lg:flex-col gap-4 p-5'>
+    <div className='bg-gray-100 py-8'>
+      <div className='max-w-4xl mx-auto bg-white rounded-lg shadow-md p-6'>
+        <h2 className='text-2xl font-bold mb-4'>Player Stats</h2>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className='grid grid-cols-6 w-full items-center max-md:grid-cols-4 max-sm:grid-cols-1 xl:grid-cols-7 gap-4 mb-4 max-[936px]:grid-cols-4'>
+            <div className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4'>
               <FormArea
                 id='minutesPlayed'
                 label='Minutes Played'
                 type='number'
                 form={form}
                 name='minutesPlayed'
-                styles='w-28 text-center max-sm:w-[270px]'
+                styles='w-full'
               />
               <FormArea
                 id='goals'
@@ -144,7 +154,7 @@ const ExpandedStatsComponent = ({ data }) => {
                 type='number'
                 form={form}
                 name='goals'
-                styles='w-28 text-center max-sm:w-[270px]'
+                styles='w-full'
               />
               <FormArea
                 id='assists'
@@ -152,7 +162,7 @@ const ExpandedStatsComponent = ({ data }) => {
                 type='number'
                 form={form}
                 name='assists'
-                styles='w-28 text-center max-sm:w-[270px]'
+                styles='w-full'
               />
               <FormArea
                 id='yellowCards'
@@ -160,7 +170,7 @@ const ExpandedStatsComponent = ({ data }) => {
                 type='number'
                 form={form}
                 name='yellowCards'
-                styles='w-28 text-center max-sm:w-[270px]'
+                styles='w-full'
               />
               <FormArea
                 id='redCards'
@@ -168,50 +178,49 @@ const ExpandedStatsComponent = ({ data }) => {
                 type='number'
                 form={form}
                 name='redCards'
-                styles='w-28 text-center max-sm:w-[270px]'
+                styles='w-full'
               />
-
               <FormArea
                 id='ownGoals'
                 label='Own Goals'
                 type='number'
                 form={form}
                 name='ownGoals'
-                styles='w-28 text-center max-sm:w-[270px]'
+                styles='w-full'
               />
               {data?.position === 'Goalkeeper' && (
-                <>
-                  <FormArea
-                    id='cleanSheets'
-                    label='Cleen Sheets'
-                    type='number'
-                    form={form}
-                    name='cleanSheets'
-                    styles='w-28 text-center max-sm:w-[270px]'
-                  />
-                </>
+                <FormArea
+                  id='cleanSheets'
+                  label='Clean Sheets'
+                  type='number'
+                  form={form}
+                  name='cleanSheets'
+                  styles='w-full'
+                />
               )}
             </div>
-            <Button
-              type='submit'
-              className='w-28 bg-primary-500 text-white hover:bg-purple-500 max-sm:w-[270px]'
-              disabled={form.getValues('minutesPlayed') === '0'}
-            >
-              Save
-            </Button>
-            <Button
-              type='button'
-              variant='destructive'
-              className='w-28 max-sm:w-[270px] ml-4'
-              disabled={!isReset}
-              onClick={handleResetStats}
-            >
-              Reset Stats
-            </Button>
+            <div className='flex justify-end'>
+              <Button
+                type='submit'
+                className='bg-primary-500 text-white hover:bg-purple-500 px-4 py-2 rounded-md'
+                disabled={form.getValues('minutesPlayed') === '0'}
+              >
+                Save
+              </Button>
+              <Button
+                type='button'
+                variant='destructive'
+                className='bg-red-500 text-white hover:bg-red-600 px-4 py-2 rounded-md ml-4'
+                disabled={!isReset}
+                onClick={handleResetStats}
+              >
+                Reset Stats
+              </Button>
+            </div>
           </form>
         </Form>
       </div>
-    </>
+    </div>
   );
 };
 
