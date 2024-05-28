@@ -3,6 +3,7 @@ import ModalActions from './ModalActions';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useOnSuccessUpdate } from './hooks/useOnSuccessUpdate';
+import { useToast } from './ui/use-toast';
 
 const EditEntity = ({
   row,
@@ -13,6 +14,8 @@ const EditEntity = ({
   defaultValues,
 }) => {
   const [updatedSuccess, setUpdatedSuccess] = useState(false);
+  const [file, setFile] = useState(null);
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema(true)),
@@ -26,17 +29,34 @@ const EditEntity = ({
   });
 
   const onSubmit = async (formData) => {
+    const data = new FormData();
+
+    for (const key in formData) {
+      if (key === 'logo' && !file) {
+        data.append(key, file || row.logo);
+        continue;
+      } else {
+        data.append(key, formData[key]);
+      }
+    }
+
     try {
       const res = await fetch(`/api/admin/${apiEndpoint}/edit/${row._id}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: data,
       });
 
-      if (!res.ok) {
-        throw new Error('Failed to fetch data!');
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Team updated successfully',
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to update team',
+          variant: 'destructive',
+        });
       }
       setUpdatedSuccess(true);
     } catch (error) {
@@ -74,6 +94,7 @@ const EditEntity = ({
         data={row}
         fields={updatedFields}
         form={form}
+        setFile={setFile}
       />
     </div>
   );
