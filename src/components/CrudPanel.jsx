@@ -24,6 +24,7 @@ const CrudPanel = ({
 }) => {
   const [data, setData] = useState([]);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [file, setFile] = useState();
 
   const form = useForm({
     resolver: zodResolver(formSchema(false)),
@@ -48,14 +49,38 @@ const CrudPanel = ({
   }, [updateSuccess, objectId]);
 
   const onSubmit = async (formData) => {
+    const data = new FormData();
+
+    for (const key in formData) {
+      if (key === 'logo') {
+        data.append(key, file || formData.logo);
+        continue;
+      }
+      data.append(key, formData[key]);
+    }
+
     try {
+      if (apiPath === 'team') {
+        const nameExists = await fetch(
+          `/api/team/check-team-name?name=${formData.name}`
+        );
+
+        const nameData = await nameExists.json();
+
+        if (nameData.exists) {
+          form.setError('name', {
+            type: 'manual',
+            message: 'Name already exists',
+          });
+          setUpdateSuccess(false);
+          return;
+        }
+      }
+
       const endpoint = objectId ? `${apiPath}/${objectId}` : apiPath;
       const res = await fetch(`/api/admin/${endpoint}/add`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: data,
       });
       if (!res.ok) {
         throw new Error('Failed to fetch data!');
@@ -82,6 +107,7 @@ const CrudPanel = ({
           desc={`Add a new ${title}`}
           form={form}
           fields={fields}
+          setFile={setFile}
         />
       )}
       <CustomDataTable
