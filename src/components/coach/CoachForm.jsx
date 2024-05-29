@@ -1,11 +1,9 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
-
 import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
-import uploadFile from '../../lib/uploadFile';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
 import { useFetchCountries } from '../hooks/useFetchCountries';
 import Spinner from '../../components/Spinner';
@@ -15,9 +13,9 @@ import { useToast } from '../ui/use-toast';
 const CoachForm = ({ currentUser }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(undefined);
-  const [updateSuccess, setUpdateSuccess] = useState(false);
   const countries = useFetchCountries();
-  const { coach: coachData, loading } = useFetchCoachByUserId();
+  const [isChanged, setIsChanged] = useState(false);
+  const { coach: coachData, loading } = useFetchCoachByUserId(isChanged);
   const { toast } = useToast();
 
   const form = useForm({
@@ -28,7 +26,7 @@ const CoachForm = ({ currentUser }) => {
       nationality: '',
       city: '',
       bio: '',
-      birthDate: '',
+      birthDate: new Date(),
       photo: '',
     },
     mode: 'onChange',
@@ -42,32 +40,11 @@ const CoachForm = ({ currentUser }) => {
         nationality: coachData?.nationality || '',
         city: coachData?.city || '',
         bio: coachData?.bio || '',
-        birthDate: coachData?.birthDate || '',
-        photo: coachData?.photo || '',
+        birthDate: coachData?.birthDate || new Date(),
+        photo: coachData?.imageUrl || '',
       });
     }
-  }, [coachData, form]);
-
-  useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
-    const timeoutId = setTimeout(() => {
-      setUpdateSuccess(false);
-    }, 3000);
-
-    return () => clearTimeout(timeoutId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateSuccess, file]);
-
-  const handleFileUpload = async (file) => {
-    try {
-      const downloadURL = await uploadFile(file);
-      form.setValue('photo', downloadURL);
-    } catch (error) {
-      console.log('Error uploading file: ', error);
-    }
-  };
+  }, [coachData, form, isChanged]);
 
   const originalDate = form.getValues('birthDate');
   const formattedDate = new Date(originalDate);
@@ -81,27 +58,31 @@ const CoachForm = ({ currentUser }) => {
       country.split(':')[0].includes(formData?.nationality)
     );
 
-    const updatedData = {
-      ...formData,
-      user: currentUser?._id,
-      photo: form?.getValues('photo') || '',
-      nationality: countryId?.split(':')[1],
-      dateOfBirth: formattedDate,
-    };
+    const data = new FormData();
+
+    data.append('photo', file || coachData?.photo);
+    data.append('user', currentUser?._id);
+    data.append('name', formData?.name);
+    data.append('surname', formData?.surname);
+    data.append(
+      'nationality',
+      countryId?.split(':')[1] || formData?.nationality
+    );
+    data.append('city', formData?.city);
+    data.append('bio', formData?.bio);
+    data.append('birthDate', formattedDate);
 
     try {
       const res = await fetch('/api/coach/create', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
+        body: data,
       });
       if (res.ok) {
         toast({
           title: 'Success!',
           description: 'Coach profile updated successfully',
         });
+        setIsChanged(!isChanged);
       } else {
         toast({
           title: 'Error!',
@@ -109,18 +90,13 @@ const CoachForm = ({ currentUser }) => {
           variant: 'destructive',
         });
       }
-      setUpdateSuccess(true);
     } catch (error) {
       console.log(error);
     }
   };
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
@@ -144,7 +120,7 @@ const CoachForm = ({ currentUser }) => {
           form={form}
           name='birthDate'
           isEdit={true}
-          initialDate={coachData?.birthDate}
+          initialDate={coachData?.birthDate || new Date()}
           placeholder='Select date'
         />
         <FormArea
@@ -155,7 +131,7 @@ const CoachForm = ({ currentUser }) => {
           name='photo'
           fileRef={fileRef}
           setFile={setFile}
-          currentUserPhoto={coachData?.photo}
+          currentUserPhoto={coachData?.imageUrl}
         />
         <FormArea id='bio' label='Bio' type='textarea' form={form} name='bio' />
         <FormArea
@@ -170,11 +146,7 @@ const CoachForm = ({ currentUser }) => {
         <FormArea id='city' label='City' type='text' form={form} name='city' />
 
         <div className='flex justify-start items-center'>
-          <Button
-            type='submit'
-            disabled={!form.formState.isValid}
-            className='bg-primary-500 hover:bg-purple-500'
-          >
+          <Button type='submit' className='bg-primary-500 hover:bg-purple-500'>
             Save
           </Button>
         </div>
