@@ -9,8 +9,8 @@ import {
   FormMessage,
 } from './ui/form';
 import { Input } from './ui/input';
-import { Progress } from './ui/progress';
 import { Textarea } from './ui/textarea';
+import classNames from 'classnames';
 
 const FormArea = ({
   label,
@@ -28,17 +28,20 @@ const FormArea = ({
   isPortal,
   defaultValue,
   initialDate,
-  uploadProgress,
   isDisabled,
   styles,
+  icon,
+  ...rest
 }) => {
   return (
     <FormField
       control={form.control}
       name={name}
       render={({ field }) => (
-        <FormItem>
-          <FormLabel className='flex flex-col w-full '>{label}</FormLabel>
+        <FormItem className='mb-6 flex flex-col'>
+          <FormLabel className='mb-2 text-sm font-semibold text-gray-700'>
+            {label}
+          </FormLabel>
           <FormControl>
             {type === 'file' ? (
               <div className='flex flex-col items-center'>
@@ -48,36 +51,45 @@ const FormArea = ({
                   <img
                     src={
                       currentUserPhoto ||
-                      'https://firebasestorage.googleapis.com/v0/b/futbolistapro.appspot.com/o/avatars%2Fblank-profile-picture-973460_960_720.webp?alt=media&token=5779eb88-d84b-46f3-bef6-3c2648a8fc9c'
+                      'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
                     }
-                    alt='user'
-                    className='w-44 h-44 rounded-full object-contain mt-2 self-center mx-auto cursor-pointer ring-2 ring-white hover:ring-primary-500 transition duration-300'
+                    className='mb-4 h-32 w-32 cursor-pointer rounded-full object-contain ring-2 ring-white transition duration-300 hover:ring-primary-500'
                     onClick={() => fileRef.current.click()}
+                    alt='Profile Picture'
                   />
                 )}
-                <Input
-                  id={name}
-                  type={type}
-                  className={
-                    name === 'logo' || name === 'postPhoto'
-                      ? 'w-full'
-                      : 'hidden'
-                  }
-                  ref={fileRef}
-                  accept='image/*'
-                  onChange={(e) => setFile(e.target.files[0])}
-                />
-                <Progress value={uploadProgress} className='mt-5' />
+                <div className='flex items-center w-full'>
+                  <span className='mr-2 text-primary-500'>{icon}</span>
+                  <Input
+                    id={name}
+                    type={type}
+                    ref={fileRef}
+                    accept='image/*'
+                    onChange={(e) => {
+                      setFile(e.target.files[0]);
+                      field.onChange(e.target.files?.[0] ?? undefined);
+                    }}
+                    {...fileRef}
+                    {...rest}
+                  />
+                </div>
               </div>
             ) : type === 'textarea' ? (
-              <Textarea
-                id={name}
-                placeholder={placeholder}
-                rows={name === 'postContent' ? 15 : 1}
-                className='resize-none w-full ring-2 ring-white hover:ring-primary-500 transition duration-300'
-                {...form.register(name)}
-                {...field}
-              />
+              <div className='flex items-center'>
+                <span className='mr-2 text-primary-500'>{icon}</span>
+                <Textarea
+                  id={name}
+                  placeholder={placeholder}
+                  rows={name === 'postContent' ? 15 : 1}
+                  className={classNames(
+                    'resize-none w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 transition duration-300',
+                    name === 'postContent' && 'h-64'
+                  )}
+                  {...form.register(name)}
+                  {...field}
+                  {...rest}
+                />
+              </div>
             ) : type === 'select' ? (
               <SelectData
                 id={name}
@@ -106,19 +118,22 @@ const FormArea = ({
                 className='w-8 h-8 justify-center'
               />
             ) : (
-              <Input
-                {...field}
-                id={name}
-                type={type}
-                className={
-                  styles
-                    ? `${styles} ring-2 ring-white hover:ring-primary-500 transition duration-300 bg-white`
-                    : 'w-full ring-2 ring-white hover:ring-primary-500 transition duration-300 bg-white'
-                }
-                disabled={isDisabled}
-                placeholder={placeholder}
-                {...form.register(name)}
-              />
+              <div className='flex items-center'>
+                <span className='mr-2 text-primary-500'>{icon}</span>
+                <Input
+                  {...field}
+                  id={name}
+                  type={type}
+                  className={classNames(
+                    'w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 transition duration-300',
+                    styles
+                  )}
+                  disabled={isDisabled}
+                  placeholder={placeholder}
+                  {...form.register(name)}
+                  {...rest}
+                />
+              </div>
             )}
           </FormControl>
           <FormMessage />
