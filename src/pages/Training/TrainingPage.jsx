@@ -1,6 +1,5 @@
-import { useFetchCoachById } from '../../components/hooks/useFetchCoachById';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
-import { useFetchPlayerById } from '../../components/hooks/useFetchPlayerById';
+import { useFetchPlayerByUserId } from '../../components/hooks/useFetchPlayerByUserId';
 import { useFetchTeamById } from '../../components/hooks/useFetchTeamById';
 import { useFetchTrainingsByCoachId } from '../../components/hooks/useFetchTrainingsByCoachId';
 import Spinner from '../../components/Spinner';
@@ -8,13 +7,14 @@ import ActiveTrainings from '../../components/training/ActiveTrainings';
 import { Card } from '../../components/ui/card';
 
 const TrainingPage = () => {
-  const { player } = useFetchPlayerById();
-  const { coach: coachId } = useFetchCoachByUserId();
-  const { team, loading } = useFetchTeamById(
-    player?.currentTeam || coachId?.currentTeam
+  const { player } = useFetchPlayerByUserId();
+  const { coach, loading } = useFetchCoachByUserId();
+  const { team, loading: teamLoading } = useFetchTeamById(
+    player?.currentTeam || coach?.currentTeam
   );
-  const { coach } = useFetchCoachById(team?.coach?.split(':')[1]);
-  const { trainings } = useFetchTrainingsByCoachId(coach?._id || coachId?._id);
+  const { trainings } = useFetchTrainingsByCoachId(
+    coach?._id || team?.coach?._id
+  );
 
   const activeTrainings = trainings?.filter((training) => training?.isActive);
 
@@ -22,25 +22,38 @@ const TrainingPage = () => {
     (training) => training?.isCompleted
   );
 
-  if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+  if (loading || teamLoading) {
+    return <Spinner />;
   }
 
   return (
     <>
-      <Card className='p-6  shadow-md space-y-6'>
-        <div className='flex items-center justify-between space-x-4'>
-          <p className='text-heading4-medium font-semibold'>{team?.name}</p>
-          <img src={team?.logo} alt='team logo' className='h-16 w-16' />
-        </div>
-      </Card>
-      <ActiveTrainings trainings={activeTrainings} />
+      {coach?.currentTeam || player?.currentTeam ? (
+        <>
+          <Card className='p-6  shadow-md space-y-6'>
+            <div className='flex items-center justify-between space-x-4'>
+              <p className='text-heading4-medium font-semibold'>{team?.name}</p>
+              <img
+                src={
+                  team?.logoUrl ||
+                  'https://d3awt09vrts30h.cloudfront.net/team_img_default.png'
+                }
+                alt='team logo'
+                className='h-16 w-16'
+              />
+            </div>
+          </Card>
+          <ActiveTrainings trainings={activeTrainings} />
 
-      <ActiveTrainings trainings={completedTrainings} isArchived />
+          <ActiveTrainings trainings={completedTrainings} isArchived />
+        </>
+      ) : (
+        <div className='flex items-center justify-center h-full'>
+          <p className='text-heading4-medium font-semibold'>
+            You are not assigned to any team.
+          </p>
+        </div>
+      )}
     </>
   );
 };
