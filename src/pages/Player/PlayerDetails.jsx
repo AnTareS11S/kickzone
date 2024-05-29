@@ -1,107 +1,146 @@
-import { useEffect, useState } from 'react';
 import Spinner from '../../components/Spinner';
 import {
   Card,
   CardContent,
-  CardFooter,
+  CardDescription,
   CardHeader,
+  CardTitle,
 } from '../../components/ui/card';
 import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
+import { useParams } from 'react-router-dom';
+import { useFetchPlayerById } from '../../components/hooks/useFetchPlayerById';
+import CustomDataTable from '../../components/CustomDataTable';
+import { useFetchPlayerStatsById } from '../../components/hooks/useFetchPlayerStatsById';
+import {
+  FaFlag,
+  FaRulerVertical,
+  FaWeight,
+  FaBirthdayCake,
+} from 'react-icons/fa';
 
 const PlayerDetails = () => {
-  const [player, setPlayer] = useState({});
-  const [loading, setLoading] = useState(false);
-  const pathname = window.location.pathname.split('/').pop();
+  const playerId = useParams().id;
+  const { player, loading } = useFetchPlayerById(playerId);
+  const { playerStats } = useFetchPlayerStatsById(playerId);
 
-  useEffect(() => {
-    const getPlayer = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/player/${pathname}`);
-        const data = await res.json();
-        setPlayer(data);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const columns = [
+    {
+      name: 'Season',
+      selector: (row) => row.season,
+      sortable: true,
+    },
+    {
+      name: 'Goals',
+      selector: (row) => row.goals,
+      sortable: true,
+      grow: 0.5,
+    },
+    {
+      name: 'Assists',
+      selector: (row) => row.assists,
+      sortable: true,
+      grow: 0.5,
+    },
+    {
+      name: 'Yellow Cards',
+      selector: (row) => row.yellowCards,
+      sortable: true,
+      grow: 0.5,
+    },
+    {
+      name: 'Red Cards',
+      selector: (row) => row.redCards,
+      sortable: true,
+      grow: 0.5,
+    },
+    {
+      name: 'Clean Sheets',
+      selector: (row) => row.cleanSheets,
+      sortable: true,
+      grow: 0.5,
+    },
+    {
+      name: 'Own Goals',
+      selector: (row) => row.ownGoals,
+      sortable: true,
+      grow: 0.5,
+    },
+    {
+      name: 'Minutes Played',
+      selector: (row) => row.minutesPlayed,
+      sortable: true,
+      grow: 0.5,
+    },
+  ];
 
-    getPlayer();
-  }, [pathname]);
+  if (loading) {
+    return <Spinner />;
+  }
 
-  if (loading)
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
   return (
-    <article>
+    <article className='py-8'>
       <BackButton />
       <Separator />
-      <Card className='max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-lg'>
-        <CardHeader>
-          <img
-            src={
-              player.photo ||
-              'https://firebasestorage.googleapis.com/v0/b/futbolistapro.appspot.com/o/avatars%2Fblank-profile-picture-973460_960_720.webp?alt=media&token=5779eb88-d84b-46f3-bef6-3c2648a8fc9c'
-            }
-            alt={`${player.name} ${player.surname}`}
-            className='w-48 h-48 mx-auto object-cover rounded-full shadow-md border-4 border-primary-500'
-          />
-          <div className='mt-4 text-center'>
-            <h2 className='text-3xl font-bold text-primary-500'>
-              {player.name} {player.surname}
-            </h2>
-            <p className='text-gray-600'>{player.position}</p>
-            <p className='text-gray-700 mt-6'>{player.bio}</p>
+      <Card className='bg-white shadow-lg rounded-lg flex flex-col'>
+        <CardHeader className='bg-gray-100 p-6  md:flex-row items-center'>
+          <div className='w-40 h-40 rounded-full  mb-4 md:mb-0 md:mr-6'>
+            <img
+              src={
+                player?.imageUrl ||
+                'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+              }
+              alt={`Photo of ${player?.name}`}
+              className='object-cover w-full h-full'
+            />
+          </div>
+          <div>
+            <CardTitle className='text-2xl font-bold mb-2'>
+              {player?.name + ' ' + player?.surname}
+            </CardTitle>
+            <CardDescription className='text-gray-600'>
+              {player?.position} | {player?.currentTeam}
+            </CardDescription>
           </div>
         </CardHeader>
-        <CardContent className='mt-6'>
-          <h3 className='text-2xl font-semibold mb-4 text-primary-500'>
-            Player Details:
-          </h3>
-          <ul className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-            <li>
-              <span className='font-semibold'>Age:</span> {player.age}
-            </li>
-            <li>
-              <span className='font-semibold'>Footed:</span> {player.footed}
-            </li>
-            <li>
-              <span className='font-semibold'>Height:</span> {player.height} cm
-            </li>
-            <li>
-              <span className='font-semibold'>Weight:</span> {player.weight} kg
-            </li>
-            <li>
-              <span className='font-semibold'>Nationality:</span>{' '}
-              {player.nationality}
-            </li>
-            <li>
-              <span className='font-semibold'>Number:</span> {player.number}
-            </li>
-          </ul>
+        <CardContent className='p-6 grid grid-cols-1 md:grid-cols-2 gap-8'>
+          <div>
+            <h3 className='text-lg font-semibold mb-2'>Personal Information</h3>
+            <div className='flex items-center mb-2'>
+              <FaBirthdayCake className='text-gray-500 mr-2' />
+              <p className='text-gray-700'>{player?.age}</p>
+            </div>
+            <div className='flex items-center mb-2'>
+              <FaFlag className='text-gray-500 mr-2' />
+              <p className='text-gray-700'>{player?.nationality}</p>
+            </div>
+            <div className='flex items-center mb-2'>
+              <FaRulerVertical className='text-gray-500 mr-2' />
+              <p className='text-gray-700'>{player?.height}</p>
+            </div>
+            <div className='flex items-center mb-2'>
+              <FaWeight className='text-gray-500 mr-2' />
+              <p className='text-gray-700'>{player?.weight}</p>
+            </div>
+          </div>
+          <div>
+            <h3 className='text-lg font-semibold mb-2'>Previous Teams</h3>
+            <ul className='list-disc pl-4 text-gray-700'>
+              {player.teams?.map((team, index) => (
+                <li key={index}>{team.split(':')[0]}</li>
+              ))}
+            </ul>
+          </div>
         </CardContent>
-        <CardFooter className='mt-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
-          <div>
-            <h3 className='text-2xl font-semibold mb-4 text-primary-500'>
-              Current Team:
-            </h3>
-            {player.currentTeam && (
-              <p className='text-gray-700'>{player.currentTeam}</p>
-            )}
-          </div>
-
-          <div>
-            <h3 className='text-2xl font-semibold mb-4 text-primary-500'>
-              Previous Teams:
-            </h3>
-            {player.teams && <p className='text-gray-700'>{player.teams}</p>}
-          </div>
-        </CardFooter>
+        <div className='p-6 grid'>
+          <h3 className='text-lg font-semibold mb-4'>Player Stats</h3>
+          <CustomDataTable
+            columns={columns}
+            data={playerStats}
+            pending
+            searchable={false}
+          />
+        </div>
       </Card>
     </article>
   );
