@@ -6,6 +6,7 @@ import Spinner from '../../components/Spinner';
 const Leagues = () => {
   const [leagues, setLeagues] = useState([]);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const getLeagues = async () => {
       try {
@@ -23,20 +24,20 @@ const Leagues = () => {
   }, []);
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
     <>
-      <div className='text-heading2-bold mb-4'>Leagues</div>
-      <Separator />
-      <section className='mt-9 gap-10'>
-        <LeagueCard data={leagues} />
-      </section>
+      <div className='flex flex-col gap-6 p-4 md:p-8'>
+        <div className='flex flex-row items-center justify-between'>
+          <h1 className='text-2xl font-bold text-gray-800 mr-2'>Leagues</h1>
+          <Separator />
+        </div>
+        <div>
+          <LeagueCard data={leagues} />
+        </div>
+      </div>
     </>
   );
 };
