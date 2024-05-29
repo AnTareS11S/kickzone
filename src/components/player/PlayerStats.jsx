@@ -14,7 +14,23 @@ const PlayerStats = ({ leagueId, type }) => {
         setLoading(true);
         const res = await fetch(`/api/player/top-stats/${leagueId}`);
         if (res.ok) {
-          const data = await res.json();
+          let data = await res.json();
+          data = data.filter((player) => {
+            switch (type) {
+              case 'goals':
+                return player.goals > 0;
+              case 'assists':
+                return player.assists > 0;
+              case 'yellowCards':
+                return player.yellowCards > 0;
+              case 'redCards':
+                return player.redCards > 0;
+              case 'cleanSheets':
+                return player.cleanSheets > 0;
+              default:
+                return false;
+            }
+          });
           setPlayersStats(data);
         }
       } catch (error) {
@@ -25,7 +41,7 @@ const PlayerStats = ({ leagueId, type }) => {
     };
 
     fetchPlayersStats();
-  }, [leagueId]);
+  }, [leagueId, type]);
 
   const columns = [
     {
@@ -38,7 +54,12 @@ const PlayerStats = ({ leagueId, type }) => {
       selector: (row) => {
         return (
           <div className='flex items-center'>
-            <Link to={`/player/${row.playerId}`}>{row.name}</Link>
+            <Link
+              to={`/player/${row.playerId}`}
+              className=' hover:text-purple-500'
+            >
+              {row.name}
+            </Link>
           </div>
         );
       },
@@ -50,11 +71,16 @@ const PlayerStats = ({ leagueId, type }) => {
         return (
           <div className='flex items-center'>
             <img
-              src={row.logo}
+              src={row.logoUrl}
               alt={row.name}
               className='w-8 h-8 object-contain rounded-full mr-2'
             />
-            <Link to={`/league/team/${row.teamId}`}>{row.team}</Link>
+            <Link
+              to={`/league/team/${row.teamId}`}
+              className=' hover:text-purple-500'
+            >
+              {row.team}
+            </Link>
           </div>
         );
       },
@@ -84,15 +110,11 @@ const PlayerStats = ({ leagueId, type }) => {
   ];
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
-    <Card className='flex flex-col mt-5 w-full rounded-none shadow-md'>
+    <Card className='grid mt-5 w-full rounded-none shadow-md'>
       <CustomDataTable
         columns={columns}
         data={playersStats}
