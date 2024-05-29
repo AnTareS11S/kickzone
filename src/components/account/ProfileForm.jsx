@@ -2,94 +2,72 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../ui/form';
-
-import { useDispatch, useSelector } from 'react-redux';
-
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
-
-import uploadFile from '../../lib/uploadFile';
 import FormArea from '../FormArea';
-import { updateUserSuccess } from '../../redux/user/userSlice';
 import { useToast } from '../ui/use-toast';
+import Spinner from '../Spinner';
+import { useFetchUserById } from '../hooks/useFetchUserById';
+import { FaUserAlt, FaEnvelope, FaInfoCircle, FaImage } from 'react-icons/fa';
+import { Card } from '../ui/card';
 
 const profileFormSchema = z.object({
   username: z
     .string()
-    .min(4, {
-      message: 'Username must be at least 4 characters.',
-    })
-    .max(30, {
-      message: 'Username must not be longer than 30 characters.',
-    }),
+    .min(4, { message: 'Username must be at least 4 characters.' })
+    .max(30, { message: 'Username must not be longer than 30 characters.' }),
   email: z.string().email().min(4, { message: 'Email must be valid.' }),
   bio: z
     .string()
-    .max(160, {
-      message: 'Bio must not be longer than 160 characters.',
-    })
-    .min(4, {
-      message: 'Bio must be at least 4 characters.',
-    }),
+    .min(4, { message: 'Bio must be at least 4 characters.' })
+    .max(160, { message: 'Bio must not be longer than 160 characters.' }),
 });
 
 const ProfileForm = () => {
-  const { currentUser } = useSelector((state) => state.user);
   const fileRef = useRef(null);
-  const [file, setFile] = useState('');
-  const [updateSuccess, setUpdateSuccess] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const dispatch = useDispatch();
+  const [file, setFile] = useState();
+  const [isChanged, setIsChanged] = useState(false);
+  const { user, loading } = useFetchUserById(isChanged);
   const { toast } = useToast();
-
   const form = useForm({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
-      username: currentUser?.username,
-      email: currentUser?.email,
-      bio: currentUser?.bio,
-      photo: currentUser?.photo,
+      name: '',
+      email: '',
+      bio: '',
+      photo: '',
     },
     mode: 'onChange',
   });
 
   useEffect(() => {
-    const handleFileUpload = async () => {
-      if (!file) return;
-
-      await uploadFile(file, setFile, setUploadProgress);
-
-      form.setValue('photo', file);
-    };
-
-    handleFileUpload();
-  }, [file, form, setFile, setUploadProgress]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      setUpdateSuccess(false);
-    }, 3000);
-
-    return () => clearTimeout(timeoutId);
-  }, [updateSuccess]);
+    if (user) {
+      form.reset({
+        username: user?.username || '',
+        email: user?.email || '',
+        bio: user?.bio || '',
+        photo: user?.imageUrl || '',
+      });
+    }
+  }, [user, form, isChanged]);
 
   const onSubmit = async (formData) => {
-    const updatedData = { ...formData, photo: form.getValues('photo') };
-
+    const data = new FormData();
+    data.append('photo', file || user?.photo);
+    data.append('username', formData.username);
+    data.append('email', formData.email);
+    data.append('bio', formData.bio);
     try {
-      const res = await fetch(`/api/user/edit/${currentUser?._id}`, {
+      const res = await fetch(`/api/user/add/${user?._id}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
+        body: data,
       });
-
       if (res.ok) {
         toast({
           title: 'Success!',
           description: 'User profile updated successfully',
         });
+        setIsChanged(!isChanged);
       } else {
         toast({
           title: 'Error!',
@@ -97,55 +75,76 @@ const ProfileForm = () => {
           variant: 'destructive',
         });
       }
-
-      dispatch(updateUserSuccess({ ...currentUser, ...updatedData }));
-
-      setUpdateSuccess(true);
     } catch (error) {
       console.log(error);
     }
   };
 
-  return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className='flex flex-col space-y-4'
-      >
-        <FormArea
-          id='username'
-          label='Username'
-          type='text'
-          form={form}
-          name='username'
-        />
-        <FormArea
-          id='email'
-          label='Email'
-          type='text'
-          form={form}
-          name='email'
-        />
-        <FormArea id='bio' label='Bio' type='textarea' form={form} name='bio' />
-        <FormArea
-          id='photo'
-          label='Photo'
-          type='file'
-          form={form}
-          name='photo'
-          fileRef={fileRef}
-          setFile={setFile}
-          currentUserPhoto={currentUser?.photo}
-          uploadProgress={uploadProgress}
-        />
+  if (loading) {
+    return <Spinner />;
+  }
 
-        <div className='flex justify-start items-center'>
-          <Button type='submit' className='bg-primary-500 hover:bg-purple-500'>
-            Save
-          </Button>
-        </div>
-      </form>
-    </Form>
+  return (
+    <Card className='px-4 py-8'>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <div className='flex flex-row items-center mb-6'>
+            <FormArea
+              id='username'
+              label='Username'
+              type='text'
+              form={form}
+              name='username'
+              icon={<FaUserAlt className='text-gray-500' />}
+            />
+          </div>
+          <div className='mb-6'>
+            <FormArea
+              id='email'
+              label='Email'
+              type='text'
+              form={form}
+              name='email'
+              icon={<FaEnvelope className='text-gray-500' />}
+            />
+          </div>
+          <div className='mb-6'>
+            <FormArea
+              id='bio'
+              label='Bio'
+              type='textarea'
+              form={form}
+              name='bio'
+              icon={<FaInfoCircle className='text-gray-500' />}
+            />
+          </div>
+          <div className='mb-6'>
+            <FormArea
+              id='photo'
+              label='Photo'
+              type='file'
+              form={form}
+              name='photo'
+              fileRef={fileRef}
+              setFile={setFile}
+              currentUserPhoto={
+                user?.imageUrl ||
+                'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+              }
+              icon={<FaImage className='text-gray-500' />}
+            />
+          </div>
+          <div className='flex justify-end'>
+            <Button
+              type='submit'
+              className='bg-primary-500 hover:bg-primary-600 text-white px-6 py-3 rounded-md shadow transition-colors duration-300'
+            >
+              Save
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </Card>
   );
 };
 
