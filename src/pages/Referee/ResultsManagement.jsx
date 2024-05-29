@@ -9,40 +9,47 @@ import {
 import NotFilledMatches from './NotFilledMatches';
 import FilledMatches from './FilledMatches';
 import BackButton from '../../components/BackButton';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useFetchFilledResultMatches } from '../../components/hooks/useFetchFilledResultMatches';
 import Spinner from '../../components/Spinner';
 
 const ResultsManagement = () => {
-  const pathname = useLocation().pathname.split('/')[5];
+  const leagueId = useParams().id;
   const { matches: notFilledMatches, loading } =
-    useFetchCompletedMatches(pathname);
-  const filledMatches = useFetchFilledResultMatches(pathname);
+    useFetchCompletedMatches(leagueId);
+  const { matches: filledMatches } = useFetchFilledResultMatches(leagueId);
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
-    <div className='container mx-auto space-y-6'>
+    <div className='container mx-auto px-4 py-8 md:px-6 lg:px-8'>
       <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Results</div>
-        <p className='text-sm text-muted-foreground'>
-          Manage match results here.
-        </p>
+      <div className='mb-6'>
+        <h1 className='text-3xl font-bold mb-2'>Match Results</h1>
+        <p className='text-gray-600'>Manage match results here.</p>
       </div>
 
       <Separator />
 
-      <Tabs defaultValue='notFilled' className='w-full'>
+      <Tabs
+        defaultValue='notFilled'
+        className='bg-white rounded-lg shadow-md p-6'
+      >
         <TabsList className='grid w-full grid-cols-2'>
-          <TabsTrigger value='notFilled'>Not Filled</TabsTrigger>
-          <TabsTrigger value='filled'>Filled</TabsTrigger>
+          <TabsTrigger
+            value='notFilled'
+            className='py-2 px-4 bg-gray-200 rounded-md text-gray-600 font-medium hover:bg-gray-300 transition-colors'
+          >
+            Not Filled
+          </TabsTrigger>
+          <TabsTrigger
+            value='filled'
+            className='py-2 px-4 bg-gray-200 rounded-md text-gray-600 font-medium hover:bg-gray-300 transition-colors'
+          >
+            Filled
+          </TabsTrigger>
         </TabsList>
         <TabsContent value='notFilled'>
           <NotFilledMatches matches={notFilledMatches} />
