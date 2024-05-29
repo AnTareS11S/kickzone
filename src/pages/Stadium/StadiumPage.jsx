@@ -1,13 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Spinner from '../../components/Spinner';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../../components/ui/card';
+import { CardDescription, CardTitle } from '../../components/ui/card';
 
 import {
   APIProvider,
@@ -19,7 +13,7 @@ import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
 
 const StadiumPage = () => {
-  const stadiumId = useLocation().pathname.split('/').pop();
+  const stadiumId = useParams().id;
   const [stadium, setStadium] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
@@ -45,71 +39,56 @@ const StadiumPage = () => {
     getStadium();
   }, [stadiumId]);
 
-  if (loading)
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
-    <>
+    <div className='bg-white shadow-lg rounded-lg p-6 md:p-8 lg:p-10'>
       <BackButton />
       <Separator />
-      <Card className='bg-white shadow-lg p-6 rounded-md'>
-        <CardHeader className='mb-4 flex items-center flex-row'>
-          <div className='w-40 h-40'>
-            <img
-              src={
-                stadium.photo ||
-                'https://firebasestorage.googleapis.com/v0/b/futbolistapro.appspot.com/o/avatars%2Fstadium.jpg?alt=media&token=86bfc18b-e2ba-46c5-ab9c-358ec82c7aa0'
-              }
-              alt={`Photo of ${stadium.name}`}
-              className='object-cover rounded-full mt-4'
-            />
+      <div className='flex flex-col md:flex-row md:items-center'>
+        <div className='w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 rounded-full overflow-hidden mb-4 md:mb-0 md:mr-6'>
+          <img
+            src={stadium.imageUrl}
+            alt={`Photo of ${stadium.name}`}
+            className='object-cover w-full h-full'
+          />
+        </div>
+        <div className='flex-grow'>
+          <CardTitle className='text-heading2-semibold mb-2'>
+            {stadium.name}
+          </CardTitle>
+          <CardDescription className='text-gray-600 mb-4'>
+            {stadium.history}
+          </CardDescription>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4'>
+            <div>
+              <p className='text-sm font-semibold text-gray-500'>Country:</p>
+              <p className='text-gray-800'>{stadium?.country?.name}</p>
+            </div>
+            <div>
+              <p className='text-sm font-semibold text-gray-500'>City:</p>
+              <p className='text-gray-800'>{stadium.city}</p>
+            </div>
+            <div>
+              <p className='text-sm font-semibold text-gray-500'>Capacity:</p>
+              <p className='text-gray-800'>
+                {stadium.capacity ? `${stadium.capacity} seats` : 'N/A'}
+              </p>
+            </div>
           </div>
-          <div className='ml-4 flex flex-col justify-between'>
-            <CardTitle className='text-heading2-semibold mb-2'>
-              {stadium.name}
-            </CardTitle>
-            <CardDescription className='text-gray-700'>
-              {stadium.history}
-            </CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className='grid grid-cols-2 gap-6 pl-12'>
-          <div>
-            <p className='text-sm font-semibold text-gray-500'>Country:</p>
-            <p className='text-gray-800'>{stadium?.country?.name}</p>
-          </div>
-          <div>
-            <p className='text-sm font-semibold text-gray-500'>City:</p>
-            <p className='text-gray-800'>{stadium.city}</p>
-          </div>
-          <div>
-            <p className='text-sm font-semibold text-gray-500'>Capacity:</p>
-            <p className='text-gray-800'>
-              {stadium.capacity ? `${stadium.capacity} seats` : 'N/A'}
-            </p>
-          </div>
-          <div>
-            <p className='text-sm font-semibold text-gray-500'>Teams:</p>
-            <ul className='list-disc pl-4 text-gray-800'>
-              {stadium.teams?.map((team, index) => (
-                <li key={index}>{team.split(':')[0]}</li>
-              ))}
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
       {position ? (
-        <div style={{ height: '100vh', width: '100%' }}>
+        <div className='mt-6'>
           <APIProvider apiKey={import.meta.env.VITE_REACT_APP_GOOGLE_API_KEY}>
             <Map
               defaultZoom={13}
               defaultCenter={position}
               mapId={import.meta.env.VITE_PUBLIC_MAP_ID}
               gestureHandling={'greedy'}
+              style={{ height: '400px', width: '100%' }}
             >
               <AdvancedMarker
                 position={position}
@@ -127,7 +106,7 @@ const StadiumPage = () => {
           </APIProvider>
         </div>
       ) : null}
-    </>
+    </div>
   );
 };
 
