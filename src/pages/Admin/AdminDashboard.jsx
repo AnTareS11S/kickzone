@@ -1,13 +1,15 @@
 import AdminCard from '../../components/admin/AdminCard';
-
 import { Separator } from '../../components/ui/separator';
 
 const AdminDashboard = () => {
   return (
-    <>
-      <div className='text-heading2-bold mb-4'>Admin Dashboard</div>
-      <Separator />
-      <div className='grid grid-cols-6 gap-4 max-2xl:grid-cols-3 max-lg:grid-cols-3 max-sm:grid-cols-1 max-md:grid-cols-2'>
+    <div className='flex flex-col gap-6 p-4 md:p-8'>
+      <div className='flex items-center justify-between'>
+        <h1 className='text-2xl font-bold text-gray-800'>Admin Dashboard</h1>
+        <Separator />
+      </div>
+
+      <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6'>
         <AdminCard title='Users' linkTo='/dashboard/admin/users' />
         <AdminCard title='Teams' linkTo='/dashboard/admin/teams' />
         <AdminCard title='Leagues' linkTo='/dashboard/admin/leagues' />
@@ -17,8 +19,9 @@ const AdminDashboard = () => {
         <AdminCard title='Positions' linkTo='/dashboard/admin/positions' />
         <AdminCard title='Coaches' linkTo='/dashboard/admin/coaches' />
         <AdminCard title='Seasons' linkTo='/dashboard/admin/seasons' />
+        <AdminCard title='Sponsors' linkTo='/dashboard/admin/sponsors' />
       </div>
-    </>
+    </div>
   );
 };
 
