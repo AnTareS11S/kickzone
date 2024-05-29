@@ -9,7 +9,7 @@ export const useFetchUserById = (isChanged, userId = null) => {
   useEffect(() => {
     const getUser = async () => {
       try {
-        if (!currentUser?._id) return;
+        if (!currentUser?._id && !userId) return;
         const res = await fetch(
           `/api/user/get/${userId ? userId : currentUser?._id}`
         );
