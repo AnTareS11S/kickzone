@@ -56,10 +56,10 @@ export const playerStatsFormSchema = () =>
         const parsedValue =
           typeof value === 'string' ? parseInt(value, 10) : value;
 
-        return !isNaN(parsedValue) && parsedValue >= 0;
+        return !isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 2;
       },
       {
-        message: 'Yellow Cards must be a positive number',
+        message: 'Yellow Cards must be a positive number and cannot exceed 2',
       }
     ),
     redCards: z.any().refine(
@@ -67,10 +67,10 @@ export const playerStatsFormSchema = () =>
         const parsedValue =
           typeof value === 'string' ? parseInt(value, 10) : value;
 
-        return !isNaN(parsedValue) && parsedValue >= 0;
+        return !isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 1;
       },
       {
-        message: 'Red Cards must be a positive number',
+        message: 'Red Cards must be a positive number and cannot exceed 1',
       }
     ),
     ownGoals: z.any().refine(
@@ -91,10 +91,10 @@ export const playerStatsFormSchema = () =>
           const parsedValue =
             typeof value === 'string' ? parseInt(value, 10) : value;
 
-          return !isNaN(parsedValue) && parsedValue >= 0;
+          return !isNaN(parsedValue) && parsedValue >= 0 && parsedValue <= 1;
         },
         {
-          message: 'Cleen Sheets must be a positive number',
+          message: 'Cleen Sheets must be a positive number and cannot exceed 1',
         }
       )
       .optional(),
