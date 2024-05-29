@@ -62,11 +62,11 @@ const Activity = () => {
     return <Spinner />;
   }
 
-  const visibleReplies = activity.replies.filter(
-    (reply) => !hiddenReplies.includes(reply._id)
+  const visibleReplies = activity?.replies?.filter(
+    (reply) => !hiddenReplies.includes(reply?._id)
   );
-  const visibleLikes = activity.likes.filter(
-    (like) => !hiddenLikes.includes(like._id)
+  const visibleLikes = activity?.likes?.filter(
+    (like) => !hiddenLikes.includes(like?._id)
   );
 
   return (
@@ -168,7 +168,7 @@ const Activity = () => {
         </div>
       )}
 
-      {visibleReplies.length === 0 && visibleLikes?.length === 0 && (
+      {visibleReplies?.length === 0 && visibleLikes?.length === 0 && (
         <p className='text-gray-600 text-center'>No activity yet</p>
       )}
     </div>
