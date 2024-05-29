@@ -62,14 +62,16 @@ const HomeProfile = () => {
         <CardContent className='mt-6'>
           <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
             <div className='flex items-center space-x-2'>
-              <span className='font-semibold'>Email:</span>
-              <span className='text-gray-600'>{currentUser.email}</span>
+              <p className='font-semibold'>Email:</p>
+              <p className='text-gray-600'>{currentUser?.email}</p>
             </div>
             <div className='flex items-center space-x-2'>
-              <span className='font-semibold'>Role:</span>
+              <p className='font-semibold'>Role:</p>
               <span className='text-gray-600'>
-                {currentUser?.role?.charAt(0).toUpperCase() +
-                  currentUser?.role?.slice(1)}
+                {currentUser?.role
+                  ? currentUser?.role?.charAt(0).toUpperCase() +
+                    currentUser?.role?.slice(1)
+                  : 'User'}
               </span>
             </div>
           </div>
@@ -93,16 +95,16 @@ const HomeProfile = () => {
                     height={24}
                     className='object-contain'
                   />
-                  <span className='hidden md:inline'>{tab.label}</span>
+                  <p className='hidden md:inline'>{tab.label}</p>
                   {tab.label === 'Posts' && (
-                    <span className='ml-1 rounded-sm bg-light-4 px-2 py-1 text-xs text-light-2'>
-                      {currentUser?.posts?.length}
-                    </span>
+                    <p className='ml-1 rounded-sm bg-light-4 px-2 py-1 text-xs text-light-2'>
+                      {currentUser?.posts?.length ?? 0}
+                    </p>
                   )}
                   {tab.label === 'Replies' && (
-                    <span className='ml-1 rounded-sm bg-light-4 px-2 py-1 text-xs text-light-2'>
-                      {comments?.length}
-                    </span>
+                    <p className='ml-1 rounded-sm bg-light-4 px-2 py-1 text-xs text-light-2'>
+                      {comments?.length ?? 0}
+                    </p>
                   )}
                 </TabsTrigger>
               ))}
@@ -110,11 +112,13 @@ const HomeProfile = () => {
             <TabsContent value='posts'>
               {currentUser?.posts?.length > 0 ? (
                 currentUser?.posts?.map((post) => (
-                  <Link to={`/post/${post._id}`} key={post._id}>
+                  <Link to={`/post/${post?._id}`} key={post?._id}>
                     <Card className='p-4 my-4 flex flex-row items-center justify-between bg-gray-100 rounded-lg hover:bg-gray-200'>
-                      <span className='text-heading4-medium'>{post.title}</span>
+                      <span className='text-heading4-medium'>
+                        {post?.title}
+                      </span>
                       <span className='text-gray-600'>
-                        {new Date(post.createdAt).toLocaleString('en-US', {
+                        {new Date(post?.createdAt).toLocaleString('en-US', {
                           day: 'numeric',
                           month: 'long',
                           year: 'numeric',
@@ -134,20 +138,20 @@ const HomeProfile = () => {
             <TabsContent value='replies'>
               {comments?.length > 0 ? (
                 comments?.map((comment) => (
-                  <Link to={`/post/${comment.parentId}`} key={comment._id}>
+                  <Link to={`/post/${comment?.parentId}`} key={comment?._id}>
                     <Card className='p-4 my-4 flex flex-row items-center justify-between bg-gray-100 rounded-lg hover:bg-gray-200'>
-                      <span className='text-heading4-medium'>
-                        {comment.postContent}
-                      </span>
-                      <span className='text-gray-600'>
-                        {new Date(comment.createdAt).toLocaleString('en-US', {
+                      <p className='text-heading4-medium'>
+                        {comment?.postContent}
+                      </p>
+                      <p className='text-gray-600'>
+                        {new Date(comment?.createdAt).toLocaleString('en-US', {
                           day: 'numeric',
                           month: 'long',
                           year: 'numeric',
                           hour: 'numeric',
                           minute: 'numeric',
                         })}
-                      </span>
+                      </p>
                     </Card>
                   </Link>
                 ))
