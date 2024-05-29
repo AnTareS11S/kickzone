@@ -5,8 +5,8 @@ import {
   deleteUserStart,
   deleteUserSuccess,
 } from '../../redux/user/userSlice';
-
 import ModalDialog from '../ModalDialog';
+import { Card } from '../ui/card';
 
 const DeleteAccount = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -30,18 +30,26 @@ const DeleteAccount = () => {
       dispatch(deleteUserFailure(error.message));
     }
   };
+
   return (
-    <div>
-      <h3 className='text-lg font-medium'>Account</h3>
-      <p className='text-sm text-muted-foreground'>Delete your account</p>
+    <Card className='px-4 py-8'>
+      <h2 className='text-xl font-bold mb-4'>Account Settings</h2>
+      <div className='mb-6'>
+        <h3 className='text-lg font-medium'>Delete Account</h3>
+        <p className='text-gray-500'>
+          Delete your account and remove your data from our servers.
+        </p>
+      </div>
       <ModalDialog
         title='Delete Account'
-        description='This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.'
+        description='This action cannot be undone. This will permanently delete your account and remove your data from our servers.'
         handleClick={handleDeleteUser}
         type='button'
-      />
-    </div>
+        className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded'
+      >
+        Delete Account
+      </ModalDialog>
+    </Card>
   );
 };
 
