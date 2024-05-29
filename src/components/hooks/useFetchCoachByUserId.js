@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-export const useFetchCoachByUserId = () => {
-  const { currentUser } = useSelector((state) => state.user);
+export const useFetchCoachByUserId = (isChanged) => {
+  const { currentUser } = useSelector((state) => state?.user);
   const [coach, setCoach] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -10,11 +10,15 @@ export const useFetchCoachByUserId = () => {
   useEffect(() => {
     const fetchCoachById = async () => {
       try {
-        if (!currentUser?._id) return;
+        if (!currentUser?._id || currentUser?.role !== 'coach') return;
         const res = await fetch(`/api/coach/get/${currentUser?._id}`);
-        const data = await res.json();
-        setCoach(data);
-        setLoading(false);
+        if (res.ok) {
+          const data = await res.json();
+          setCoach(data);
+          setLoading(false);
+        } else {
+          setCoach([]);
+        }
       } catch (error) {
         setError(error);
         setLoading(false);
@@ -24,7 +28,7 @@ export const useFetchCoachByUserId = () => {
     };
 
     fetchCoachById();
-  }, [currentUser?._id]);
+  }, [currentUser, isChanged]);
 
   return { coach, loading, error };
 };
