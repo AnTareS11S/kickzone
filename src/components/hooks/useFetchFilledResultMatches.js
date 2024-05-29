@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 export const useFetchFilledResultMatches = (id, isEdited) => {
+  const { currentUser } = useSelector((state) => state.user);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -8,7 +10,9 @@ export const useFetchFilledResultMatches = (id, isEdited) => {
     const fetchMatchesData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/referee/filled-matches/${id}`);
+        const res = await fetch(
+          `/api/referee/filled-matches/${id}?userId=${currentUser?._id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch matches data!');
         }
@@ -23,7 +27,7 @@ export const useFetchFilledResultMatches = (id, isEdited) => {
     };
 
     fetchMatchesData();
-  }, [id, isEdited]);
+  }, [id, isEdited, currentUser._id]);
 
-  return matches;
+  return { matches, loading };
 };
