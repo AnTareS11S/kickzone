@@ -1,24 +1,20 @@
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 
-export const useFetchPlayerById = () => {
-  const { currentUser } = useSelector((state) => state?.user);
+export const useFetchPlayerById = (id) => {
   const [player, setPlayer] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPlayerById = async () => {
       try {
-        if (!currentUser?._id) {
-          return;
-        }
-        setLoading(true);
-        const res = await fetch(`/api/player/get/${currentUser?._id}`);
+        if (!id) return;
+        const res = await fetch(`/api/player/${id}`);
         if (!res.ok) {
           throw new Error('Failed to fetch player data!');
         }
         const data = await res.json();
         setPlayer(data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
       } finally {
@@ -27,7 +23,7 @@ export const useFetchPlayerById = () => {
     };
 
     fetchPlayerById();
-  }, [currentUser]);
+  }, [id]);
 
   return { player, loading };
 };

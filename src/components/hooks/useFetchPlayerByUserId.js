@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-export const useFetchPlayerByUserId = () => {
+export const useFetchPlayerByUserId = (isChanged) => {
   const { currentUser } = useSelector((state) => state.user);
   const [player, setPlayer] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -10,7 +10,9 @@ export const useFetchPlayerByUserId = () => {
   useEffect(() => {
     const fetchPlayerById = async () => {
       try {
-        if (!currentUser?._id) return;
+        if (!currentUser?._id || currentUser?.role !== 'player') {
+          return;
+        }
         const res = await fetch(`/api/player/get/${currentUser?._id}`);
         const data = await res.json();
         setPlayer(data);
@@ -24,7 +26,7 @@ export const useFetchPlayerByUserId = () => {
     };
 
     fetchPlayerById();
-  }, [currentUser?._id]);
+  }, [currentUser?._id, currentUser?.role, isChanged]);
 
   return { player, loading, error, currentUser };
 };

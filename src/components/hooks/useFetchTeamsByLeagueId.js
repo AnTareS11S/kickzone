@@ -4,7 +4,7 @@ export const useFetchTeamsByLeagueId = (id) => {
   const [teams, setTeams] = useState([]);
   const [selectTeams, setSelectTeams] = useState([]);
   const [leagueName, setLeagueName] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTeamsByLeagueId = async () => {
@@ -12,7 +12,6 @@ export const useFetchTeamsByLeagueId = (id) => {
         if (!id) {
           return;
         }
-        setLoading(true);
         const res = await fetch(`/api/league/teams/${id}`);
         if (!res.ok) {
           throw new Error('Failed to fetch team data!');
@@ -27,8 +26,10 @@ export const useFetchTeamsByLeagueId = (id) => {
         } else {
           console.error('Error: data is not an array');
         }
+        setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
