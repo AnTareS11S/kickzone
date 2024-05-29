@@ -3,58 +3,36 @@ export const teamFormSchema = (isEdit) =>
   z.object({
     name: z
       .string()
+      .trim()
       .min(1, {
-        message: 'Name must be at least 4 characters.',
+        message: 'Name must be at least 4 characters',
       })
       .max(30, {
-        message: 'Name must not be longer than 30 characters.',
-      })
-      .refine(
-        async (value) => {
-          if (!isEdit) {
-            const res = await fetch('/api/team/check', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ name: value, isEdit }),
-            });
-            const data = await res.json();
-            return data.success;
-          }
-          return true; // For edit mode, skip the check
-        },
-        {
-          message: 'Team name already exists.',
-        }
-      ),
-
+        message: 'Name must not be longer than 30 characters',
+      }),
     yearFounded: z.any().refine(
       (value) => {
-        // If the value is a string, try to parse it as an integer
         const parsedValue =
           typeof value === 'string' ? parseInt(value, 10) : value;
-        // Validate that the parsed value is a positive integer
         return !isNaN(parsedValue) && parsedValue > 0;
       },
       {
         message: 'Year founded must be a positive integer',
       }
     ),
-    coach: z.string().min(1, {
-      message: 'Coach is required',
-    }),
-    city: z.string().min(1, {
+    coach: z.string().nullable(),
+    city: z.string().trim().min(1, {
       message: 'City is required',
     }),
     country: z.string().min(1, {
       message: 'Country is required',
     }),
-    logo: z.string().optional(),
-    bio: z.string().min(1, {
-      message: 'Bio is required',
-    }),
-    stadium: z.string().min(1, {
-      message: 'Stadium is required',
-    }),
+    sponsor: z.string().nullable(),
+    logo: isEdit
+      ? z.any().nullable()
+      : z.instanceof(File, {
+          message: 'Logo is required',
+        }),
+    bio: z.string().trim(),
+    stadium: z.string().nullable(),
   });
