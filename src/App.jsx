@@ -2,7 +2,6 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
-import PrivateRoute from './pages/PrivateRoute';
 import SettingsLayout from './pages/SettingsLayout';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
@@ -55,6 +54,7 @@ import AssignReferee from './pages/Referee/AssignReferee';
 import PageNotFound from './pages/PageNotFound';
 import SponsorManage from './pages/Sponsor/SponsorMange';
 import MatchDetails from './pages/Referee/MatchDetails';
+import Onboarding from './pages/Onboarding';
 
 const App = () => {
   return (
@@ -70,6 +70,7 @@ const App = () => {
           <Route path='/post/comment/edit/:id' element={<CommentEdit />} />
           <Route path='/activity' element={<Activity />} />
           <Route path='/search' element={<Search />} />
+          <Route path='/onboarding' element={<Onboarding />} />
           <Route path='/profile/:id' element={<HomeProfile />} />
           <Route path='/leagues' element={<Leagues />} />
           <Route path='/league/:id' element={<LeaguePage />} />
@@ -81,6 +82,7 @@ const App = () => {
           <Route path='/training' element={<TrainingPage />} />
           <Route path='/training/:id' element={<TrainingDetails />} />
           <Route path='/results/:id' element={<ResultDetails />} />
+
           <Route path='/dashboard/referee' element={<RefereeRoute />}>
             <Route path='/dashboard/referee' element={<LeagueScheduleCard />} />
             <Route
@@ -108,6 +110,7 @@ const App = () => {
               element={<MatchDetails />}
             />
           </Route>
+
           <Route path='/dashboard/admin' element={<AdminRoute />}>
             <Route path='/dashboard/admin' element={<AdminDashboard />} />
             <Route path='/dashboard/admin/users' element={<UserManage />} />
@@ -136,6 +139,7 @@ const App = () => {
               element={<SponsorManage />}
             />
           </Route>
+
           <Route path='/dashboard/coach' element={<CoachRoute />}>
             <Route path='/dashboard/coach' element={<CoachDashboard />} />
             <Route path='/dashboard/coach/team' element={<CoachTeamView />} />
@@ -149,6 +153,7 @@ const App = () => {
             />
           </Route>
         </Route>
+
         <Route path='/sign-in' element={<Signin />} />
         <Route path='/sign-up' element={<Signup />} />
 
@@ -162,16 +167,6 @@ const App = () => {
             <Route path='/user/player/profile' element={<PlayerProfile />} />
           </Route>
           <Route path='/user/coach/profile' element={<CoachProfile />} />
-          <Route path='/user/coach/team' element={<CoachTeamView />} />
-          <Route path='/user/coach/training' element={<TrainingManage />} />
-          <Route
-            path='/user/coach/training-type'
-            element={<TrainingTypeManage />}
-          />
-        </Route>
-
-        <Route element={<PrivateRoute />}>
-          <Route path='/user' element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>
