@@ -6,12 +6,12 @@ import {
   TableHeader,
   TableRow,
 } from '../../ui/table';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../../Spinner';
 import { useFetchTeamPlayers } from '../../hooks/useFetchTeamPlayers';
 
 const SquadTable = () => {
-  const teamId = useLocation().pathname.split('/').pop();
+  const teamId = useParams().id;
   const navigate = useNavigate();
   const { players: playersData, loading } = useFetchTeamPlayers(teamId);
 
@@ -33,40 +33,54 @@ const SquadTable = () => {
     );
 
     return (
-      <div className='mb-4 mt-5 w-full flex flex-col'>
-        <h2 className='text-heading4-medium mb-2 text-center text-gray-700 bg-slate-200 p-3'>
+      <div className='mb-8'>
+        <h2 className='text-2xl font-semibold text-gray-800 mb-4'>
           {position}
         </h2>
         <div className='overflow-x-auto'>
-          <Table className='min-w-full'>
-            <TableHeader className='border-b'>
+          <Table className='min-w-full divide-y divide-gray-200 shadow-sm'>
+            <TableHeader className='bg-gray-50'>
               <TableRow>
-                <TableHead className='py-3 px-4 w-1/6 max-sm:hidden'></TableHead>
-                <TableHead className='py-3 px-4 w-2/6'>Name</TableHead>
-                <TableHead className='py-3 px-4 w-2/6'>Surname</TableHead>
-                <TableHead className='py-3 px-4 w-1/6'>Age</TableHead>
+                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  Image
+                </TableHead>
+                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  Name
+                </TableHead>
+                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  Surname
+                </TableHead>
+                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
+                  Age
+                </TableHead>
               </TableRow>
             </TableHeader>
-            <TableBody>
+            <TableBody className='bg-white divide-y divide-gray-200'>
               {filteredPlayers.map((player) => (
                 <TableRow
                   key={player._id}
-                  className='border-b border-gray-300 hover:bg-gray-200 cursor-pointer'
+                  className='hover:bg-gray-100 cursor-pointer'
                   onClick={() => navigate(`/player/${player._id}`)}
                 >
-                  <TableCell className='py-2 px-4 max-sm:hidden'>
+                  <TableCell className='px-6 py-4 whitespace-nowrap'>
                     <img
                       src={
-                        player.photo ||
-                        'https://firebasestorage.googleapis.com/v0/b/futbolistapro.appspot.com/o/avatars%2Fblank-profile-picture-973460_960_720.webp?alt=media&token=5779eb88-d84b-46f3-bef6-3c2648a8fc9c'
+                        player?.imageUrl ||
+                        'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
                       }
                       alt={player.name}
-                      className='object-cover w-12 h-12 rounded-full'
+                      className='w-10 h-10 rounded-full object-cover'
                     />
                   </TableCell>
-                  <TableCell className='py-2 px-4'>{player.name}</TableCell>
-                  <TableCell className='py-2 px-4'>{player.surname}</TableCell>
-                  <TableCell className='py-2 px-4'>{player.age}</TableCell>
+                  <TableCell className='px-6 py-4 whitespace-nowrap'>
+                    {player.name}
+                  </TableCell>
+                  <TableCell className='px-6 py-4 whitespace-nowrap'>
+                    {player.surname}
+                  </TableCell>
+                  <TableCell className='px-6 py-4 whitespace-nowrap'>
+                    {player.age}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -77,18 +91,18 @@ const SquadTable = () => {
   };
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
-    <div className=''>
-      {Object.keys(playerPositions).map((position) => (
-        <div key={position}>{renderPlayerList(position)}</div>
-      ))}
+    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+      {playersData?.length ? (
+        Object.keys(playerPositions).map((position) => (
+          <div key={position}>{renderPlayerList(position)}</div>
+        ))
+      ) : (
+        <p className='text-center text-gray-500'>No players found</p>
+      )}
     </div>
   );
 };
