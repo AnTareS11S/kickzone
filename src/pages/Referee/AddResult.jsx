@@ -1,4 +1,4 @@
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Separator } from '../../components/ui/separator';
 import BackButton from '../../components/BackButton';
 import { useFetchMatchById } from '../../components/hooks/useFetchMatchById';
@@ -50,9 +50,9 @@ const columns = [
 ];
 
 const AddResult = () => {
-  const pathname = useLocation().pathname.split('/').pop();
-  const { match } = useFetchMatchById(pathname);
-  const { result, loading } = useFetchMatchResultById(pathname);
+  const matchId = useParams().id;
+  const { match, loading } = useFetchMatchById(matchId);
+  const { result } = useFetchMatchResultById(matchId);
   const { toast } = useToast();
 
   const form = useForm({
@@ -67,8 +67,8 @@ const AddResult = () => {
   useEffect(() => {
     if (result) {
       form.reset({
-        homeTeamScore: result?.result?.homeTeamScore,
-        awayTeamScore: result?.result?.awayTeamScore,
+        homeTeamScore: result?.result?.homeTeamScore || 0,
+        awayTeamScore: result?.result?.awayTeamScore || 0,
       });
     }
   }, [result, form]);
@@ -102,111 +102,109 @@ const AddResult = () => {
   };
 
   if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (
-    <>
-      <div className='container mx-auto space-y-6'>
-        <BackButton />
+    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+      <BackButton />
+      <div className='mt-8'>
+        <h2 className='text-2xl font-semibold text-gray-800 mb-2'>
+          Match Details
+        </h2>
+        <p className='text-sm text-gray-600 mb-6'>Add match result here.</p>
+      </div>
+      <Separator />
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-8 mb-8'>
         <div>
-          <div className='text-heading2-bold'>Match Details</div>
-          <p className='text-sm text-muted-foreground'>
-            Add match result here.
+          <p className='text-lg font-semibold text-gray-800 mb-2'>Match Date</p>
+          <p className='text-gray-600'>
+            {new Date(match.startDate).toLocaleString('en-US', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+            })}
           </p>
         </div>
-        <Separator />
-        <div className='grid w-full'>
-          <div>
-            <div className='grid grid-cols-2 gap-4'>
-              <p className='text-heading4-medium'>
-                {new Date(match.startDate).toLocaleString('en-US', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                })}
-              </p>
-            </div>
-          </div>
-          <div>
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className='flex flex-row items-center gap-4 w-full mt-4 max-sm:grid-cols-1'
-              >
+        <div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className='flex flex-col items-end max-sm:items-start max-md:items-start'>
                 <FormArea
                   id='homeTeamScore'
                   label={`${match?.homeTeam?.name} Score`}
                   type='number'
                   form={form}
                   name='homeTeamScore'
-                  styles='max-sm:w-[290px]'
+                  className='w-auto'
                 />
+
                 <FormArea
                   id='awayTeamScore'
                   label={`${match?.awayTeam?.name} Score`}
                   type='number'
                   form={form}
                   name='awayTeamScore'
-                  styles='max-sm:w-[290px]'
+                  className='w-auto'
                 />
-
+              </div>
+              <div className='flex flex-col md:flex-row justify-end max-sm:w-fit max-md:w-fit'>
                 <Button
                   type='submit'
                   disabled={!form.formState.isValid}
-                  className='w-[290px] bg-primary-500 hover:bg-purple-500 mt-6'
+                  className='w-auto bg-primary-500 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded mt-4 md:mt-0'
                 >
                   Save
                 </Button>
-              </form>
-            </Form>
-          </div>
-        </div>
-        <Separator />
-        <div>
-          <div className='text-heading2-bold'>Player Stats</div>
-          <p className='text-sm text-muted-foreground'>
-            Add player stats for this match.
-          </p>
-        </div>
-        <Separator />
-        <div>
-          <div className='text-heading2-bold'>
-            {match?.homeTeam?.name} players:
-          </div>
-          <CrudPanel
-            apiPath='team-player'
-            objectId={match?.homeTeam?._id}
-            columns={columns}
-            title='Player'
-            formSchema={resultFormSchema}
-            isAction={false}
-            isExpandable={true}
-          />
-        </div>
-        <Separator />
-        <div>
-          <div className='text-heading2-bold'>
-            {match?.awayTeam?.name} players:
-          </div>
-          <CrudPanel
-            apiPath='team-player'
-            objectId={match?.awayTeam?._id}
-            columns={columns}
-            title='Player'
-            formSchema={resultFormSchema}
-            isAction={false}
-            isExpandable={true}
-          />
+              </div>
+            </form>
+          </Form>
         </div>
       </div>
-    </>
+      <Separator />
+      <div className='mt-8'>
+        <h2 className='text-2xl font-semibold text-gray-800 mb-2'>
+          Player Stats
+        </h2>
+        <p className='text-sm text-gray-600 mb-6'>
+          Add player stats for this match.
+        </p>
+      </div>
+      <Separator />
+      {match?.homeTeam ? (
+        <div className='mt-8'>
+          <h3 className='text-xl font-semibold text-gray-800 mb-4'>
+            {match?.homeTeam?.name} players:
+          </h3>
+          <CrudPanel
+            apiPath={`team-player/${match?.homeTeam?._id}`}
+            columns={columns}
+            title='Player'
+            formSchema={resultFormSchema}
+            isAction={false}
+            isExpandable={true}
+          />
+        </div>
+      ) : null}
+      <Separator />
+      {match?.awayTeam ? (
+        <div className='mt-8'>
+          <h3 className='text-xl font-semibold text-gray-800 mb-4'>
+            {match?.awayTeam?.name} players:
+          </h3>
+          <CrudPanel
+            apiPath={`team-player/${match?.awayTeam?._id}`}
+            columns={columns}
+            title='Player'
+            formSchema={resultFormSchema}
+            isAction={false}
+            isExpandable={true}
+          />
+        </div>
+      ) : null}
+    </div>
   );
 };
 
