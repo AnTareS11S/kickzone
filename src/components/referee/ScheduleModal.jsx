@@ -4,6 +4,7 @@ import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -13,7 +14,7 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { Form } from '../ui/form';
-import Spinner from '../Spinner';
+import { useToast } from '../ui/use-toast';
 
 const schema = z.object({
   homeTeam: z.string().min(1, { message: 'Home team is required' }),
@@ -22,7 +23,7 @@ const schema = z.object({
     (val) => {
       const date = new Date(val);
       const today = new Date();
-      return date.getTime() <= today.getTime();
+      return date.getTime() >= today.getTime();
     },
     {
       message: 'Date must be in the future or today',
@@ -30,7 +31,9 @@ const schema = z.object({
   ),
 });
 
-const ScheduleModal = ({ match, teams, loading }) => {
+const ScheduleModal = ({ match, teams }) => {
+  const { toast } = useToast();
+
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -41,6 +44,9 @@ const ScheduleModal = ({ match, teams, loading }) => {
     mode: 'onChange',
   });
 
+  const originalDate = form.getValues('startDate');
+  const formattedDate = new Date(originalDate);
+
   const onSubmit = async (data) => {
     const updatedData = {
       ...data,
@@ -50,7 +56,7 @@ const ScheduleModal = ({ match, teams, loading }) => {
       awayTeam: data?.awayTeam?.split(':')[1]
         ? data?.awayTeam?.split(':')[1]
         : data?.awayTeam,
-      startDate: new Date(data?.startDate).toISOString(),
+      startDate: formattedDate,
     };
 
     try {
@@ -61,22 +67,22 @@ const ScheduleModal = ({ match, teams, loading }) => {
         },
         body: JSON.stringify(updatedData),
       });
-
-      if (!res.ok) {
-        throw new Error('Error updating match');
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Match updated successfully',
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to update match',
+          variant: 'destructive',
+        });
       }
     } catch (error) {
       console.error(error);
     }
   };
-
-  if (loading) {
-    return (
-      <div className='flex items-center justify-center h-full'>
-        <Spinner />
-      </div>
-    );
-  }
 
   return (
     <Dialog>
@@ -85,7 +91,7 @@ const ScheduleModal = ({ match, teams, loading }) => {
           Edit Match
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[925px] h-[300px]'>
+      <DialogContent className='sm:max-w-[800px] md:max-w-[900px] lg:max-w-[1000px] h-auto'>
         <DialogHeader>
           <DialogTitle>Edit Match</DialogTitle>
           <DialogDescription>
@@ -94,57 +100,62 @@ const ScheduleModal = ({ match, teams, loading }) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className='flex flex-col gap-4 py-4'>
-              <div className='grid grid-cols-4 space-x-8 items-center justify-center'>
-                <div>
-                  <FormArea
-                    id='homeTeam'
-                    label='Home Team'
-                    type='select'
-                    form={form}
-                    name='homeTeam'
-                    placeholder='Select Home Team'
-                    defaultValue={match?.homeTeam.split(':')[0]}
-                    items={teams}
-                    idFlag={true}
-                  />
-                </div>
-                <div>
-                  <FormArea
-                    id='awayTeam'
-                    label='Away Team'
-                    type='select'
-                    form={form}
-                    name='awayTeam'
-                    placeholder='Select Away Team'
-                    defaultValue={match?.awayTeam.split(':')[0]}
-                    items={teams}
-                    idFlag={true}
-                  />
-                </div>
-                <div>
-                  <FormArea
-                    id='startDate'
-                    label='Date'
-                    type='date'
-                    form={form}
-                    name='startDate'
-                    placeholder='Select date'
-                    initialDate={match?.startDate}
-                    isPortal={false}
-                    time
-                  />
-                </div>
-                <div className='flex items-center mt-7 p-5'>
-                  <Button
-                    type='submit'
-                    className='bg-primary-500 hover:bg-purple-500'
-                  >
-                    Save
-                  </Button>
-                </div>
+          <form onSubmit={form.handleSubmit(onSubmit)} className='p-4'>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+              <div>
+                <FormArea
+                  id='homeTeam'
+                  label='Home Team'
+                  type='select'
+                  form={form}
+                  name='homeTeam'
+                  placeholder={
+                    match?.homeTeam.split(':')[0] || 'Select Home Team'
+                  }
+                  defaultValue={match?.homeTeam.split(':')[0]}
+                  items={teams}
+                  idFlag={true}
+                />
               </div>
+              <div>
+                <FormArea
+                  id='awayTeam'
+                  label='Away Team'
+                  type='select'
+                  form={form}
+                  name='awayTeam'
+                  placeholder={
+                    match?.awayTeam.split(':')[0] || 'Select Away Team'
+                  }
+                  items={teams}
+                  idFlag={true}
+                />
+              </div>
+              <div>
+                <FormArea
+                  id='startDate'
+                  label='Start Date'
+                  type='date'
+                  form={form}
+                  name='startDate'
+                  placeholder='Select date'
+                  initialDate={match?.startDate}
+                  isEdit={true}
+                  isPortal={false}
+                  time
+                />
+              </div>
+            </div>
+
+            <div className='flex justify-end mt-4'>
+              <DialogClose asChild>
+                <Button
+                  type='submit'
+                  className='bg-primary-500 text-white hover:bg-purple-500 px-4 py-2 rounded-md'
+                >
+                  Save
+                </Button>
+              </DialogClose>
             </div>
           </form>
         </Form>
