@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -16,11 +16,11 @@ import {
   signOutUserStart,
   signOutUserSuccess,
 } from '../redux/user/userSlice';
+import { useFetchUserById } from './hooks/useFetchUserById';
 
 const Header = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { user, currentUser } = useFetchUserById();
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const handleSignOut = async () => {
     try {
@@ -37,13 +37,12 @@ const Header = () => {
       dispatch(signOutUserFailure(error.message));
     }
   };
+
   return (
     <nav className='topbar'>
       <Link to='/' className='flex items-center gap-1 justify-center'>
         <img src='/logo_black.png' alt='logo' className='h-9 w-9' />
-        <p className='text-heading3-bold text-dark-2 max-xs:hidden'>
-          FutbolistPro
-        </p>
+        <p className='text-heading3-bold text-dark-2 max-xs:hidden'>KickZone</p>
       </Link>
 
       <div className='flex items-center gap-1'>
@@ -56,9 +55,15 @@ const Header = () => {
                   className='relative h-8 w-8 rounded-full'
                 >
                   <Avatar className='h-9 w-9 '>
-                    <AvatarImage src={currentUser?.photo} alt='Profile photo' />
+                    <AvatarImage
+                      src={
+                        user?.imageUrl ||
+                        'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                      }
+                      alt='Profile photo'
+                    />
                     <AvatarFallback>
-                      {currentUser.username[0].toUpperCase()}
+                      {user?.username?.charAt(0).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
                 </Button>
@@ -67,10 +72,10 @@ const Header = () => {
                 <DropdownMenuLabel className='font-normal'>
                   <div className='flex flex-col space-y-1'>
                     <p className='text-sm font-medium leading-none'>
-                      {currentUser.username} {`[${currentUser.role}]`}
+                      {user.username} {`[${user.role}]`}
                     </p>
                     <p className='text-xs leading-none text-muted-foreground'>
-                      {currentUser.email}
+                      {user.email}
                     </p>
                   </div>
                 </DropdownMenuLabel>
