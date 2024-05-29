@@ -1,29 +1,21 @@
-import { useSelector } from 'react-redux';
 import PostCard from '../components/home/posts/PostCard';
 import { useParams } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Comment from '../components/home/posts/Comment';
+import { useFetchUserById } from '../components/hooks/useFetchUserById';
+import Spinner from '../components/Spinner';
+import { useFetchPostById } from '../components/hooks/useFetchPostById';
 
 const PostPage = () => {
   const { id } = useParams();
-  const { currentUser } = useSelector((state) => state.user);
+  const { user, currentUser } = useFetchUserById();
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const [post, setPost] = useState({});
+  const { post, loading } = useFetchPostById(id, updateSuccess, deleteSuccess);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        const res = await fetch(`/api/post/get/${id}`);
-        const data = await res.json();
-        setPost(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchPost();
-    setDeleteSuccess(false);
-  }, [id, updateSuccess, deleteSuccess]);
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <section className='relative'>
@@ -35,8 +27,11 @@ const PostPage = () => {
           parentId={post.parentId}
           content={post.postContent}
           author={post.author}
+          title={post.title}
+          initialLikes={post.likes}
+          postPhoto={post.imageUrl}
           createdAt={post.createdAt}
-          deleteSuccess={setDeleteSuccess}
+          setDeleteSuccess={setDeleteSuccess}
           comments={post.children}
         />
       </div>
@@ -44,7 +39,7 @@ const PostPage = () => {
         <Comment
           postId={id}
           isLogged={currentUser === null ? false : true}
-          currentUserImg={currentUser.photo}
+          currentUserImg={user?.imageUrl}
           setUpdateSuccess={setUpdateSuccess}
         />
       </div>
@@ -57,6 +52,7 @@ const PostPage = () => {
             parentId={comment.parentId}
             content={comment.postContent}
             author={comment.author}
+            initialLikes={comment.likes}
             createdAt={comment.createdAt}
             comments={comment.children}
             setDeleteSuccess={setDeleteSuccess}
