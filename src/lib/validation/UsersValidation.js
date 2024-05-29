@@ -32,7 +32,9 @@ export const usersFormSchema = z.object({
   city: z.string().min(1, {
     message: 'City is required',
   }),
-  photo: z.string().optional(),
+  photo: z.instanceof(File, {
+    message: 'Photo is required',
+  }),
   bio: z.string().min(1, {
     message: 'Bio is required',
   }),
