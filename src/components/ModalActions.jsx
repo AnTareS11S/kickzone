@@ -23,6 +23,7 @@ const ModalActions = ({
   fields,
   edit,
   form,
+  isRole,
   add,
   setFile,
 }) => {
@@ -53,12 +54,20 @@ const ModalActions = ({
       <DialogContent className='sm:max-w-[825px] max-w-full mx-auto'>
         <div className='md:max-h-[75vh] md:overflow-y-auto max-md:p-4 mt-5 min-sm:max-h-[75vh] min-sm:overflow-y-auto min-sm:p-4 max-lg:max-h-[75vh] max-lg:overflow-y-auto max-lg:p-4'>
           <DialogHeader>
-            <DialogTitle>{title}</DialogTitle>
-            <DialogDescription>{desc}</DialogDescription>
+            <DialogTitle className='px-3'>{title}</DialogTitle>
+            <DialogDescription className='px-3'>{desc}</DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 py-4'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 py-4 px-3'>
+                {isRole && (
+                  <div className='col-span-2'>
+                    <p className='text-text-heading4-medium'>
+                      What role user <b>{data.username}</b> wants to have:{' '}
+                      <i>{data.wantedRole}</i>
+                    </p>
+                  </div>
+                )}
                 {fields.map((field) => (
                   <FormArea
                     key={field.id}
