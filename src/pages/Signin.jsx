@@ -85,7 +85,11 @@ const Signin = () => {
         });
 
         dispatch(signInSuccess(data));
-        navigate('/');
+        if (!data.isOnboardingCompleted) {
+          navigate('/onboarding');
+        } else {
+          navigate('/');
+        }
       } else {
         toast({
           title: 'Error!',
