@@ -50,3 +50,22 @@ export const signInFormSchema = () =>
       message: 'Password is required.',
     }),
   });
+
+export const onboardingFormSchema = () =>
+  z.object({
+    username: z.string().trim().min(3, {
+      message: 'Username must be at least 3 characters.',
+    }),
+    bio: z
+      .string()
+      .trim()
+      .min(1, {
+        message: 'Bio is required.',
+      })
+      .max(50, {
+        message: 'Bio must not be longer than 50 characters.',
+      }),
+    wantedRole: z.string().min(1, {
+      message: 'Role is required',
+    }),
+  });
