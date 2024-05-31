@@ -39,3 +39,10 @@ export const usersFormSchema = z.object({
     message: 'Bio is required',
   }),
 });
+
+export const roleFormSchema = () =>
+  z.object({
+    role: z.string().min(1, {
+      message: 'Role is required',
+    }),
+  });
