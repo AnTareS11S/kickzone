@@ -147,7 +147,6 @@ const CrudPanel = ({
                     <SetRoleComponent
                       row={row}
                       onEntityUpdated={handleEntityUpdated}
-                      apiEndpoint={apiPath}
                     />
                   )}
                   {DeleteComponent && (
