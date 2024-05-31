@@ -1,8 +1,9 @@
 import BackButton from '../../components/BackButton';
-import DeleteUser from '../../components/admin/users/DeleteUser';
-import RoleActions from '../../components/admin/users/RoleActions';
-import UsersPanel from '../../components/admin/users/UsersPanel';
+import CrudPanel from '../../components/CrudPanel';
+import DeleteEntity from '../../components/DeleteEntity';
+import SetRole from '../../components/admin/users/SetRole';
 import { Separator } from '../../components/ui/separator';
+import { roleFormSchema } from '../../lib/validation/UsersValidation';
 
 const columns = [
   {
@@ -22,7 +23,7 @@ const columns = [
   },
   {
     name: 'Role',
-    cell: (row) => <RoleActions row={row} />,
+    cell: (row) => row.role,
   },
   {
     name: 'Created At',
@@ -30,11 +31,6 @@ const columns = [
       const date = new Date(row.createdAt);
       return <div className=''>{date.toLocaleDateString()}</div>;
     },
-  },
-  {
-    name: 'Actions',
-    cell: (row) => <DeleteUser row={row} />,
-    grow: 0,
   },
 ];
 
@@ -47,7 +43,19 @@ const UserManage = () => {
         <p className='text-sm text-muted-foreground'>Manage users.</p>
       </div>
       <Separator />
-      <UsersPanel columns={columns} />
+      <CrudPanel
+        apiPath='user'
+        columns={columns}
+        title='User'
+        onSetRoleComponent={SetRole}
+        onDeleteComponent={DeleteEntity}
+        formSchema={roleFormSchema}
+        defaultValues={{
+          role: '',
+        }}
+        isExpandable={false}
+        isAction={true}
+      />
     </div>
   );
 };
