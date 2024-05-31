@@ -55,6 +55,7 @@ import PageNotFound from './pages/PageNotFound';
 import SponsorManage from './pages/Sponsor/SponsorMange';
 import MatchDetails from './pages/Referee/MatchDetails';
 import Onboarding from './pages/Onboarding';
+import ProtectedRoute from './pages/ProtectedRoute';
 
 const App = () => {
   return (
@@ -70,7 +71,6 @@ const App = () => {
           <Route path='/post/comment/edit/:id' element={<CommentEdit />} />
           <Route path='/activity' element={<Activity />} />
           <Route path='/search' element={<Search />} />
-          <Route path='/onboarding' element={<Onboarding />} />
           <Route path='/profile/:id' element={<HomeProfile />} />
           <Route path='/leagues' element={<Leagues />} />
           <Route path='/league/:id' element={<LeaguePage />} />
@@ -156,6 +156,10 @@ const App = () => {
 
         <Route path='/sign-in' element={<Signin />} />
         <Route path='/sign-up' element={<Signup />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path='/onboarding' element={<Onboarding />} />
+        </Route>
 
         <Route path='/user' element={<SettingsLayout />}>
           <Route path='/user/profile' element={<Profile />} />
