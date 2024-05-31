@@ -59,6 +59,11 @@ const userSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    updateOnboarding(state, action) {
+      if (state.user) {
+        state.user.isOnboardingComplete = action.payload;
+      }
+    },
   },
 });
 
@@ -75,6 +80,7 @@ export const {
   signOutUserStart,
   signOutUserSuccess,
   signOutUserFailure,
+  updateOnboarding,
 } = userSlice.actions;
 
 export default userSlice.reducer;
