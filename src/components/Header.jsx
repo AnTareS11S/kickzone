@@ -17,22 +17,35 @@ import {
   signOutUserSuccess,
 } from '../redux/user/userSlice';
 import { useFetchUserById } from './hooks/useFetchUserById';
+import { useToast } from './ui/use-toast';
 
 const Header = () => {
   const { user, currentUser } = useFetchUserById();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
       const res = await fetch('/api/auth/signout');
       const data = await res.json();
-      if (data.success === false) {
+
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Logged out successfully',
+        });
+        dispatch(signOutUserSuccess());
+        navigate('/');
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to log out',
+          variant: 'destructive',
+        });
         dispatch(signOutUserFailure(data.message));
         return;
       }
-      dispatch(signOutUserSuccess());
-      navigate('/');
     } catch (error) {
       dispatch(signOutUserFailure(error.message));
     }
