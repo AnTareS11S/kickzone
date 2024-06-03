@@ -6,7 +6,7 @@ export const useFetchRefeeres = () => {
   useEffect(() => {
     const fetchRefereesData = async () => {
       try {
-        const res = await fetch('/api/admin/referees');
+        const res = await fetch('/api/admin/referee');
         if (!res.ok) {
           throw new Error('Failed to fetch referees data!');
         }
