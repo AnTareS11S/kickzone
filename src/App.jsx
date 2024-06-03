@@ -56,6 +56,7 @@ import SponsorManage from './pages/Sponsor/SponsorMange';
 import MatchDetails from './pages/Referee/MatchDetails';
 import Onboarding from './pages/Onboarding';
 import ProtectedRoute from './pages/ProtectedRoute';
+import RefereeManage from './pages/Referee/RefereeManage';
 
 const App = () => {
   return (
@@ -122,6 +123,10 @@ const App = () => {
               element={<StadiumManage />}
             />
             <Route path='/dashboard/admin/coaches' element={<CoachManage />} />
+            <Route
+              path='/dashboard/admin/referees'
+              element={<RefereeManage />}
+            />
             <Route
               path='/dashboard/admin/positions'
               element={<PositionManage />}
