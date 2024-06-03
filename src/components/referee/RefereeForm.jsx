@@ -20,7 +20,7 @@ const RefereeForm = ({ currentUser }) => {
   const { toast } = useToast();
 
   const form = useForm({
-    resolver: zodResolver(usersFormSchema),
+    resolver: zodResolver(usersFormSchema()),
     defaultValues: {
       name: '',
       surname: '',
