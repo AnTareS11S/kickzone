@@ -37,6 +37,14 @@ const Search = () => {
 
     // Save the current search value to localStorage
     localStorage.setItem('lastSearch', search);
+
+    const timeoutId = setTimeout(() => {
+      localStorage.removeItem('lastSearch');
+    }, 60000);
+
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [search]);
 
   const handleChange = (e) => {
