@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useOnSuccessUpdate } from './hooks/useOnSuccessUpdate';
 import ModalDialog from './ModalDialog';
+import { useToast } from './ui/use-toast';
 
 const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const { toast } = useToast();
 
   useOnSuccessUpdate(updateSuccess, () => {
     onEntityDelete();
@@ -18,9 +20,17 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
           method: 'DELETE',
         }
       );
-      const data = await res.json();
-      if (!res.ok) {
-        throw new Error(data.message || `Failed to delete ${apiEndpoint}!`);
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: `${row?.name} deleted successfully`,
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: `Failed to delete ${row?.name}`,
+          variant: 'destructive',
+        });
       }
       setUpdateSuccess(true);
     } catch (error) {
