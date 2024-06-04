@@ -1,6 +1,5 @@
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
@@ -26,6 +25,9 @@ const ModalActions = ({
   isRole,
   add,
   setFile,
+  isOpen,
+  onClose,
+  onOpen,
 }) => {
   const fileRef = useRef(null);
 
@@ -36,7 +38,10 @@ const ModalActions = ({
   }, [data, form]);
 
   return (
-    <Dialog>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => (open ? onOpen() : onClose())}
+    >
       <DialogTrigger asChild>
         {edit ? (
           <Pencil1Icon className='w-5 h-5 cursor-pointer' />
@@ -90,26 +95,12 @@ const ModalActions = ({
                 ))}
               </div>
               <DialogFooter className='flex justify-end'>
-                {!form.formState.isValid && form.formState.errors !== 0 && (
-                  <Dialog asChild>
-                    <Button
-                      type='submit'
-                      className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
-                    >
-                      {title}
-                    </Button>
-                  </Dialog>
-                )}
-                {(form.formState.isValid || !form.formState.errors) && (
-                  <DialogClose asChild>
-                    <Button
-                      type='submit'
-                      className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
-                    >
-                      {title}
-                    </Button>
-                  </DialogClose>
-                )}
+                <Button
+                  type='submit'
+                  className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
+                >
+                  {title}
+                </Button>
               </DialogFooter>
             </form>
           </Form>
