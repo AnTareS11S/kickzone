@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import CustomDataTable from './CustomDataTable';
 import ModalActions from './ModalActions';
+import { useToast } from './ui/use-toast';
 
 const CrudPanel = ({
   apiPath,
@@ -26,6 +27,8 @@ const CrudPanel = ({
   const [data, setData] = useState([]);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [file, setFile] = useState();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm({
     resolver: zodResolver(formSchema(false)),
@@ -63,7 +66,7 @@ const CrudPanel = ({
     try {
       if (apiPath === 'team') {
         const nameExists = await fetch(
-          `/api/team/check-team-name?name=${formData.name}`
+          `/api/${apiPath}/check-${apiPath}-name?name=${formData.name}`
         );
 
         const nameData = await nameExists.json();
@@ -72,6 +75,11 @@ const CrudPanel = ({
           form.setError('name', {
             type: 'manual',
             message: 'Name already exists',
+          });
+          toast({
+            title: 'Error!',
+            description: `${title} already exists`,
+            variant: 'destructive',
           });
           setUpdateSuccess(false);
           return;
@@ -83,12 +91,22 @@ const CrudPanel = ({
         method: 'POST',
         body: data,
       });
-      if (!res.ok) {
-        throw new Error('Failed to fetch data!');
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: `${title} added successfully`,
+        });
+      } else {
+        toast({
+          title: 'Error!',
+          description: `Failed to add ${title}`,
+          variant: 'destructive',
+        });
       }
 
       setUpdateSuccess(true);
       form.reset();
+      setIsModalOpen(false);
     } catch (error) {
       console.log(error);
     }
@@ -109,6 +127,9 @@ const CrudPanel = ({
           form={form}
           fields={fields}
           setFile={setFile}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onOpen={() => setIsModalOpen(true)}
         />
       )}
       <CustomDataTable
