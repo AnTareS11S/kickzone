@@ -4,7 +4,7 @@ export const teamFormSchema = (isEdit) =>
     name: z
       .string()
       .trim()
-      .min(1, {
+      .min(4, {
         message: 'Name must be at least 4 characters',
       })
       .max(30, {
