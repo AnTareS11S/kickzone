@@ -15,6 +15,7 @@ const EditEntity = ({
 }) => {
   const [updatedSuccess, setUpdatedSuccess] = useState(false);
   const [file, setFile] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
 
   const form = useForm({
@@ -49,16 +50,17 @@ const EditEntity = ({
       if (res.ok) {
         toast({
           title: 'Success!',
-          description: 'Team updated successfully',
+          description: `${row?.name} updated successfully`,
         });
       } else {
         toast({
           title: 'Error!',
-          description: 'Failed to update team',
+          description: `Failed to update ${row?.name}`,
           variant: 'destructive',
         });
       }
       setUpdatedSuccess(true);
+      setIsModalOpen(false);
     } catch (error) {
       console.log(error);
     }
@@ -70,7 +72,9 @@ const EditEntity = ({
         const matchingItem = field.items.find(
           (item) => item.split(':')[1] === row[field.name]
         );
-        field.defaultValue = matchingItem ? matchingItem.split(':')[0] : '';
+        field.defaultValue = matchingItem
+          ? matchingItem.split(':')[0]
+          : `Select ${field.label}`;
       } else if (field.type === 'date') {
         field.initialDate = row[field.name] ? new Date(row[field.name]) : null;
       }
@@ -95,6 +99,9 @@ const EditEntity = ({
         fields={updatedFields}
         form={form}
         setFile={setFile}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onOpen={() => setIsModalOpen(true)}
       />
     </div>
   );
