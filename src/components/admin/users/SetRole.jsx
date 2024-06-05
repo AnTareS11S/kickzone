@@ -7,6 +7,7 @@ import { useState } from 'react';
 const SetRole = ({ row, onEntityUpdated }) => {
   const { toast } = useToast();
   const [updatedSuccess, setUpdatedSuccess] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const form = useForm({
     defaultValues: {
@@ -37,6 +38,7 @@ const SetRole = ({ row, onEntityUpdated }) => {
           description: 'User role updated successfully',
         });
         setUpdatedSuccess(true);
+        setIsModalOpen(false);
       } else {
         toast({
           title: 'Error!',
@@ -69,6 +71,9 @@ const SetRole = ({ row, onEntityUpdated }) => {
       ]}
       form={form}
       edit
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+      onOpen={() => setIsModalOpen(true)}
     />
   );
 };
