@@ -91,15 +91,18 @@ const FormArea = ({
                 />
               </div>
             ) : type === 'select' ? (
-              <SelectData
-                id={name}
-                items={items}
-                defaultValue={defaultValue}
-                placeholder={placeholder}
-                idFlag={idFlag}
-                onChange={field.onChange}
-                isEdit={isEdit}
-              />
+              <div className='flex items-center'>
+                <span className='mr-2 text-primary-500'>{icon}</span>
+                <SelectData
+                  id={name}
+                  items={items}
+                  defaultValue={defaultValue}
+                  placeholder={placeholder}
+                  idFlag={idFlag}
+                  onChange={field.onChange}
+                  isEdit={isEdit}
+                />
+              </div>
             ) : type === 'date' ? (
               <MyDatePicker
                 id={name}
