@@ -52,23 +52,21 @@ const CrudPanel = ({
     setUpdateSuccess(false);
   }, [updateSuccess, objectId]);
 
-  const onSubmit = async (formData) => {
-    const data = new FormData();
-
-    for (const key in formData) {
+  const onSubmit = async (data) => {
+    const formData = new FormData();
+    for (const key in data) {
       if (key === 'logo') {
-        data.append(key, file || formData.logo);
-        continue;
+        formData.append(key, file || data.logo);
+      } else {
+        formData.append(key, data[key]);
       }
-      data.append(key, formData[key]);
     }
 
     try {
-      if (apiPath === 'team') {
+      if (['team', 'league', 'country'].includes(apiPath)) {
         const nameExists = await fetch(
-          `/api/${apiPath}/check-${apiPath}-name?name=${formData.name}`
+          `/api/${apiPath}/check-${apiPath}-name?name=${data.name}`
         );
-
         const nameData = await nameExists.json();
 
         if (nameData.exists) {
@@ -89,24 +87,24 @@ const CrudPanel = ({
       const endpoint = objectId ? `${apiPath}/${objectId}` : apiPath;
       const res = await fetch(`/api/admin/${endpoint}/add`, {
         method: 'POST',
-        body: data,
+        body: formData,
       });
       if (res.ok) {
         toast({
           title: 'Success!',
           description: `${title} added successfully`,
         });
+        setUpdateSuccess(true);
+        form.reset();
+        setIsModalOpen(false);
       } else {
+        console.log(res.status, res.statusText);
         toast({
           title: 'Error!',
           description: `Failed to add ${title}`,
           variant: 'destructive',
         });
       }
-
-      setUpdateSuccess(true);
-      form.reset();
-      setIsModalOpen(false);
     } catch (error) {
       console.log(error);
     }
