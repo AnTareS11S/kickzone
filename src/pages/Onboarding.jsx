@@ -88,7 +88,6 @@ const Onboarding = () => {
                   form={form}
                   name='username'
                   placeholder='Enter username'
-                  role='textbox'
                 />
               </div>
               <div>
@@ -99,7 +98,6 @@ const Onboarding = () => {
                   form={form}
                   name='bio'
                   placeholder='Enter bio'
-                  role='textbox'
                 />
               </div>
               <div>
@@ -111,7 +109,6 @@ const Onboarding = () => {
                   items={['Player:1', 'Coach:2', 'Referee:3']}
                   name='wantedRole'
                   placeholder='Select role'
-                  role='combobox'
                 />
               </div>
             </div>
