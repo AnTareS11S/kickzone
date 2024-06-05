@@ -29,22 +29,21 @@ const EditEntity = ({
     setUpdatedSuccess(false);
   });
 
-  const onSubmit = async (formData) => {
-    const data = new FormData();
+  const onSubmit = async (data) => {
+    const formData = new FormData();
 
-    for (const key in formData) {
+    for (const key in data) {
       if (key === 'logo' && !file) {
-        data.append(key, file || row.logo);
-        continue;
+        formData.append(key, file || row.logo);
       } else {
-        data.append(key, formData[key]);
+        formData.append(key, data[key]);
       }
     }
 
     try {
       const res = await fetch(`/api/admin/${apiEndpoint}/edit/${row._id}`, {
         method: 'POST',
-        body: data,
+        body: formData,
       });
 
       if (res.ok) {
@@ -52,6 +51,8 @@ const EditEntity = ({
           title: 'Success!',
           description: `${row?.name} updated successfully`,
         });
+        setUpdatedSuccess(true);
+        setIsModalOpen(false);
       } else {
         toast({
           title: 'Error!',
@@ -59,8 +60,6 @@ const EditEntity = ({
           variant: 'destructive',
         });
       }
-      setUpdatedSuccess(true);
-      setIsModalOpen(false);
     } catch (error) {
       console.log(error);
     }
