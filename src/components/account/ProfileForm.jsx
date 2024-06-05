@@ -8,8 +8,20 @@ import FormArea from '../FormArea';
 import { useToast } from '../ui/use-toast';
 import Spinner from '../Spinner';
 import { useFetchUserById } from '../hooks/useFetchUserById';
-import { FaUserAlt, FaEnvelope, FaInfoCircle, FaImage } from 'react-icons/fa';
+import {
+  FaUserAlt,
+  FaEnvelope,
+  FaInfoCircle,
+  FaImage,
+  FaUserCog,
+  FaQuestionCircle,
+} from 'react-icons/fa';
 import { Card } from '../ui/card';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '../ui/hover-card';
 
 const profileFormSchema = z.object({
   username: z
@@ -21,6 +33,7 @@ const profileFormSchema = z.object({
     .string()
     .min(4, { message: 'Bio must be at least 4 characters.' })
     .max(160, { message: 'Bio must not be longer than 160 characters.' }),
+  wantedRole: z.string(),
 });
 
 const ProfileForm = () => {
@@ -36,6 +49,7 @@ const ProfileForm = () => {
       email: '',
       bio: '',
       photo: '',
+      wantedRole: '',
     },
     mode: 'onChange',
   });
@@ -47,6 +61,7 @@ const ProfileForm = () => {
         email: user?.email || '',
         bio: user?.bio || '',
         photo: user?.imageUrl || '',
+        wantedRole: user?.role || '',
       });
     }
   }, [user, form, isChanged]);
@@ -57,6 +72,7 @@ const ProfileForm = () => {
     data.append('username', formData.username);
     data.append('email', formData.email);
     data.append('bio', formData.bio);
+    data.append('wantedRole', formData.wantedRole);
     try {
       const res = await fetch(`/api/user/add/${user?._id}`, {
         method: 'POST',
@@ -85,10 +101,10 @@ const ProfileForm = () => {
   }
 
   return (
-    <Card className='px-4 py-8'>
+    <Card className='p-6 bg-white shadow-md rounded-lg'>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className='flex flex-row items-center mb-6'>
+        <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
             <FormArea
               id='username'
               label='Username'
@@ -97,43 +113,60 @@ const ProfileForm = () => {
               name='username'
               icon={<FaUserAlt className='text-gray-500' />}
             />
+            <div className='relative'>
+              <FormArea
+                id='wantedRole'
+                label='Role'
+                type='select'
+                form={form}
+                items={['Player:1', 'Coach:2', 'Referee:3']}
+                name='wantedRole'
+                placeholder={user?.role || 'Select role'}
+                icon={<FaUserCog className='text-gray-500' />}
+              />
+              <div className='absolute top-0 right-0 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer group'>
+                <HoverCard>
+                  <HoverCardTrigger>
+                    <FaQuestionCircle className='text-gray-500' />
+                  </HoverCardTrigger>
+                  <HoverCardContent>
+                    You can change your role here and wait for an admin to
+                    approve it.
+                  </HoverCardContent>
+                </HoverCard>
+              </div>
+            </div>
           </div>
-          <div className='mb-6'>
-            <FormArea
-              id='email'
-              label='Email'
-              type='text'
-              form={form}
-              name='email'
-              icon={<FaEnvelope className='text-gray-500' />}
-            />
-          </div>
-          <div className='mb-6'>
-            <FormArea
-              id='bio'
-              label='Bio'
-              type='textarea'
-              form={form}
-              name='bio'
-              icon={<FaInfoCircle className='text-gray-500' />}
-            />
-          </div>
-          <div className='mb-6'>
-            <FormArea
-              id='photo'
-              label='Photo'
-              type='file'
-              form={form}
-              name='photo'
-              fileRef={fileRef}
-              setFile={setFile}
-              currentUserPhoto={
-                user?.imageUrl ||
-                'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-              }
-              icon={<FaImage className='text-gray-500' />}
-            />
-          </div>
+          <FormArea
+            id='email'
+            label='Email'
+            type='email'
+            form={form}
+            name='email'
+            icon={<FaEnvelope className='text-gray-500' />}
+          />
+          <FormArea
+            id='bio'
+            label='Bio'
+            type='textarea'
+            form={form}
+            name='bio'
+            icon={<FaInfoCircle className='text-gray-500' />}
+          />
+          <FormArea
+            id='photo'
+            label='Photo'
+            type='file'
+            form={form}
+            name='photo'
+            fileRef={fileRef}
+            setFile={setFile}
+            currentUserPhoto={
+              user?.imageUrl ||
+              'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+            }
+            icon={<FaImage className='text-gray-500' />}
+          />
           <div className='flex justify-end'>
             <Button
               type='submit'
