@@ -40,7 +40,6 @@ import LeagueScheduleCard from './pages/League/LeagueScheduleCard';
 import AdminDashboard from './pages/Admin/AdminDashboard';
 import CoachRoute from './pages/CoachRoute';
 import CoachDashboard from './pages/Coach/CoachDashboard';
-import SeasonManagement from './pages/Referee/SeasonManagement';
 import { Toaster } from './components/ui/toaster';
 import ResultsManagement from './pages/Referee/ResultsManagement';
 import AddResult from './pages/Referee/AddResult';
@@ -57,6 +56,7 @@ import MatchDetails from './pages/Referee/MatchDetails';
 import Onboarding from './pages/Onboarding';
 import ProtectedRoute from './pages/ProtectedRoute';
 import RefereeManage from './pages/Referee/RefereeManage';
+import SeasonManage from './pages/Season/SeasonManage';
 
 const App = () => {
   return (
@@ -135,10 +135,7 @@ const App = () => {
               path='/dashboard/admin/countries'
               element={<CountryManage />}
             />
-            <Route
-              path='/dashboard/admin/seasons'
-              element={<SeasonManagement />}
-            />
+            <Route path='/dashboard/admin/seasons' element={<SeasonManage />} />
             <Route
               path='/dashboard/admin/sponsors'
               element={<SponsorManage />}
