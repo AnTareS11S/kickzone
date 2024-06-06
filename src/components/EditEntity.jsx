@@ -41,6 +41,31 @@ const EditEntity = ({
     }
 
     try {
+      if (
+        ['team', 'league', 'country', 'season', 'position', 'stadium'].includes(
+          apiEndpoint
+        )
+      ) {
+        const nameExists = await fetch(
+          `/api/${apiEndpoint}/check-${apiEndpoint}-name?name=${data.name}&id=${row._id}`
+        );
+        const nameData = await nameExists.json();
+
+        if (nameData.exists) {
+          form.setError('name', {
+            type: 'manual',
+            message: 'Name already exists',
+          });
+          toast({
+            title: 'Error!',
+            description: `Name ${data?.name} already exists`,
+            variant: 'destructive',
+          });
+          setUpdatedSuccess(false);
+          return;
+        }
+      }
+
       const res = await fetch(`/api/admin/${apiEndpoint}/edit/${row._id}`, {
         method: 'POST',
         body: formData,
