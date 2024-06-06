@@ -8,26 +8,27 @@ import { useEffect, useState } from 'react';
 const CoachTeamView = () => {
   const { coach } = useFetchCoachByUserId();
   const [team, setTeam] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (coach?.currentTeam) {
-      fetchTeamById(coach.currentTeam);
+      fetchTeamById(coach?.currentTeam);
     }
   }, [coach]);
 
   const fetchTeamById = async (id) => {
     try {
-      setLoading(true);
       const res = await fetch(`/api/team/${id}`);
       if (!res.ok) {
         throw new Error('Failed to fetch team data!');
       }
       const data = await res.json();
 
+      setLoading(true);
       setTeam(data);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     } finally {
       setLoading(false);
     }
@@ -38,20 +39,31 @@ const CoachTeamView = () => {
   }
 
   return (
-    <div className='space-y-6'>
+    <div className='p-6 bg-gray-100 space-y-6'>
       <BackButton />
       <div>
         <div className='text-heading2-bold'>Team</div>
         <p className='text-sm text-muted-foreground'>Manage your team squad.</p>
       </div>
-      <div className='flex items-center justify-between'>
-        <h4 className='text-heading3-bold text-gray-800'>Team: {team?.name}</h4>
-        <p className='text-sm text-muted-foreground'>
-          Coach: {coach?.name} {coach?.surname}{' '}
+
+      <Separator className='mb-6' />
+      {coach?.currentTeam ? (
+        <>
+          <div className='flex items-center justify-between mb-4'>
+            <h2 className='text-xl font-semibold text-gray-800'>
+              Team: {team?.name}
+            </h2>
+            <p className='text-gray-600'>
+              Coach: {coach?.name} {coach?.surname}
+            </p>
+          </div>
+          <SquadManagement data={team} />
+        </>
+      ) : (
+        <p className='text-lg text-gray-800 text-center'>
+          You are not assigned to any team yet.
         </p>
-      </div>
-      <Separator />
-      <SquadManagement data={team} />
+      )}
     </div>
   );
 };
