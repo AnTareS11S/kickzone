@@ -330,7 +330,7 @@ const PlayerForm = () => {
           <div className='mt-8 flex justify-end'>
             <Button
               type='submit'
-              className='bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded'
+              className='bg-primary-500 hover:bg-purple-500 text-white font-semibold py-2 px-4 rounded'
             >
               Save
             </Button>
