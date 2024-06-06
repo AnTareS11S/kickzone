@@ -1,5 +1,5 @@
 import * as z from 'zod';
-export const usersFormSchema = () =>
+export const usersFormSchema = (isEdit) =>
   z.object({
     name: z
       .string()
@@ -33,9 +33,11 @@ export const usersFormSchema = () =>
     city: z.string().min(1, {
       message: 'City is required',
     }),
-    photo: z.instanceof(File, {
-      message: 'Photo is required',
-    }),
+    photo: isEdit
+      ? z.any().nullable()
+      : z.instanceof(File, {
+          message: 'Photo is required',
+        }),
     bio: z.string().min(1, {
       message: 'Bio is required',
     }),
