@@ -63,7 +63,11 @@ const CrudPanel = ({
     }
 
     try {
-      if (['team', 'league', 'country'].includes(apiPath)) {
+      if (
+        ['team', 'league', 'country', 'season', 'position', 'stadium'].includes(
+          apiPath
+        )
+      ) {
         const nameExists = await fetch(
           `/api/${apiPath}/check-${apiPath}-name?name=${data.name}`
         );
