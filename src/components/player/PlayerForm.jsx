@@ -13,6 +13,12 @@ import Spinner from '../Spinner';
 import { useToast } from '../ui/use-toast';
 import { useFetchPlayerByUserId } from '../hooks/useFetchPlayerByUserId';
 import { Card } from '../ui/card';
+import { FaQuestionCircle } from 'react-icons/fa';
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from '../ui/hover-card';
 
 const PlayerForm = () => {
   const fileRef = useRef(null);
@@ -197,28 +203,54 @@ const PlayerForm = () => {
 
           <div className='mt-6'>
             {playerData?.currentTeam ? (
-              <FormArea
-                id='currentTeam'
-                type='text'
-                form={form}
-                isDisabled={true}
-                placeholder={currentTeamName?.split(':')[0] || 'No team'}
-                label='Current Team'
-                name='currentTeam'
-                className='bg-gray-100 cursor-not-allowed'
-              />
+              <div className='relative'>
+                <FormArea
+                  id='currentTeam'
+                  type='text'
+                  form={form}
+                  isDisabled={true}
+                  placeholder={currentTeamName?.split(':')[0] || 'No team'}
+                  label='Current Team'
+                  name='currentTeam'
+                  className='bg-gray-100 cursor-not-allowed'
+                />
+                <div className='absolute top-0 right-0 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer group'>
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      <FaQuestionCircle className='text-gray-500' />
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      To change your current team, please contact your coach to
+                      remove you from it.
+                    </HoverCardContent>
+                  </HoverCard>
+                </div>
+              </div>
             ) : (
-              <FormArea
-                id='wantedTeam'
-                type='select'
-                form={form}
-                items={teams}
-                label='Team where you play/you want to play'
-                placeholder={teamName?.split(':')[0] || 'Select Team'}
-                name='wantedTeam'
-                className='w-full'
-                idFlag={true}
-              />
+              <div className='relative'>
+                <FormArea
+                  id='wantedTeam'
+                  type='select'
+                  form={form}
+                  items={teams}
+                  label='Team where you play/you want to play'
+                  placeholder={teamName?.split(':')[0] || 'Select Team'}
+                  name='wantedTeam'
+                  className='w-full'
+                  idFlag={true}
+                />
+                <div className='absolute top-0 right-0 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer group'>
+                  <HoverCard>
+                    <HoverCardTrigger>
+                      <FaQuestionCircle className='text-gray-500' />
+                    </HoverCardTrigger>
+                    <HoverCardContent>
+                      If you choose a team, the coach will be notified and will
+                      add you to it.
+                    </HoverCardContent>
+                  </HoverCard>
+                </div>
+              </div>
             )}
           </div>
 
