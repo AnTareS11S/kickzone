@@ -35,7 +35,7 @@ const PlayerForm = () => {
   const { toast } = useToast();
 
   const form = useForm({
-    resolver: zodResolver(playerFormSchema()),
+    resolver: zodResolver(playerFormSchema(playerData ? true : false)),
     defaultValues: {
       name: '',
       surname: '',
