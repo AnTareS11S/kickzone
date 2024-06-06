@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-export const stadiumFormSchema = (isEdit) =>
+export const stadiumFormSchema = () =>
   z.object({
     name: z
       .string()
@@ -9,23 +9,7 @@ export const stadiumFormSchema = (isEdit) =>
       })
       .max(30, {
         message: 'Stadium name must not be longer than 30 characters.',
-      })
-      .refine(
-        async (value) => {
-          const res = await fetch('/api/admin/stadium/check', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: value, isEdit }),
-          });
-          const data = await res.json();
-          return data.success;
-        },
-        {
-          message: 'Stadium name already exists.',
-        }
-      ),
+      }),
     capacity: z.any().refine(
       (value) => {
         const parsedValue =
