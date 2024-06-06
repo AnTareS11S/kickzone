@@ -3,10 +3,15 @@ import { Separator } from '../../components/ui/separator';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { useFetchUserById } from '../../components/hooks/useFetchUserById';
+import Spinner from '../../components/Spinner';
 
 const RefereeDashboard = () => {
   const leagueId = useParams().id;
-  const { user } = useFetchUserById();
+  const { user, loading } = useFetchUserById();
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <>

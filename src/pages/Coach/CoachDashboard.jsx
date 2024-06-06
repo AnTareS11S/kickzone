@@ -3,9 +3,14 @@ import { Separator } from '../../components/ui/separator';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
 import { useFetchUserById } from '../../components/hooks/useFetchUserById';
+import Spinner from '../../components/Spinner';
 
 const CoachDashboard = () => {
-  const { user } = useFetchUserById();
+  const { user, loading } = useFetchUserById();
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <>
