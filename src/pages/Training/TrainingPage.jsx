@@ -49,8 +49,8 @@ const TrainingPage = () => {
         </>
       ) : (
         <div className='flex items-center justify-center h-full'>
-          <p className='text-heading4-medium font-semibold'>
-            You are not assigned to any team.
+          <p className='text-lg text-gray-800 text-center'>
+            You are not assigned to any team yet.
           </p>
         </div>
       )}
