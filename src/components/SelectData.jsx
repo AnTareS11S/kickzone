@@ -40,7 +40,9 @@ const SelectData = ({
           </SelectGroup>
         ) : (
           <SelectGroup>
-            <SelectItem value='No data'>No data</SelectItem>
+            <SelectItem value='no-data' disabled>
+              No data available
+            </SelectItem>
           </SelectGroup>
         )}
       </SelectContent>
