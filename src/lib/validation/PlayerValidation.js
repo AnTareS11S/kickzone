@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-export const playerFormSchema = () =>
+export const playerFormSchema = (isEdit) =>
   z.object({
     name: z.string().min(1, {
       message: 'Name is required',
@@ -63,9 +63,11 @@ export const playerFormSchema = () =>
         message: 'Age must be a positive integer',
       }
     ),
-    photo: z.instanceof(File, {
-      message: 'Photo is required',
-    }),
+    photo: isEdit
+      ? z.any().nullable()
+      : z.instanceof(File, {
+          message: 'Photo is required',
+        }),
     bio: z.string().min(1, {
       message: 'Bio is required',
     }),
