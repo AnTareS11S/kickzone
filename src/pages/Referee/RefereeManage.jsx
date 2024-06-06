@@ -2,7 +2,7 @@ import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import { Separator } from '../../components/ui/separator';
-import { coachFormSchema } from '../../lib/validation/CoachValidation';
+import { usersFormSchema } from '../../lib/validation/UsersValidation';
 
 const columns = [
   {
@@ -41,7 +41,7 @@ const RefereeManage = () => {
         columns={columns}
         title='Referee'
         onDeleteComponent={DeleteEntity}
-        formSchema={coachFormSchema}
+        formSchema={usersFormSchema}
         isExpandable={false}
         isAction={true}
       />
