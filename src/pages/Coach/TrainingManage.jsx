@@ -42,6 +42,7 @@ const TrainingManage = () => {
   useEffect(() => {
     const getTypes = async () => {
       try {
+        if (!coach?._id) return;
         const res = await fetch(`/api/admin/training-type/${coach?._id}`);
         if (!res.ok) {
           throw new Error(data.message || 'Failed to fetch data!');
