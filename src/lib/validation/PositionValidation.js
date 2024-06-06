@@ -1,6 +1,6 @@
 import * as z from 'zod';
 
-export const positionFormSchema = (isEdit) =>
+export const positionFormSchema = () =>
   z.object({
     name: z
       .string()
@@ -9,23 +9,7 @@ export const positionFormSchema = (isEdit) =>
       })
       .max(30, {
         message: 'Postion name must not be longer than 30 characters.',
-      })
-      .refine(
-        async (value) => {
-          const res = await fetch('/api/admin/position/check', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: value, isEdit }),
-          });
-          const data = await res.json();
-          return data.success;
-        },
-        {
-          message: 'Position name already exists.',
-        }
-      ),
+      }),
     shortcut: z
       .string()
       .min(2, {
@@ -33,21 +17,5 @@ export const positionFormSchema = (isEdit) =>
       })
       .max(10, {
         message: 'Position shortcut must not be longer than 5 characters.',
-      })
-      .refine(
-        async (value) => {
-          const res = await fetch('/api/admin/position/check', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ shortcut: value, isEdit }),
-          });
-          const data = await res.json();
-          return data.success;
-        },
-        {
-          message: 'Position shortcut already exists.',
-        }
-      ),
+      }),
   });
