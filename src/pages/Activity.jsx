@@ -27,20 +27,22 @@ const Activity = () => {
   useEffect(() => {
     const getActivity = async () => {
       try {
-        const response = await fetch(`/api/user/activity/${currentUser._id}`);
-        const data = await response.json();
+        const res = await fetch(`/api/user/activity/${currentUser?._id}`);
+        if (!res.ok) {
+          throw new Error('Failed to fetch activity');
+        }
+        const data = await res.json();
         setActivity(data);
-        setLoading(false);
       } catch (error) {
         console.log(error);
-        setLoading(false);
       } finally {
         setLoading(false);
       }
     };
-    getActivity();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    if (currentUser?._id) {
+      getActivity();
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     localStorage.setItem('hiddenReplies', JSON.stringify(hiddenReplies));
