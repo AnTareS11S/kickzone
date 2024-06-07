@@ -86,11 +86,18 @@ const RefereeDetails = () => {
             </div>
             <div className='flex items-center'>
               <FaCalendar className='h-5 w-5 text-gray-500 mr-2' />
-              <Link to={`/results/${refereeStats?.lastMatchId}`}>
-                <p className='text-gray-700 hover:text-primary-500'>
-                  Last Match as Main Referee: {refereeStats?.lastMatchName}
-                </p>
-              </Link>
+              {refereeStats?.lastMatchId ? (
+                <Link to={`/results/${refereeStats?.lastMatchId}`}>
+                  <p className='text-gray-700 hover:text-primary-500'>
+                    Last Match as Main Referee:{' '}
+                    {refereeStats.lastMatchId
+                      ? refereeStats.lastMatchName
+                      : 'N/A'}
+                  </p>
+                </Link>
+              ) : (
+                <p className='text-gray-700'>Last Match as Main Referee: N/A</p>
+              )}
             </div>
           </div>
         </CardContent>
