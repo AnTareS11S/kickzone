@@ -35,6 +35,13 @@ const schema = () =>
     season: z.string().min(1, { message: 'Season is required' }),
   });
 
+const scheduleSchema = () =>
+  z.object({
+    selectedSeason: z
+      .string()
+      .min(1, { message: 'Season selection is required' }),
+  });
+
 const ScheduleManagement = () => {
   const leagueId = useParams().id;
   const [rounds, setRounds] = useState([]);
@@ -58,7 +65,13 @@ const ScheduleManagement = () => {
     mode: 'onChange',
   });
 
-  const { getValues } = form;
+  const scheduleForm = useForm({
+    resolver: zodResolver(scheduleSchema()),
+    defaultValues: {
+      selectedSeason: '',
+    },
+    mode: 'onChange',
+  });
 
   const fetchFromApi = async (url, method, body) => {
     try {
@@ -89,7 +102,7 @@ const ScheduleManagement = () => {
   };
 
   const handleGenerateSchedule = async () => {
-    const { startDate, season } = getValues();
+    const { startDate, season } = form.getValues();
 
     const newSchedule = await fetchFromApi(
       `/api/referee/generate-schedule/${leagueId}`,
@@ -109,7 +122,19 @@ const ScheduleManagement = () => {
   };
 
   const handleDeleteRounds = async () => {
-    await fetchFromApi(`/api/referee/delete-schedule/${leagueId}`, 'DELETE');
+    const { selectedSeason } = scheduleForm.getValues();
+
+    if (!selectedSeason) {
+      scheduleForm.setError('selectedSeason', {
+        type: 'manual',
+        message: 'Season selection is required',
+      });
+      return;
+    }
+    await fetchFromApi(
+      `/api/referee/delete-schedule/${leagueId}?seasonId=${selectedSeason}`,
+      'DELETE'
+    );
     toast({
       title: 'Rounds Deleted!',
       description: 'All rounds have been deleted successfully.',
@@ -117,11 +142,13 @@ const ScheduleManagement = () => {
   };
 
   const handleGetRounds = async () => {
+    const { selectedSeason } = scheduleForm.getValues();
+
     const fetchedRounds = await fetchFromApi(
-      `/api/referee/get-rounds/${leagueId}`
+      `/api/referee/get-rounds/${leagueId}?seasonId=${selectedSeason}`
     );
 
-    if (fetchedRounds.length === 0) {
+    if (fetchedRounds?.length === 0) {
       toast({
         variant: 'destructive',
         title: 'Error!',
@@ -142,7 +169,7 @@ const ScheduleManagement = () => {
       <BackButton />
 
       <div className='mb-6'>
-        <h1 className='text-3xl font-bold mb-2'>Schedule Management</h1>
+        <h1 className='text-body1-bold font-bold mb-2'>Schedule Management</h1>
         <p className='text-gray-600'>To edit schedule, download it first.</p>
       </div>
 
@@ -180,9 +207,30 @@ const ScheduleManagement = () => {
               >
                 Generate Schedule
               </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
+        <Form {...scheduleForm}>
+          <form
+            className='flex flex-col gap-4'
+            onSubmit={scheduleForm.handleSubmit(handleGetRounds)}
+          >
+            <FormArea
+              id='selectedSeason'
+              label='Season'
+              type='select'
+              form={scheduleForm}
+              name='selectedSeason'
+              items={seasons}
+              placeholder='Select a Season'
+              idFlag={true}
+            />
+            <div className='flex flex-col gap-4 sm:flex-row'>
               <Button
-                onClick={handleGetRounds}
-                type='button'
+                type='submit'
                 className='bg-primary-500 text-white hover:bg-purple-500 flex-1'
               >
                 Download Schedule
