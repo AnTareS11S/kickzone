@@ -14,7 +14,6 @@ const Layout = () => {
           </div>
         </section>
       </main>
-      <Sidebar />
     </div>
   );
 };
