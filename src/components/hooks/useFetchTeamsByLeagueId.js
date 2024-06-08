@@ -18,7 +18,7 @@ export const useFetchTeamsByLeagueId = (id) => {
         }
         const data = await res.json();
 
-        setLeagueName(data[0].league.name);
+        setLeagueName(data[0]?.league?.name);
 
         if (Array.isArray(data)) {
           setSelectTeams(data.map((team) => team.name + ':' + team._id));
