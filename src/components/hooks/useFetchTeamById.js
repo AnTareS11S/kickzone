@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const useFetchTeamById = (id) => {
+export const useFetchTeamById = (id, isChanged) => {
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -22,7 +22,7 @@ export const useFetchTeamById = (id) => {
     };
 
     fetchTeamById();
-  }, [id]);
+  }, [id, isChanged]);
 
   return { team, loading, error };
 };
