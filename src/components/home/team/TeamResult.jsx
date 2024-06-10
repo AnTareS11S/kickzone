@@ -1,10 +1,10 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Card, CardContent } from '../../ui/card';
 import { useFetchResultsAndMatchesByTeamId } from '../../hooks/useFetchResultsAndMatchesByTeamId';
 import Spinner from '../../Spinner';
 
 const TeamResult = () => {
-  const teamId = useLocation().pathname.split('/').pop();
+  const teamId = useParams().id;
   const { results, matches, loading } =
     useFetchResultsAndMatchesByTeamId(teamId);
 
