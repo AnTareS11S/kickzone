@@ -18,11 +18,98 @@ import {
   FaWeight,
   FaBirthdayCake,
 } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+import { useToast } from '../../components/ui/use-toast';
+import { useSelector } from 'react-redux';
+import { Button } from '../../components/ui/button';
 
 const PlayerDetails = () => {
   const playerId = useParams().id;
-  const { player, loading } = useFetchPlayerById(playerId);
+  const { currentUser } = useSelector((state) => state.user);
+  const [isChanged, setIsChanged] = useState(false);
+  const { player, loading } = useFetchPlayerById(playerId, isChanged);
   const { playerStats } = useFetchPlayerStatsById(playerId);
+  const [isFan, setIsFan] = useState(false);
+  const { toast } = useToast();
+
+  useEffect(() => {
+    const checkIfFan = async () => {
+      try {
+        const res = await fetch(`/api/player/is-fan/${playerId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: currentUser?._id }),
+        });
+        const data = await res.json();
+
+        setIsFan(data.isFan);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    if (currentUser && playerId) {
+      checkIfFan();
+    }
+  }, [currentUser, playerId, isChanged]);
+
+  const handleFollow = async () => {
+    try {
+      const res = await fetch(`/api/player/follow/${playerId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: currentUser?._id }),
+      });
+
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'You are now following this player',
+        });
+        setIsChanged(!isChanged);
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to follow player',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    try {
+      const res = await fetch(`/api/player/unfollow/${playerId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: currentUser?._id }),
+      });
+
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'You are no longer following this player',
+        });
+        setIsChanged(!isChanged);
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to unfollow player',
+          variant: 'destructive',
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const columns = [
     {
@@ -79,31 +166,60 @@ const PlayerDetails = () => {
   }
 
   return (
-    <article className='py-8'>
+    <>
       <BackButton />
       <Separator />
       <Card className='bg-white shadow-lg rounded-lg flex flex-col'>
-        <CardHeader className='bg-gray-100 p-6  md:flex-row items-center'>
-          <div className='w-40 h-40 rounded-full  mb-4 md:mb-0 md:mr-6'>
-            <img
-              src={
-                player?.imageUrl ||
-                'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-              }
-              alt={`Photo of ${player?.name}`}
-              className='object-cover w-full h-full'
-            />
+        <CardHeader className='bg-gray-100 p-6 flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0'>
+          <div className='flex flex-col lg:flex-row items-center'>
+            <div className='w-40 h-40 rounded-full mb-4 lg:mb-0 lg:mr-6'>
+              <img
+                src={
+                  player?.imageUrl ||
+                  'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                }
+                alt={`Photo of ${player?.name}`}
+                className='object-cover w-full h-full rounded-full'
+              />
+            </div>
+            <div className='text-center lg:text-left'>
+              <CardTitle className='text-2xl font-bold mb-2'>
+                {player?.name + ' ' + player?.surname}
+              </CardTitle>
+              <CardDescription className='text-gray-600'>
+                {player?.position} | {player?.currentTeam}
+              </CardDescription>
+            </div>
           </div>
-          <div>
-            <CardTitle className='text-2xl font-bold mb-2'>
-              {player?.name + ' ' + player?.surname}
-            </CardTitle>
-            <CardDescription className='text-gray-600'>
-              {player?.position} | {player?.currentTeam}
-            </CardDescription>
+          <div className='flex flex-col lg:flex-row items-center space-y-2 lg:space-y-0 lg:space-x-4'>
+            <span className='text-gray-600 font-semibold'>
+              {player?.fans?.length} fans
+            </span>
+            {currentUser && (
+              <div className='flex space-x-2'>
+                <Button
+                  className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center transition-all duration-300 ease-in-out ${
+                    isFan ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  onClick={handleFollow}
+                  disabled={isFan}
+                >
+                  <span className='text-sm'>Follow</span>
+                </Button>
+                <Button
+                  className={`bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center transition-all duration-300 ease-in-out ${
+                    !isFan ? 'opacity-50 cursor-not-allowed' : ''
+                  }`}
+                  onClick={handleUnfollow}
+                  disabled={!isFan}
+                >
+                  <span className='text-sm'>Unfollow</span>
+                </Button>
+              </div>
+            )}
           </div>
         </CardHeader>
-        <CardContent className='p-6 grid grid-cols-1 md:grid-cols-2 gap-8'>
+        <CardContent className='p-6 grid grid-cols-1 lg:grid-cols-2 gap-8'>
           <div>
             <h3 className='text-lg font-semibold mb-2'>Personal Information</h3>
             <div className='flex items-center mb-2'>
@@ -132,7 +248,7 @@ const PlayerDetails = () => {
             </ul>
           </div>
         </CardContent>
-        <div className='p-6 grid'>
+        <div className='p-6 grid mt-5 w-full rounded-none shadow-md'>
           <h3 className='text-lg font-semibold mb-4'>Player Stats</h3>
           <CustomDataTable
             columns={columns}
@@ -142,7 +258,7 @@ const PlayerDetails = () => {
           />
         </div>
       </Card>
-    </article>
+    </>
   );
 };
 
