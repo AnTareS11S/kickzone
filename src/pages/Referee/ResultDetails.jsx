@@ -1,11 +1,11 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
 import { useEffect, useState } from 'react';
 import Spinner from '../../components/Spinner';
 
 const ResultDetails = () => {
-  const resultId = useLocation().pathname.split('/').pop();
+  const resultId = useParams().id;
   const [result, setResult] = useState({});
   const [match, setMatch] = useState({});
   const [homeTeamPlayersStats, setHomeTeamPlayersStats] = useState([]);
