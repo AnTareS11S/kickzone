@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const useFetchPlayerById = (id) => {
+export const useFetchPlayerById = (id, isChanged) => {
   const [player, setPlayer] = useState({});
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,7 @@ export const useFetchPlayerById = (id) => {
     };
 
     fetchPlayerById();
-  }, [id]);
+  }, [id, isChanged]);
 
   return { player, loading };
 };
