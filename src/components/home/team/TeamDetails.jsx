@@ -161,16 +161,37 @@ const TeamDetails = () => {
       <div className='max-w-screen-xl mx-auto px-4 py-12'>
         <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
           <div className='px-6 py-8 sm:px-8 sm:py-10'>
-            <div className='flex items-center justify-between mb-6'>
-              <div className='flex items-center space-x-4'>
+            <div className='flex flex-col sm:flex-row items-center justify-between mb-6'>
+              <div className='flex flex-col sm:flex-row items-center space-x-4 mb-4 sm:mb-0'>
                 <h2 className='text-heading2-semibold font-bold text-gray-900'>
                   {team?.name}
                 </h2>
                 <span className='text-gray-600 font-semibold'>
                   {team?.fans?.length} fans
                 </span>
+                {currentUser && (
+                  <div className='flex items-center space-x-2 mt-2 sm:mt-0'>
+                    <Button
+                      className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center space-x-2 transition-all duration-300 ease-in-out ${
+                        isFan ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      onClick={handleFollow}
+                      disabled={isFan}
+                    >
+                      <span className='text-sm'>Follow</span>
+                    </Button>
+                    <Button
+                      className={`bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center space-x-2 transition-all duration-300 ease-in-out ${
+                        !isFan ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                      onClick={handleUnfollow}
+                      disabled={!isFan}
+                    >
+                      <span className='text-sm'>Unfollow</span>
+                    </Button>
+                  </div>
+                )}
               </div>
-
               {team?.logoUrl && (
                 <img
                   src={
@@ -178,37 +199,21 @@ const TeamDetails = () => {
                     'https://d3awt09vrts30h.cloudfront.net/team_img_default.png'
                   }
                   alt={`Logo of ${team?.name}`}
-                  className='w-32 h-32 rounded-md object-contain'
+                  className='w-32 h-32 rounded-md object-contain mt-4 sm:mt-0'
                 />
               )}
             </div>
-            {currentUser && (
-              <div className='flex items-center space-x-4 mb-8'>
-                <Button
-                  className='bg-primary-500 hover:bg-primary-600 text-white font-semibold py-1.5 px-3 rounded-md flex items-center space-x-2'
-                  onClick={handleFollow}
-                  disabled={isFan}
-                >
-                  <span className='text-sm'>Follow</span>
-                </Button>
-                <Button
-                  className='bg-red-500 hover:bg-red-600 text-white font-semibold py-1.5 px-3 rounded-md flex items-center space-x-2'
-                  onClick={handleUnfollow}
-                  disabled={!isFan}
-                >
-                  <span className='text-sm'>Unfollow</span>
-                </Button>
-              </div>
-            )}
             <div className='flex items-center space-x-1 mb-5'>
               <p className='text-gray-600 font-semibold'>
                 {team?.sponsor ? 'Sponsored by ' : null}
               </p>
-              <p className='text-gray-600 font-semibold hover:text-gray-900'>
-                <Link to={team?.sponsor?.website} target='_blank'>
-                  {team?.sponsor?.name}
-                </Link>
-              </p>
+              {team?.sponsor && (
+                <p className='text-gray-600 font-semibold hover:text-gray-900'>
+                  <Link to={team?.sponsor?.website} target='_blank'>
+                    {team?.sponsor?.name}
+                  </Link>
+                </p>
+              )}
             </div>
             <p className='text-gray-600 mb-8'>{team.bio}</p>
             <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
