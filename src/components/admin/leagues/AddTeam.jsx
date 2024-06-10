@@ -6,6 +6,8 @@ import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
 const AddTeam = ({ row, onEntityUpdated }) => {
   const [teams, setTeams] = useState([]);
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const form = useForm({
     defaultValues: {
       name: '',
@@ -64,6 +66,7 @@ const AddTeam = ({ row, onEntityUpdated }) => {
         throw new Error('Failed to fetch data!');
       }
       setUpdateSuccess(true);
+      setIsModalOpen(false);
     } catch (error) {
       console.log('Error updating team: ', error);
     }
@@ -80,6 +83,9 @@ const AddTeam = ({ row, onEntityUpdated }) => {
         data={row}
         form={form}
         fields={fields}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onOpen={() => setIsModalOpen(true)}
       />
     </div>
   );
