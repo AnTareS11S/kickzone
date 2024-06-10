@@ -18,7 +18,6 @@ import Activity from './pages/Activity';
 import HomeProfile from './pages/HomeProfile';
 import Leagues from './pages/League/Leagues';
 import LeaguePage from './pages/League/LeaguePage';
-import TeamPage from './pages/Team/TeamPage';
 import PlayerManage from './pages/Player/PlayerManage';
 import PlayerProfile from './pages/Player/PlayerProfile';
 import PlayerRoute from './pages/Player/PlayerRoute';
@@ -57,6 +56,7 @@ import Onboarding from './pages/Onboarding';
 import ProtectedRoute from './pages/ProtectedRoute';
 import RefereeManage from './pages/Referee/RefereeManage';
 import SeasonManage from './pages/Season/SeasonManage';
+import TeamDetails from './components/home/team/TeamDetails';
 
 const App = () => {
   return (
@@ -75,7 +75,7 @@ const App = () => {
           <Route path='/profile/:id' element={<HomeProfile />} />
           <Route path='/leagues' element={<Leagues />} />
           <Route path='/league/:id' element={<LeaguePage />} />
-          <Route path='/league/team/:id' element={<TeamPage />} />
+          <Route path='/league/team/:id' element={<TeamDetails />} />
           <Route path='/coach/:id' element={<CoachDetails />} />
           <Route path='/referee/:id' element={<RefereeDetails />} />
           <Route path='/stadium/:id' element={<StadiumPage />} />
