@@ -12,11 +12,35 @@ import { useEffect, useState } from 'react';
 import BackButton from '../../BackButton';
 import { Separator } from '../../ui/separator';
 import { useToast } from '../../ui/use-toast';
+import {
+  MdOutlineScoreboard,
+  MdOutlineCalendarMonth,
+  MdPoll,
+} from 'react-icons/md';
+import { FaPeopleGroup } from 'react-icons/fa6';
+import TeamStats from './TeamStats';
 
 const profileTabs = [
-  { value: 'results', label: 'Results', icon: '/results.png' },
-  { value: 'matches', label: 'Matches', icon: '/calendar.png' },
-  { value: 'squad', label: 'Squad', icon: '/check.png' },
+  {
+    value: 'results',
+    label: 'Results',
+    icon: <MdOutlineScoreboard className='w-8 h-8 text-black' />,
+  },
+  {
+    value: 'matches',
+    label: 'Matches',
+    icon: <MdOutlineCalendarMonth className='w-8 h-8 text-black' />,
+  },
+  {
+    value: 'squad',
+    label: 'Squad',
+    icon: <FaPeopleGroup className='w-8 h-8 text-black' />,
+  },
+  {
+    value: 'teamStats',
+    label: 'Team Stats',
+    icon: <MdPoll className='w-8 h-8 text-black' />,
+  },
 ];
 
 const TeamDetails = () => {
@@ -269,13 +293,7 @@ const TeamDetails = () => {
                     value={tab.value}
                     className='flex items-center justify-center space-x-2 text-purple-600 font-semibold cursor-pointer transition-colors duration-200 ease-in-out hover:bg-purple-600 hover:text-white px-4 py-2 rounded-md'
                   >
-                    <img
-                      src={tab.icon}
-                      alt={tab.label}
-                      width={24}
-                      height={24}
-                      className='object-contain'
-                    />
+                    {tab.icon}
                     <span className='hidden sm:inline'>{tab.label}</span>
                   </TabsTrigger>
                 ))}
@@ -288,6 +306,9 @@ const TeamDetails = () => {
               </TabsContent>
               <TabsContent value='squad'>
                 <SquadTable />
+              </TabsContent>
+              <TabsContent value='teamStats'>
+                <TeamStats />
               </TabsContent>
             </Tabs>
           </div>
