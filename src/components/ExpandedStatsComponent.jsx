@@ -79,9 +79,10 @@ const ExpandedStatsComponent = ({ data }) => {
           description: 'Player stats added successfully',
         });
       } else {
+        const errorData = await res.json();
         toast({
           title: 'Error!',
-          description: 'Failed to add player stats',
+          description: errorData.message || 'Failed to add player stats',
           variant: 'destructive',
         });
       }
