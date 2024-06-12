@@ -71,18 +71,20 @@ const RefereeDetails = () => {
             <div className='flex items-center mb-2'>
               <TbRectangleVerticalFilled className='h-5 w-5 text-yellow-500 mr-2' />
               <p className='text-gray-700'>
-                Yellow Cards: {refereeStats?.yellowCards}
+                Yellow Cards: {refereeStats?.yellowCards || 0}
               </p>
             </div>
             <div className='flex items-center mb-2'>
               <TbRectangleVerticalFilled className='h-5 w-5 text-red-500 mr-2' />
               <p className='text-gray-700'>
-                Red Cards: {refereeStats?.redCards}
+                Red Cards: {refereeStats?.redCards || 0}
               </p>
             </div>
             <div className='flex items-center mb-2'>
               <TbBuildingStadium className='h-5 w-5 mr-2' />
-              <p className='text-gray-700'>Matches: {refereeStats?.matches}</p>
+              <p className='text-gray-700'>
+                Matches: {refereeStats?.matches || 0}
+              </p>
             </div>
             <div className='flex items-center'>
               <FaCalendar className='h-5 w-5 text-gray-500 mr-2' />
