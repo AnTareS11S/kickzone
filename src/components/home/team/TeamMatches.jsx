@@ -71,7 +71,7 @@ const TeamMatches = () => {
               setLoading(true);
             }}
           >
-            <SelectTrigger className='flex items-center border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500'>
+            <SelectTrigger className='flex items-center border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500 bg-white shadow-sm'>
               <SelectValue placeholder='Select Season' />
             </SelectTrigger>
             <SelectContent>
@@ -90,7 +90,7 @@ const TeamMatches = () => {
           {filteredMatches.map((match) => (
             <div
               key={match._id}
-              className='bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg'
+              className='bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
             >
               <div className='p-6'>
                 <h2 className='text-xl font-semibold text-gray-800 mb-2'>
