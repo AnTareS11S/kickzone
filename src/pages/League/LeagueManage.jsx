@@ -21,12 +21,17 @@ const LeagueManage = () => {
     },
     {
       name: 'League',
-      selector: (row) => row.name,
+      selector: (row) => row?.name,
       sortable: true,
     },
     {
       name: 'Teams',
-      selector: (row) => row.teams.length,
+      selector: (row) => row.teams?.length,
+      sortable: true,
+    },
+    {
+      name: 'Season',
+      selector: (row) => row.seasonName,
       sortable: true,
     },
   ];
