@@ -68,19 +68,22 @@ const CrudPanel = ({
           apiPath
         )
       ) {
-        const nameExists = await fetch(
-          `/api/${apiPath}/check-${apiPath}-name?name=${data.name}`
-        );
+        let url = `/api/${apiPath}/check-${apiPath}-name?name=${data.name}`;
+
+        if (apiPath === 'league') {
+          url += `&season=${data.season}`;
+        }
+        const nameExists = await fetch(url);
         const nameData = await nameExists.json();
 
         if (nameData.exists) {
           form.setError('name', {
             type: 'manual',
-            message: 'Name already exists',
+            message: `${title} name already exists`,
           });
           toast({
             title: 'Error!',
-            description: `${title} already exists`,
+            description: `${title} name already exists`,
             variant: 'destructive',
           });
           setUpdateSuccess(false);
