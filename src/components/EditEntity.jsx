@@ -46,19 +46,26 @@ const EditEntity = ({
           apiEndpoint
         )
       ) {
-        const nameExists = await fetch(
-          `/api/${apiEndpoint}/check-${apiEndpoint}-name?name=${data.name}&id=${row._id}`
-        );
+        let url = `/api/${apiEndpoint}/check-${apiEndpoint}-name?name=${data.name}&id=${row._id}`;
+
+        if (apiEndpoint === 'league') {
+          url += `&season=${data.season}`;
+        }
+        const nameExists = await fetch(url);
         const nameData = await nameExists.json();
 
         if (nameData.exists) {
           form.setError('name', {
             type: 'manual',
-            message: 'Name already exists',
+            message: `${data.name} already exists ${
+              apiEndpoint === 'league' ? 'for this season' : ''
+            }`,
           });
           toast({
             title: 'Error!',
-            description: `Name ${data?.name} already exists`,
+            description: `Name ${data?.name} already exists ${
+              apiEndpoint === 'league' ? 'for this season' : ''
+            }`,
             variant: 'destructive',
           });
           setUpdatedSuccess(false);
@@ -96,6 +103,7 @@ const EditEntity = ({
         const matchingItem = field.items.find(
           (item) => item.split(':')[1] === row[field.name]
         );
+
         field.defaultValue = matchingItem
           ? matchingItem.split(':')[0]
           : `Select ${field.label}`;
