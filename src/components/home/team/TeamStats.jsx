@@ -167,22 +167,22 @@ const TeamStats = () => {
           <DetailCard
             title='Goals Scored'
             items={stats.goalsScored}
-            icon={<PiSoccerBallFill className='text-black' />}
+            icon={<PiSoccerBallFill className='w-5 h-5 text-black' />}
           />
           <DetailCard
             title='Goals Lost'
             items={stats.goalsLost}
-            icon={<PiSoccerBallFill className='text-red-500' />}
+            icon={<PiSoccerBallFill className='w-5 h-5 text-red-500' />}
           />
           <DetailCard
             title='Yellow Cards'
             items={stats.yellowCards}
-            icon={<FaSquare className='text-yellow-500' />}
+            icon={<FaSquare className='w-5 h-5 text-yellow-500' />}
           />
           <DetailCard
             title='Red Cards'
             items={stats.redCards}
-            icon={<FaSquare className='text-red-500' />}
+            icon={<FaSquare className='w-5 h-5 text-red-500' />}
           />
         </div>
       </div>
@@ -203,13 +203,12 @@ const StatCard = ({ title, value, icon, color }) => (
 const DetailCard = ({ title, items, icon }) => (
   <div>
     <div className='flex items-center mb-4'>
-      {icon}
       <h4 className='text-xl font-semibold text-gray-800 ml-2'>{title}</h4>
     </div>
     {items?.map((item, index) => (
-      <div key={index} className='mb-4'>
-        <p className='text-lg text-gray-700'>
-          {item?.count} {title}
+      <div key={index} className='mb-4 ml-8'>
+        <p className='text-body-medium flex items-center gap-2 text-gray-700'>
+          {icon} {item?.count}
         </p>
       </div>
     ))}
