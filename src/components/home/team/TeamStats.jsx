@@ -24,6 +24,13 @@ const TeamStats = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (seasons.length > 0) {
+      const lastSeason = seasons[seasons.length - 1].split(':')[1];
+      setSelectedSeason(lastSeason);
+    }
+  }, [seasons]);
+
+  useEffect(() => {
     const getTeamCards = async () => {
       try {
         const res = await fetch(
@@ -83,7 +90,13 @@ const TeamStats = () => {
             Statistics Overview
           </h3>
           <div className='flex items-center space-x-2'>
-            <Select onValueChange={(value) => setSelectedSeason(value)}>
+            <Select
+              value={selectedSeason}
+              onValueChange={(value) => {
+                setSelectedSeason(value);
+                setLoading(true);
+              }}
+            >
               <SelectTrigger className='flex items-center border border-gray-300 rounded-lg px-4 py-2 hover:border-gray-500'>
                 <SelectValue placeholder='Select Season' />
               </SelectTrigger>
