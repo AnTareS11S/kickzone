@@ -19,7 +19,7 @@ const ModalDialog = ({ title, description, handleClick, type }) => {
         {type === 'button' ? (
           <Button
             variant='outline'
-            className='mt-4 sm:mt-4 bg-red-600 text-white hover:bg-red-700 hover:text-white'
+            className='bg-red-600 text-white hover:bg-red-700 hover:text-white p-4 rounded-md'
           >
             {title}
           </Button>
