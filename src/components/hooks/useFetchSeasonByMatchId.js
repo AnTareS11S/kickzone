@@ -18,7 +18,7 @@ export const useFetchSeasonByMatchId = (matchId) => {
     };
 
     fetchSeasonData();
-  }, [matchId, season._id]);
+  }, [matchId]);
 
   return season;
 };
