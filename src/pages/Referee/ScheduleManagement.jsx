@@ -6,7 +6,6 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../../components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
 import { Separator } from '../../components/ui/separator';
 import { useToast } from '../../components/ui/use-toast';
 import ScheduleModal from '../../components/referee/ScheduleModal';
@@ -19,6 +18,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '../../components/ui/carousel';
+import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
+import ModalDialog from '../../components/ModalDialog';
+import Spinner from '../../components/Spinner';
 
 const schema = () =>
   z.object({
@@ -29,26 +31,18 @@ const schema = () =>
         return date.getTime() > today.getTime();
       },
       {
-        message: 'Date must be in the future ',
+        message: 'Date must be in the future',
       }
     ),
-    season: z.string().min(1, { message: 'Season is required' }),
-  });
-
-const scheduleSchema = () =>
-  z.object({
-    selectedSeason: z
-      .string()
-      .min(1, { message: 'Season selection is required' }),
   });
 
 const ScheduleManagement = () => {
   const leagueId = useParams().id;
   const [rounds, setRounds] = useState([]);
   const [showGeneratedSchedule, setShowGeneratedSchedule] = useState(false);
-  const seasons = useFetchSeasons();
+  const { season, league } = useFetchSeasonByLeagueId(leagueId);
   const { toast } = useToast();
-  const { selectTeams } = useFetchTeamsByLeagueId(leagueId);
+  const { selectTeams, loading } = useFetchTeamsByLeagueId(leagueId);
 
   useEffect(() => {
     if (!showGeneratedSchedule) {
@@ -60,15 +54,6 @@ const ScheduleManagement = () => {
     resolver: zodResolver(schema()),
     defaultValues: {
       startDate: '',
-      season: '',
-    },
-    mode: 'onChange',
-  });
-
-  const scheduleForm = useForm({
-    resolver: zodResolver(scheduleSchema()),
-    defaultValues: {
-      selectedSeason: '',
     },
     mode: 'onChange',
   });
@@ -93,7 +78,7 @@ const ScheduleManagement = () => {
         toast({
           variant: 'destructive',
           title: 'Error!',
-          description: 'Schedule is already generated. Delete rounds first',
+          description: 'Schedule is already generated. Delete rounds first.',
         });
       }
     } catch (error) {
@@ -102,12 +87,12 @@ const ScheduleManagement = () => {
   };
 
   const handleGenerateSchedule = async () => {
-    const { startDate, season } = form.getValues();
+    const { startDate } = form.getValues();
 
     const newSchedule = await fetchFromApi(
       `/api/referee/generate-schedule/${leagueId}`,
       'POST',
-      { startDate, seasonId: season }
+      { startDate, seasonId: season._id }
     );
 
     if (newSchedule) {
@@ -122,19 +107,11 @@ const ScheduleManagement = () => {
   };
 
   const handleDeleteRounds = async () => {
-    const { selectedSeason } = scheduleForm.getValues();
-
-    if (!selectedSeason) {
-      scheduleForm.setError('selectedSeason', {
-        type: 'manual',
-        message: 'Season selection is required',
-      });
-      return;
-    }
     await fetchFromApi(
-      `/api/referee/delete-schedule/${leagueId}?seasonId=${selectedSeason}`,
+      `/api/referee/delete-schedule/${leagueId}?seasonId=${season._id}`,
       'DELETE'
     );
+    setShowGeneratedSchedule(false);
     toast({
       title: 'Rounds Deleted!',
       description: 'All rounds have been deleted successfully.',
@@ -142,10 +119,8 @@ const ScheduleManagement = () => {
   };
 
   const handleGetRounds = async () => {
-    const { selectedSeason } = scheduleForm.getValues();
-
     const fetchedRounds = await fetchFromApi(
-      `/api/referee/get-rounds/${leagueId}?seasonId=${selectedSeason}`
+      `/api/referee/get-rounds/${leagueId}?seasonId=${season._id}`
     );
 
     if (fetchedRounds?.length === 0) {
@@ -164,13 +139,22 @@ const ScheduleManagement = () => {
     }
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <div className='container mx-auto py-8 px-4 md:px-6 lg:px-8'>
       <BackButton />
 
       <div className='mb-6'>
-        <h1 className='text-body1-bold font-bold mb-2'>Schedule Management</h1>
-        <p className='text-gray-600'>To edit schedule, download it first.</p>
+        <h1 className='text-2xl font-bold mb-2'>Schedule Management</h1>
+        <div className='text-gray-600 flex flex-row justify-between'>
+          <p>To edit schedule, download it first.</p>
+          <p>
+            {league} / {season?.name}
+          </p>
+        </div>
       </div>
 
       <Separator />
@@ -183,27 +167,18 @@ const ScheduleManagement = () => {
           >
             <FormArea
               id='startDate'
-              label='Date of first match'
+              label={`Date of first match in ${season?.name}`}
               type='date'
               form={form}
               name='startDate'
               placeholder='Select date'
               initialDate={new Date()}
             />
-            <FormArea
-              id='season'
-              label='Season'
-              type='select'
-              form={form}
-              name='season'
-              items={seasons}
-              placeholder='Select a Season'
-              idFlag={true}
-            />
+
             <div className='flex flex-col gap-4 sm:flex-row'>
               <Button
                 type='submit'
-                className='bg-primary-500 text-white hover:bg-purple-500 flex-1'
+                className='bg-primary-500 text-white hover:bg-primary-600 flex-1'
               >
                 Generate Schedule
               </Button>
@@ -213,41 +188,22 @@ const ScheduleManagement = () => {
       </div>
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
-        <Form {...scheduleForm}>
-          <form
-            className='flex flex-col gap-4'
-            onSubmit={scheduleForm.handleSubmit(handleGetRounds)}
+        <div className='flex flex-col gap-4 sm:flex-row'>
+          <Button
+            type='button'
+            className='bg-primary-500 text-white hover:bg-primary-600 flex-1'
+            onClick={handleGetRounds}
           >
-            <FormArea
-              id='selectedSeason'
-              label='Season'
-              type='select'
-              form={scheduleForm}
-              name='selectedSeason'
-              items={seasons}
-              placeholder='Select a Season'
-              idFlag={true}
-            />
-            <div className='flex flex-col gap-4 sm:flex-row'>
-              <Button
-                type='submit'
-                className='bg-primary-500 text-white hover:bg-purple-500 flex-1'
-              >
-                Download Schedule
-              </Button>
-              <Button
-                type='button'
-                onClick={() => {
-                  handleDeleteRounds();
-                  setShowGeneratedSchedule(false);
-                }}
-                className='bg-red-500 text-white hover:bg-red-700 flex-1'
-              >
-                Delete Rounds
-              </Button>
-            </div>
-          </form>
-        </Form>
+            Download Schedule
+          </Button>
+
+          <ModalDialog
+            type='button'
+            title='Delete Schedule'
+            description='Are you sure you want to delete this schedule?'
+            handleClick={handleDeleteRounds}
+          />
+        </div>
       </div>
 
       {rounds?.length > 0 && (
@@ -256,14 +212,17 @@ const ScheduleManagement = () => {
             <h3 className='text-2xl font-bold mb-4 text-center'>Schedule:</h3>
             <div className='w-full max-w-4xl grid gap-8'>
               <CarouselContent>
-                {rounds?.map((round) => (
+                {rounds.map((round) => (
                   <CarouselItem key={round._id}>
                     <div className='bg-white rounded-lg shadow-lg border-slate-300 border overflow-hidden'>
                       <div className='bg-gray-800 text-white px-6 py-4 flex items-center justify-between'>
-                        <h3 className='text-xl font-semibold'>{round?.name}</h3>
+                        <h3 className='text-xl font-semibold'>{round.name}</h3>
+                        <h3 className='text-xl font-semibold'>
+                          {league} / {season?.name}
+                        </h3>
                       </div>
                       <div className='p-6'>
-                        {round?.matches.map((match) => (
+                        {round.matches.map((match) => (
                           <div
                             key={match.matchId}
                             className='flex justify-between items-center mb-4 pb-4 border-b last:mb-0 last:pb-0 last:border-none'
@@ -273,8 +232,8 @@ const ScheduleManagement = () => {
                                 {match.homeTeam.split(':')[0]} vs{' '}
                                 {match.awayTeam.split(':')[0]}
                               </div>
-                              <div className='text-gray-600 max-sm:hidden'>
-                                {new Date(match?.startDate).toLocaleString(
+                              <div className='text-gray-600'>
+                                {new Date(match.startDate).toLocaleString(
                                   'en-US',
                                   {
                                     weekday: 'long',
@@ -300,8 +259,8 @@ const ScheduleManagement = () => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className='absolute left-0 transform -translate-y-1/2 top-1/2 bg-primary-500 text-white hover:bg-purple-500 px-4 py-2 rounded-l-md max-sm:hidden' />
-              <CarouselNext className='absolute right-0 transform -translate-y-1/2 top-1/2 bg-primary-500 text-white hover:bg-purple-500 px-4 py-2 rounded-r-md max-sm:hidden' />
+              <CarouselPrevious className='absolute left-0 transform -translate-y-1/2 top-1/2 bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-l-md max-sm:hidden' />
+              <CarouselNext className='absolute right-0 transform -translate-y-1/2 top-1/2 bg-primary-500 text-white hover:bg-primary-600 px-4 py-2 rounded-r-md max-sm:hidden' />
             </div>
           </div>
         </Carousel>
