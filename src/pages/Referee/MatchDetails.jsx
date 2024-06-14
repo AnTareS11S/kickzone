@@ -13,26 +13,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
+import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
+import Spinner from '../../components/Spinner';
 
 const MatchDetails = () => {
   const leagueId = useParams().id;
   const { currentUser } = useSelector((state) => state.user);
   const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { season, league } = useFetchSeasonByLeagueId(leagueId);
 
   useEffect(() => {
     const getRefereeMatches = async () => {
       try {
         const response = await fetch(
-          `/api/referee/referee-matches/${leagueId}?userId=${currentUser._id}`
+          `/api/referee/referee-matches/${leagueId}?userId=${currentUser?._id}`
         );
         const data = await response.json();
         setMatches(data);
+        setLoading(false);
       } catch (error) {
         console.error(error);
+        setLoading(false);
       }
     };
     getRefereeMatches();
-  }, [leagueId, currentUser._id]);
+  }, [leagueId, currentUser?._id]);
 
   const handleDownloadPDF = async (id, name) => {
     try {
@@ -102,19 +108,26 @@ const MatchDetails = () => {
     link.parentNode.removeChild(link);
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <div className='container mx-auto py-8 px-4 md:px-6 lg:px-8'>
       <BackButton />
       <div className='mb-6'>
         <h1 className='text-2xl font-bold mb-2'>Match Details</h1>
-        <p className='text-gray-600'>
-          Download match details here before the match starts.
-        </p>
+        <div className='text-gray-600 flex flex-row justify-between'>
+          <p>Download match details here before the match starts.</p>
+          <p>
+            {league} / {season?.name}
+          </p>
+        </div>
       </div>
       <Separator />
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {matches?.map((match) => (
-          <Card key={match._id} className='bg-white rounded-lg shadow-md'>
+          <Card key={match?._id} className='bg-white rounded-lg shadow-md'>
             <CardContent className='flex flex-col p-6'>
               <div className='mb-4'>
                 <h2 className='text-lg font-bold'>
