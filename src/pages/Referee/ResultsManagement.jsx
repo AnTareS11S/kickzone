@@ -12,12 +12,14 @@ import BackButton from '../../components/BackButton';
 import { useParams } from 'react-router-dom';
 import { useFetchFilledResultMatches } from '../../components/hooks/useFetchFilledResultMatches';
 import Spinner from '../../components/Spinner';
+import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 
 const ResultsManagement = () => {
   const leagueId = useParams().id;
   const { matches: notFilledMatches, loading } =
     useFetchCompletedMatches(leagueId);
   const { matches: filledMatches } = useFetchFilledResultMatches(leagueId);
+  const { season, league } = useFetchSeasonByLeagueId(leagueId);
 
   if (loading) {
     return <Spinner />;
@@ -28,7 +30,12 @@ const ResultsManagement = () => {
       <BackButton />
       <div className='mb-6'>
         <h1 className='text-3xl font-bold mb-2'>Match Results</h1>
-        <p className='text-gray-600'>Manage match results here.</p>
+        <div className='text-gray-600 flex flex-row justify-between'>
+          <p>Manage match results here.</p>
+          <p>
+            {league} / {season?.name}
+          </p>
+        </div>
       </div>
 
       <Separator />
