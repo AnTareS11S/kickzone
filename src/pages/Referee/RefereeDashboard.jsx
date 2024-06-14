@@ -4,10 +4,12 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { useFetchUserById } from '../../components/hooks/useFetchUserById';
 import Spinner from '../../components/Spinner';
+import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 
 const RefereeDashboard = () => {
   const leagueId = useParams().id;
   const { user, loading } = useFetchUserById();
+  const { season, league } = useFetchSeasonByLeagueId(leagueId);
 
   if (loading) {
     return <Spinner />;
@@ -15,7 +17,14 @@ const RefereeDashboard = () => {
 
   return (
     <>
-      <div className='text-heading2-bold mb-4'>Referee Dashboard</div>
+      <div className='text-heading2-bold mb-4 flex flex-row justify-between items-center'>
+        Referee Dashboard
+        <div>
+          <p className='text-body1-bold text-muted-foreground'>
+            {league} / {season?.name}
+          </p>
+        </div>
+      </div>
       <Separator />
       {user?.isProfileFilled ? (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 '>
