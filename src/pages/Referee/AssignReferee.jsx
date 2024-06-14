@@ -13,39 +13,20 @@ import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
 import AssignRefereeModal from '../../components/referee/AssignRefereeModal';
 import { useFetchRefeeres } from '../../components/hooks/useFetchReferees';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import FormArea from '../../components/FormArea';
-import { Form } from '../../components/ui/form';
-import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
 
-const scheduleSchema = () =>
-  z.object({
-    selectedSeason: z
-      .string()
-      .min(1, { message: 'Season selection is required' }),
-  });
+import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
+import Spinner from '../../components/Spinner';
 
 const AssignReferee = () => {
   const leagueId = useParams().id;
   const { toast } = useToast();
   const [rounds, setRounds] = useState([]);
-  const seasons = useFetchSeasons();
+  const { season, league, loading } = useFetchSeasonByLeagueId(leagueId);
   const referees = useFetchRefeeres();
 
-  const scheduleForm = useForm({
-    resolver: zodResolver(scheduleSchema()),
-    defaultValues: {
-      selectedSeason: '',
-    },
-    mode: 'onChange',
-  });
-
   const handleGetRounds = async () => {
-    const { selectedSeason } = scheduleForm.getValues();
     const res = await fetch(
-      `/api/referee/get-rounds/${leagueId}?seasonId=${selectedSeason}`
+      `/api/referee/get-rounds/${leagueId}?seasonId=${season?._id}`
     );
     const fetchedRounds = await res.json();
 
@@ -65,43 +46,36 @@ const AssignReferee = () => {
     }
   };
 
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
-    <div className='container mx-auto py-8 px-4 md:px-6 lg:px-8'>
+    <div className='bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white py-8 px-4 md:px-6 lg:px-8'>
       <BackButton />
 
-      <div className='mb-6'>
-        <h1 className='text-body1-bold font-bold mb-2'>Assign Referee</h1>
-        <p className='text-gray-600'>Assign referees to matches here.</p>
+      <div className='flex justify-between items-center mb-6'>
+        <div>
+          <h1 className='text-3xl font-bold mb-2'>Assign Referee</h1>
+          <p className='text-gray-600 dark:text-gray-400'>
+            Assign referees to matches here.
+          </p>
+        </div>
+        <p>
+          {league} / {season?.name}
+        </p>
       </div>
 
       <Separator />
 
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
-        <Form {...scheduleForm}>
-          <form
-            className='flex flex-col gap-4'
-            onSubmit={scheduleForm.handleSubmit(handleGetRounds)}
-          >
-            <FormArea
-              id='selectedSeason'
-              label='Season'
-              type='select'
-              form={scheduleForm}
-              name='selectedSeason'
-              items={seasons}
-              placeholder='Select a Season'
-              idFlag={true}
-            />
-            <div className='flex flex-col gap-4 sm:flex-row'>
-              <Button
-                type='submit'
-                className='bg-primary-500 text-white hover:bg-purple-500 flex-1'
-              >
-                Download Schedule
-              </Button>
-            </div>
-          </form>
-        </Form>
+      <div className='flex justify-between mb-6'>
+        <Button
+          type='button'
+          onClick={handleGetRounds}
+          className='bg-primary-500 text-white hover:bg-purple-600 px-4 py-2 rounded-md'
+        >
+          Download Schedule
+        </Button>
       </div>
 
       {rounds?.length > 0 && (
@@ -112,22 +86,25 @@ const AssignReferee = () => {
               <CarouselContent>
                 {rounds?.map((round) => (
                   <CarouselItem key={round._id}>
-                    <div className='bg-white rounded-lg shadow-lg border-slate-300 border overflow-hidden'>
-                      <div className='bg-gray-800 text-white px-6 py-4 flex items-center justify-between'>
+                    <div className='bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 overflow-hidden'>
+                      <div className='bg-primary-500 text-white px-6 py-4 flex items-center justify-between'>
                         <h3 className='text-xl font-semibold'>{round?.name}</h3>
+                        <h3 className='text-xl font-semibold'>
+                          {league} / {season?.name}
+                        </h3>
                       </div>
                       <div className='p-6'>
                         {round?.matches?.map((match) => (
                           <div
                             key={match?.matchId}
-                            className='flex justify-between items-center mb-4 pb-4 border-b last:mb-0 last:pb-0 last:border-none'
+                            className='flex justify-between items-center mb-4 pb-4 border-b border-gray-200 dark:border-gray-700 last:mb-0 last:pb-0 last:border-none'
                           >
                             <div className='flex-1 mr-4'>
-                              <div className='text-gray-800 font-semibold'>
+                              <div className='text-gray-800 dark:text-white font-semibold'>
                                 {match.homeTeam?.split(':')[0]} vs{' '}
                                 {match.awayTeam?.split(':')[0]}
                               </div>
-                              <div className='text-gray-600 max-sm:hidden'>
+                              <div className='text-gray-600 dark:text-gray-400 max-sm:hidden'>
                                 {new Date(match?.startDate).toLocaleString(
                                   'en-US',
                                   {
