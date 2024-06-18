@@ -80,6 +80,12 @@ const ScheduleManagement = () => {
           title: 'Error!',
           description: 'Schedule is already generated. Delete rounds first.',
         });
+      } else if (response.status === 406) {
+        toast({
+          variant: 'destructive',
+          title: 'Error!',
+          description: 'No teams found in the league. Contact admin.',
+        });
       }
     } catch (error) {
       console.error(`Error while ${method} data:`, error);
