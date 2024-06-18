@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 const CoachTeamView = () => {
   const { coach } = useFetchCoachByUserId();
   const [team, setTeam] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (coach?.currentTeam) {
@@ -24,8 +24,8 @@ const CoachTeamView = () => {
       }
       const data = await res.json();
 
-      setLoading(true);
       setTeam(data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
       setLoading(false);
