@@ -66,6 +66,7 @@ const SquadManagement = ({ data }) => {
       title='Player'
       onDeleteComponent={DeleteEntity}
       formSchema={playerAddFormSchema}
+      isExpandable={false}
       isAction={true}
       defaultValues={{
         player: '',
