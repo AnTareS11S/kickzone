@@ -25,24 +25,28 @@ const AssignReferee = () => {
   const referees = useFetchRefeeres();
 
   const handleGetRounds = async () => {
-    const res = await fetch(
-      `/api/referee/get-rounds/${leagueId}?seasonId=${season?._id}`
-    );
-    const fetchedRounds = await res.json();
+    try {
+      const res = await fetch(
+        `/api/referee/get-rounds/${leagueId}?seasonId=${season?._id}`
+      );
+      const fetchedRounds = await res.json();
 
-    if (fetchedRounds.length === 0) {
-      toast({
-        variant: 'destructive',
-        title: 'Error!',
-        description: 'No schedule found. Generate schedule first.',
-      });
-    } else if (fetchedRounds) {
-      setRounds(fetchedRounds);
+      if (fetchedRounds.length === 0) {
+        toast({
+          variant: 'destructive',
+          title: 'Error!',
+          description: 'No schedule found. Generate schedule first.',
+        });
+      } else if (fetchedRounds) {
+        setRounds(fetchedRounds);
 
-      toast({
-        title: 'Schedule Downloaded!',
-        description: 'Schedule has been downloaded successfully.',
-      });
+        toast({
+          title: 'Schedule Downloaded!',
+          description: 'Schedule has been downloaded successfully.',
+        });
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
