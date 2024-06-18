@@ -28,17 +28,20 @@ const Leagues = () => {
   useEffect(() => {
     const getLeagues = async () => {
       try {
-        setLoading(true);
         const res = await fetch(`/api/admin/league?season=${selectedSeason}`);
         const data = await res.json();
         setLeagues(data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       } finally {
         setLoading(false);
       }
     };
-    getLeagues();
+    if (selectedSeason) {
+      getLeagues();
+    }
   }, [selectedSeason]);
 
   if (loading) {
@@ -54,6 +57,7 @@ const Leagues = () => {
             value={selectedSeason}
             onValueChange={(value) => {
               setSelectedSeason(value);
+              setLoading(true);
             }}
             className='mr-2'
           >
