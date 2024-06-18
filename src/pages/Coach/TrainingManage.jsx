@@ -78,10 +78,8 @@ const TrainingManage = () => {
       label: 'Training Date',
       type: 'date',
       name: 'trainingDate',
-      initialDate: new Date(),
       placeholder: 'Select a Date',
       time: true,
-      isEdit: true,
       isPortal: false,
     },
     {
@@ -136,6 +134,7 @@ const TrainingManage = () => {
         formSchema={trainingValidationSchema}
         objectId={coach?._id}
         isAction={true}
+        isExpandable={false}
         defaultValues={{
           name: '',
           trainingType: '',
