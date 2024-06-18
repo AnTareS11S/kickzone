@@ -30,11 +30,11 @@ const LeagueScheduleCard = () => {
   useEffect(() => {
     const getLeagues = async () => {
       try {
-        setLoading(true);
         const res = await fetch(`/api/admin/league?season=${selectedSeason}`);
         if (!res.ok) throw new Error('Failed to fetch leagues');
         const data = await res.json();
         setLeagues(data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
         setError('Failed to load leagues. Please try again.');
