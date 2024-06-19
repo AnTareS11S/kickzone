@@ -58,6 +58,7 @@ import RefereeManage from './pages/Referee/RefereeManage';
 import SeasonManage from './pages/Season/SeasonManage';
 import TeamDetails from './components/home/team/TeamDetails';
 import LineupManage from './pages/Coach/LineupManage';
+import FormationManage from './pages/Coach/FormationManage';
 
 const App = () => {
   return (
@@ -153,6 +154,10 @@ const App = () => {
             <Route
               path='/dashboard/coach/training-type'
               element={<TrainingTypeManage />}
+            />
+            <Route
+              path='/dashboard/coach/formation'
+              element={<FormationManage />}
             />
             <Route path='/dashboard/coach/lineup' element={<LineupManage />} />
           </Route>
