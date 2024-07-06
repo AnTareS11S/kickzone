@@ -37,6 +37,12 @@ const FormationManage = () => {
       type: 'textarea',
       name: 'description',
     },
+    {
+      id: 'positions',
+      label: 'Positions',
+      type: 'array',
+      name: 'positions',
+    },
   ];
   return (
     <div className='space-y-6'>
@@ -59,6 +65,7 @@ const FormationManage = () => {
         defaultValues={{
           name: '',
           description: '',
+          positions: [],
         }}
       />
     </div>
