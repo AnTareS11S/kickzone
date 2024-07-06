@@ -1,6 +1,7 @@
 import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
+import SendMessage from '../../components/admin/users/SendMessage';
 import SetRole from '../../components/admin/users/SetRole';
 import { Separator } from '../../components/ui/separator';
 import { roleFormSchema } from '../../lib/validation/UsersValidation';
@@ -24,6 +25,7 @@ const columns = [
   {
     name: 'Role',
     cell: (row) => row.role,
+    grow: 0.5,
   },
   {
     name: 'Created At',
@@ -31,6 +33,7 @@ const columns = [
       const date = new Date(row.createdAt);
       return <div className=''>{date.toLocaleDateString()}</div>;
     },
+    grow: 0.5,
   },
 ];
 
@@ -48,6 +51,7 @@ const UserManage = () => {
         columns={columns}
         title='User'
         onSetRoleComponent={SetRole}
+        onSendMessageComponent={SendMessage}
         onDeleteComponent={DeleteEntity}
         formSchema={roleFormSchema}
         defaultValues={{
