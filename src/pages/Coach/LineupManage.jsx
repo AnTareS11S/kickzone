@@ -3,6 +3,8 @@ import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
+import { useFetchTeamPlayers } from '../../components/hooks/useFetchTeamPlayers';
+import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 
 const formations = [
   {
@@ -40,13 +42,6 @@ const formations = [
   // Add more formations as needed
 ];
 
-const players = [
-  { id: 1, name: 'Player 1' },
-  { id: 2, name: 'Player 2' },
-  { id: 3, name: 'Player 3' },
-  // Add more players as needed
-];
-
 const Player = ({ player, isPositioned }) => {
   const [{ isDragging }, drag] = useDrag({
     type: 'player',
@@ -63,7 +58,7 @@ const Player = ({ player, isPositioned }) => {
         isDragging ? 'opacity-50' : ''
       }`}
     >
-      {player.name}
+      {player}
     </div>
   );
 };
@@ -87,7 +82,7 @@ const Position = ({ position, player, onDrop, onRemove, fieldDimensions }) => {
   return (
     <div
       ref={drop}
-      className={`absolute flex flex-col items-center justify-center transition-colors ${
+      className={`absolute flex flex-col text-body-medium transition-colors ${
         isActive ? 'border-green-500' : 'border-gray-300'
       }`}
       style={{
@@ -97,29 +92,34 @@ const Position = ({ position, player, onDrop, onRemove, fieldDimensions }) => {
       onClick={() => onRemove(position.name)}
     >
       <div
-        className={`bg-white border-2 rounded-full p-2 text-center flex items-center justify-center transition-colors ${
+        className={`bg-white border-2 text-body-medium rounded-full max-md:w-8 max-md:h-8 max-lg:w-8 max-lg:h-8 w-12 h-12 text-center flex items-center justify-center  ${
           isActive ? 'border-green-500' : 'border-gray-300'
         }`}
-        style={{
-          width: '40px',
-          height: '40px',
-        }}
       >
-        {player ? player.name.slice(0, 2) : ''}
+        {player
+          ? player
+              .slice(0, 2)
+              .split(' ')
+              .map((name) => name[0])
+          : ''}
       </div>
-      <span className='mt-1 '>{player?.name}</span>
+      <span className='mt-1 '>{player}</span>
     </div>
   );
 };
 
 const LineupManage = () => {
   const [selectedFormation, setSelectedFormation] = useState(formations[0]);
+  const { coach } = useFetchCoachByUserId();
+  const { playersToSelect: players } = useFetchTeamPlayers(coach?.currentTeam);
   const [lineup, setLineup] = useState(
     selectedFormation.positions.reduce((acc, pos) => {
       acc[pos.name] = null;
       return acc;
     }, {})
   );
+
+  console.log(lineup);
 
   const [fieldDimensions, setFieldDimensions] = useState({
     fieldWidth: 0,
@@ -167,6 +167,26 @@ const LineupManage = () => {
       ...prevLineup,
       [position]: null,
     }));
+  };
+
+  const handleSaveLineup = async () => {
+    try {
+      const response = await fetch('/api/saveLineup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ lineup }),
+      });
+
+      if (response.ok) {
+        console.log('Lineup saved successfully');
+      } else {
+        console.error('Failed to save lineup');
+      }
+    } catch (error) {
+      console.error('Error saving lineup:', error);
+    }
   };
 
   const assignedPlayers = Object.values(lineup).filter(Boolean);
@@ -228,12 +248,24 @@ const LineupManage = () => {
               <h3 className='font-bold mb-2'>Players</h3>
               <div className='flex flex-wrap gap-2'>
                 {players
-                  .filter((player) => !assignedPlayers.includes(player))
+                  ?.filter(
+                    (player) => !assignedPlayers.includes(player.split(':')[0])
+                  )
                   .map((player) => (
-                    <Player key={player.id} player={player} />
+                    <Player
+                      key={player.split(':')[1]}
+                      player={player.split(':')[0]}
+                    />
                   ))}
               </div>
             </div>
+
+            <button
+              className='bg-primary-500 hover:bg-purple-500 mt-5 text-white font-bold py-2 px-4 rounded'
+              onClick={handleSaveLineup}
+            >
+              Save Lineup
+            </button>
           </div>
         </div>
       </DndProvider>
