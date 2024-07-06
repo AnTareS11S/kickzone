@@ -54,7 +54,6 @@ const SetRole = ({ row, onEntityUpdated }) => {
     <ModalActions
       label='Change Role'
       title='Change Role'
-      desc='Change user role'
       onSubmit={onSubmit}
       data={row}
       isRole
