@@ -39,4 +39,11 @@ export const formationFormSchema = () =>
         message:
           'Formation description must not be longer than 100 characters.',
       }),
+    positions: z.array(
+      z.object({
+        name: z.string(),
+        x: z.number(),
+        y: z.number(),
+      })
+    ),
   });
