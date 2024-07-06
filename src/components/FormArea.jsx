@@ -78,15 +78,16 @@ const FormArea = ({
               <div className='flex items-center'>
                 <span className='mr-2 text-primary-500'>{icon}</span>
                 <Textarea
+                  {...field}
                   id={name}
                   placeholder={placeholder}
                   rows={name === 'postContent' ? 15 : 1}
                   className={classNames(
                     'resize-none w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 transition duration-300',
-                    name === 'postContent' && 'h-64'
+                    name === 'postContent' && 'h-64',
+                    name === 'message' && 'h-32'
                   )}
                   {...form.register(name)}
-                  {...field}
                   {...rest}
                 />
               </div>
