@@ -17,6 +17,7 @@ const CrudPanel = ({
   onAddTeamComponent: AddTeamComponent,
   onRemoveTeamComponent: RemoveTeamComponent,
   onSetRoleComponent: SetRoleComponent,
+  onSendMessageComponent: SendMessageComponent,
   defaultValues,
   formSchema,
   isExpandable,
@@ -175,6 +176,12 @@ const CrudPanel = ({
                       onEntityUpdated={handleEntityUpdated}
                     />
                   )}
+                  {SendMessageComponent && (
+                    <SendMessageComponent
+                      row={row}
+                      onEntityUpdated={handleEntityUpdated}
+                    />
+                  )}
                   {DeleteComponent && (
                     <DeleteComponent
                       row={row}
@@ -185,7 +192,7 @@ const CrudPanel = ({
                 </div>
               );
             },
-            grow: RemoveTeamComponent ? 0.5 : 0,
+            grow: RemoveTeamComponent || SendMessageComponent ? 0.5 : 0,
           },
         ]}
         data={data}
