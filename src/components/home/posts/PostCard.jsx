@@ -1,13 +1,18 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import {
+  FaHeart,
+  FaRegHeart,
+  FaComment,
+  FaShare,
+  FaEllipsisV,
+} from 'react-icons/fa';
 import DeletePost from './DeletePost';
-import { useEffect, useState } from 'react';
-import { Card, CardContent, CardHeader } from '../../ui/card';
-import { FaHeart, FaRegHeart, FaReply, FaEdit } from 'react-icons/fa';
 
 const PostCard = ({
   id,
   currentUserId,
-  parentId,
   content,
   postPhoto,
   title,
@@ -18,176 +23,153 @@ const PostCard = ({
   isComment,
   setDeleteSuccess,
 }) => {
-  const link = currentUserId ? `/post/${id}` : '/sign-in';
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [showOptions, setShowOptions] = useState(false);
 
   useEffect(() => {
-    if (currentUserId && initialLikes && initialLikes.includes(currentUserId)) {
-      setLiked(true);
-    }
+    setLiked(currentUserId && initialLikes?.includes(currentUserId));
   }, [currentUserId, initialLikes]);
 
-  const handleAddLike = async () => {
+  const handleLikeToggle = async () => {
+    if (!currentUserId) return;
     try {
-      const res = await fetch(`/api/post/like/${id}`, {
+      const endpoint = liked
+        ? `/api/post/unlike/${id}`
+        : `/api/post/like/${id}`;
+      const res = await fetch(endpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: currentUserId }),
       });
 
       if (res.ok) {
-        setLiked(true);
-        setLikes((likes) => [...likes, currentUserId]);
+        setLiked(!liked);
+        setLikes((prev) =>
+          liked
+            ? prev.filter((userId) => userId !== currentUserId)
+            : [...prev, currentUserId]
+        );
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error toggling like:', error);
     }
   };
 
-  const handleRemoveLike = async () => {
-    try {
-      const res = await fetch(`/api/post/unlike/${id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: currentUserId }),
-      });
-
-      if (res.ok) {
-        setLiked(false);
-        setLikes((likes) => likes.filter((userId) => userId !== currentUserId));
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const truncateContent = (text, maxLength) => {
+    if (text.length <= maxLength) return text;
+    return text.substr(0, maxLength) + '...';
   };
 
   return (
-    <Card className='bg-white shadow-md rounded-lg mb-4'>
-      <CardHeader className='flex px-4 py-2 border-b border-gray-200'>
-        <Link
-          to={`/profile/${author?._id}`}
-          className='relative h-10 w-10 mr-3'
-        >
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.3 }}
+      className='bg-white dark:bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 mb-6'
+    >
+      <div className='relative'>
+        {postPhoto && (
           <img
-            src={author?.imageUrl}
-            alt='user'
-            className='cursor-pointer rounded-full h-10 w-10'
+            src={postPhoto}
+            alt='Post'
+            className='w-full h-48 object-cover'
           />
-        </Link>
-        <Link
-          to={`/profile/${author?._id}`}
-          className='font-semibold text-gray-800'
-        >
-          {author?.username}
-        </Link>
-      </CardHeader>
-
-      <CardContent className='p-4'>
-        <Link
-          to={link}
-          className='flex flex-col md:flex-row items-center justify-center w-full'
-        >
-          {!isComment && !parentId && (
-            <div className='md:w-1/2 mb-4 md:mb-0 md:mr-4'>
-              <img
-                src={postPhoto}
-                alt='postPhoto'
-                className='object-contain w-full h-full rounded-lg'
-              />
-            </div>
-          )}
-          <div className={`${isComment || parentId ? 'w-full' : 'md:w-1/2'}`}>
-            <h4 className='text-lg font-semibold mb-2'>{title}</h4>
-            <p className='text-gray-700 break-words'>{content}</p>
-          </div>
-        </Link>
-
-        <div className='mt-4 flex items-center justify-between'>
-          <div className='flex items-center'>
-            <div
-              className='flex items-center mr-4 cursor-pointer'
-              onClick={liked ? handleRemoveLike : handleAddLike}
-            >
-              {liked ? (
-                <FaHeart className='text-red-500 mr-1' />
-              ) : (
-                <FaRegHeart className='text-gray-500 mr-1' />
-              )}
-              <span className='text-gray-600'>{likes?.length}</span>
-            </div>
-
-            <Link to={link} className='flex items-center mr-4 cursor-pointer'>
-              <FaReply className='text-gray-500 mr-1' />
-              <span className='text-gray-600'>Reply</span>
-            </Link>
-
-            {currentUserId === author?._id ? (
-              <Link
-                to={
-                  !isComment ? `/post/edit/${id}` : `/post/comment/edit/${id}`
-                }
-                className='flex items-center cursor-pointer'
-              >
-                <FaEdit className='text-gray-500 mr-1' />
-                <span className='text-gray-600'>Edit</span>
-              </Link>
-            ) : null}
-          </div>
-
-          <div className='text-gray-500'>
-            {new Date(createdAt).toLocaleString('en-US', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
-              hour: 'numeric',
-              minute: 'numeric',
-            })}
-          </div>
-
-          <div className='flex items-center'>
-            <DeletePost
-              postId={id}
-              currentUserId={currentUserId}
-              authorId={author?._id}
-              parentId={parentId}
-              isComment={isComment}
-              setDeleteSuccess={setDeleteSuccess}
-            />
-          </div>
-        </div>
-
-        {isComment && comments?.length > 0 && (
-          <Link to={link} className='mt-2 flex items-center'>
-            <span className='text-gray-600'>
-              {comments?.length} repl{comments?.length > 1 ? 'ies' : 'y'}
-            </span>
-          </Link>
         )}
-      </CardContent>
-
-      {!isComment && comments?.length > 0 && (
-        <div className='flex items-center ml-4 mt-2 p-1'>
-          {comments?.slice(0, 2).map((comment, index) => (
+        <div className='absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-black opacity-60' />
+        <div className='absolute bottom-0 left-0 p-4 text-white'>
+          <h3 className='text-xl font-bold mb-1'>{title}</h3>
+          <div className='flex items-center space-x-2'>
             <img
-              key={index}
-              src={comment?.author?.imageUrl}
-              alt={`user_${index}`}
-              width={24}
-              height={24}
-              className={`${index !== 0 && '-ml-2'} rounded-full w-6 h-6`}
+              src={author?.imageUrl}
+              alt={author?.username}
+              className='w-8 h-8 rounded-full border-2 border-white'
             />
-          ))}
-          <Link to={link} className='ml-2 text-gray-600'>
-            {comments?.length} repl{comments?.length > 1 ? 'ies' : 'y'}
-          </Link>
+            <span className='text-sm'>{author?.username}</span>
+          </div>
         </div>
-      )}
-    </Card>
+      </div>
+
+      <div className='p-4'>
+        <p className='text-gray-700 dark:text-gray-300 text-sm'>
+          {isExpanded ? content : truncateContent(content, 100)}
+        </p>
+        {content.length > 100 && (
+          <button
+            onClick={() => setIsExpanded(!isExpanded)}
+            className='text-blue-500 hover:text-blue-600 text-sm mt-2'
+          >
+            {isExpanded ? 'Show less' : 'Read more'}
+          </button>
+        )}
+      </div>
+
+      <div className='px-4 pb-4 flex items-center justify-between'>
+        <div className='flex space-x-4'>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={handleLikeToggle}
+            className={`flex items-center space-x-1 ${
+              liked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'
+            }`}
+          >
+            {liked ? <FaHeart /> : <FaRegHeart />}
+            <span>{likes?.length || 0}</span>
+          </motion.button>
+          <Link
+            to={`/post/${id}`}
+            className='flex items-center space-x-1 text-gray-500 dark:text-gray-400'
+          >
+            <FaComment />
+            <span>{comments?.length || 0}</span>
+          </Link>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            className='text-gray-500 dark:text-gray-400'
+          >
+            <FaShare />
+          </motion.button>
+        </div>
+        <div className='relative'>
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setShowOptions(!showOptions)}
+            className='text-gray-500 dark:text-gray-400'
+          >
+            <FaEllipsisV />
+          </motion.button>
+          <AnimatePresence>
+            {showOptions && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className='absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg z-10'
+              >
+                {currentUserId === author?._id && (
+                  <Link
+                    to={`/post/edit/${id}`}
+                    className='block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
+                  >
+                    Edit Post
+                  </Link>
+                )}
+                <DeletePost
+                  postId={id}
+                  currentUserId={currentUserId}
+                  authorId={author?._id}
+                  isComment={isComment}
+                  setDeleteSuccess={setDeleteSuccess}
+                  className='block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600'
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
