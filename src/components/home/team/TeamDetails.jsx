@@ -1,4 +1,7 @@
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from '../../ui/badge';
 import Spinner from '../../Spinner';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../ui/tabs';
@@ -6,9 +9,7 @@ import SquadTable from './SquadTable';
 import TeamMatches from './TeamMatches';
 import { Button } from '../../ui/button';
 import TeamResult from './TeamResult';
-import { useSelector } from 'react-redux';
 import { useFetchTeamById } from '../../hooks/useFetchTeamById';
-import { useEffect, useState } from 'react';
 import BackButton from '../../BackButton';
 import { Separator } from '../../ui/separator';
 import { useToast } from '../../ui/use-toast';
@@ -21,51 +22,33 @@ import { FaPeopleGroup } from 'react-icons/fa6';
 import TeamStats from './TeamStats';
 
 const profileTabs = [
-  {
-    value: 'results',
-    label: 'Results',
-    icon: <MdOutlineScoreboard className='w-8 h-8 text-black' />,
-  },
-  {
-    value: 'matches',
-    label: 'Matches',
-    icon: <MdOutlineCalendarMonth className='w-8 h-8 text-black' />,
-  },
-  {
-    value: 'squad',
-    label: 'Squad',
-    icon: <FaPeopleGroup className='w-8 h-8 text-black' />,
-  },
-  {
-    value: 'teamStats',
-    label: 'Team Stats',
-    icon: <MdPoll className='w-8 h-8 text-black' />,
-  },
+  { value: 'results', label: 'Results', icon: <MdOutlineScoreboard /> },
+  { value: 'matches', label: 'Matches', icon: <MdOutlineCalendarMonth /> },
+  { value: 'squad', label: 'Squad', icon: <FaPeopleGroup /> },
+  { value: 'teamStats', label: 'Team Stats', icon: <MdPoll /> },
 ];
 
 const TeamDetails = () => {
   const { currentUser } = useSelector((state) => state.user);
-  const teamId = useParams().id;
+  const { id: teamId } = useParams();
   const [isChanged, setIsChanged] = useState(false);
   const { team, loading } = useFetchTeamById(teamId, isChanged);
   const [isFan, setIsFan] = useState(false);
   const { toast } = useToast();
+  const [activeTab, setActiveTab] = useState('results');
 
   useEffect(() => {
     const checkIfFan = async () => {
       try {
         const res = await fetch(`/api/team/is-fan/${teamId}`, {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: currentUser?._id }),
         });
         const data = await res.json();
-
         setIsFan(data.isFan);
       } catch (error) {
-        console.log(error);
+        console.error('Error checking fan status:', error);
       }
     };
 
@@ -74,72 +57,56 @@ const TeamDetails = () => {
     }
   }, [currentUser, teamId, isChanged]);
 
-  const handleFollow = async () => {
+  const handleFollowAction = async (action) => {
     try {
-      const res = await fetch(`/api/team/follow/${teamId}`, {
+      const res = await fetch(`/api/team/${action}/${teamId}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: currentUser?._id }),
       });
 
       if (res.ok) {
         toast({
           title: 'Success!',
-          description: 'You are now following this team',
+          description: `You are now ${
+            action === 'follow' ? 'following' : 'no longer following'
+          } this team`,
         });
         setIsChanged(!isChanged);
       } else {
         toast({
           title: 'Error!',
-          description: 'Failed to follow team',
+          description: `Failed to ${action} team`,
           variant: 'destructive',
         });
       }
     } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleUnfollow = async () => {
-    try {
-      const res = await fetch(`/api/team/unfollow/${teamId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: currentUser?._id }),
-      });
-
-      if (res.ok) {
-        toast({
-          title: 'Success!',
-          description: 'You are no longer following this team',
-        });
-        setIsChanged(!isChanged);
-      } else {
-        toast({
-          title: 'Error!',
-          description: 'Failed to unfollow team',
-          variant: 'destructive',
-        });
-      }
-    } catch (error) {
-      console.log(error);
+      console.error(`Error ${action}ing team:`, error);
     }
   };
 
   const handleDownloadPDF = async () => {
     try {
       const res = await fetch(`/api/team/download-pdf/${teamId}`);
-
-      if (!res.ok) {
+      if (!res.ok)
         throw new Error(`Failed to download PDF. Status: ${res.status}`);
-      }
 
       const blob = await res.blob();
-      const fileName = sanitizeFileName(team?.name);
+      const fileName = team?.name.replace(
+        /[ąćęłńóśżź]/g,
+        (match) =>
+          ({
+            ą: 'a',
+            ć: 'c',
+            ę: 'e',
+            ł: 'l',
+            ń: 'n',
+            ó: 'o',
+            ś: 's',
+            ż: 'z',
+            ź: 'z',
+          }[match] || match)
+      );
       const url = window.URL.createObjectURL(blob);
 
       const link = document.createElement('a');
@@ -148,174 +115,234 @@ const TeamDetails = () => {
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading PDF:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to download PDF',
+        variant: 'destructive',
+      });
     }
   };
 
-  const polishToEnglish = {
-    ą: 'a',
-    ć: 'c',
-    ę: 'e',
-    ł: 'l',
-    ń: 'n',
-    ó: 'o',
-    ś: 's',
-    ż: 'z',
-    ź: 'z',
-  };
-
-  const sanitizeFileName = (fileName) => {
-    return fileName.replace(
-      /[ąćęłńóśżź]/g,
-      (match) => polishToEnglish[match] || match
-    );
-  };
-
-  if (loading) {
-    return <Spinner />;
-  }
+  if (loading) return <Spinner />;
 
   return (
-    <>
-      <BackButton />
-      <Separator />
-      <div className='max-w-screen-xl mx-auto px-4 py-12'>
-        <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
-          <div className='px-6 py-8 sm:px-8 sm:py-10'>
-            <div className='flex flex-col sm:flex-row items-center justify-between mb-6'>
-              <div className='flex flex-col sm:flex-row items-center space-x-4 mb-4 sm:mb-0'>
-                <h2 className='text-heading2-semibold font-bold text-gray-900'>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+      className='bg-gradient-to-b from-purple-50 to-white min-h-screen'
+    >
+      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
+        <motion.div
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+        >
+          <BackButton />
+        </motion.div>
+        <Separator className='my-6' />
+
+        <motion.div
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3, duration: 0.5 }}
+          className='bg-white rounded-2xl shadow-xl overflow-hidden'
+        >
+          <div className='px-6 py-8 sm:p-10'>
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.4, duration: 0.5 }}
+              className='flex flex-col md:flex-row items-center justify-between mb-8'
+            >
+              <div className='flex flex-col items-center md:items-start mb-6 md:mb-0'>
+                <h1 className='text-3xl font-bold text-gray-900 mb-2'>
                   {team?.name}
-                </h2>
-                <span className='text-gray-600 font-semibold'>
+                </h1>
+                <p className='text-lg text-gray-600'>
                   {team?.fans?.length} fans
-                </span>
+                </p>
                 {currentUser && (
-                  <div className='flex items-center space-x-2 mt-2 sm:mt-0'>
+                  <motion.div
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.5, duration: 0.5 }}
+                    className='flex mt-4 space-x-4'
+                  >
                     <Button
-                      className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center space-x-2 transition-all duration-300 ease-in-out ${
-                        isFan ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                      onClick={handleFollow}
+                      onClick={() => handleFollowAction('follow')}
                       disabled={isFan}
+                      className='bg-purple-600 hover:bg-purple-700 text-white'
                     >
-                      <span className='text-sm'>Follow</span>
+                      Follow
                     </Button>
                     <Button
-                      className={`bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center space-x-2 transition-all duration-300 ease-in-out ${
-                        !isFan ? 'opacity-50 cursor-not-allowed' : ''
-                      }`}
-                      onClick={handleUnfollow}
+                      onClick={() => handleFollowAction('unfollow')}
                       disabled={!isFan}
+                      className='bg-red-600 hover:bg-red-700 text-white'
                     >
-                      <span className='text-sm'>Unfollow</span>
+                      Unfollow
                     </Button>
-                  </div>
+                  </motion.div>
                 )}
               </div>
               {team?.logoUrl && (
-                <img
+                <motion.img
+                  initial={{ scale: 0, rotate: -180 }}
+                  animate={{ scale: 1, rotate: 0 }}
+                  transition={{
+                    delay: 0.6,
+                    duration: 0.5,
+                    type: 'spring',
+                    stiffness: 200,
+                  }}
                   src={
-                    team?.logoUrl ||
+                    team.logoUrl ||
                     'https://d3awt09vrts30h.cloudfront.net/team_img_default.png'
                   }
                   alt={`Logo of ${team?.name}`}
-                  className='w-32 h-32 rounded-md object-contain mt-4 sm:mt-0'
+                  className='w-40 h-40 rounded-full object-contain shadow-lg'
                 />
               )}
-            </div>
-            <div className='flex items-center space-x-1 mb-5'>
-              <p className='text-gray-600 font-semibold'>
-                {team?.sponsor ? 'Sponsored by ' : null}
-              </p>
-              {team?.sponsor && (
-                <p className='text-gray-600 font-semibold hover:text-gray-900'>
-                  <Link to={team?.sponsor?.website} target='_blank'>
-                    {team?.sponsor?.name}
-                  </Link>
-                </p>
-              )}
-            </div>
-            <p className='text-gray-600 mb-8'>{team.bio}</p>
-            <div className='grid grid-cols-1 sm:grid-cols-2 gap-8'>
-              <div>
-                <div className='mb-4'>
-                  <p className='text-gray-700 font-semibold mb-1'>Founded:</p>
-                  <p>{team.yearFounded}</p>
-                </div>
-                <div className='mb-4'>
-                  <p className='text-gray-700 font-semibold mb-1'>Stadium:</p>
-                  <Link to={`/stadium/${team.stadium?._id}`}>
-                    <Badge variant='outline'>{team.stadium?.name}</Badge>
-                  </Link>
-                </div>
-                <div>
-                  <p className='text-gray-700 font-semibold mb-1'>Country:</p>
-                  <p>{team.country?.name}</p>
-                </div>
-              </div>
-              <div>
-                <div className='mb-4'>
-                  <p className='text-gray-700 font-semibold mb-1'>League:</p>
-                  <p>{team.league?.name}</p>
-                </div>
-                <div className='mb-4'>
-                  <p className='text-gray-700 font-semibold mb-1'>Coach:</p>
-                  <Link to={`/coach/${team.coach?._id}`}>
-                    <Badge variant='outline'>
-                      {team.coach?.name} {team?.coach?.surname}
-                    </Badge>
-                  </Link>
-                </div>
-                <div>
-                  <p className='text-gray-700 font-semibold mb-2'>
-                    Download team info:
-                  </p>
-                  <Button
-                    className='bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded'
-                    onClick={handleDownloadPDF}
-                  >
-                    Download
-                  </Button>
-                </div>
-              </div>
-            </div>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.7, duration: 0.5 }}
+              className='text-gray-600 mb-8'
+            >
+              {team.bio}
+            </motion.p>
+
+            <motion.div
+              initial={{ y: 50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.8, duration: 0.5 }}
+              className='grid grid-cols-1 md:grid-cols-2 gap-8'
+            >
+              <TeamInfoSection
+                founded={team.yearFounded}
+                stadium={team.stadium}
+                country={team.country?.name}
+              />
+              <TeamInfoSection
+                league={team.league?.name}
+                coach={team.coach}
+                onDownload={handleDownloadPDF}
+              />
+            </motion.div>
           </div>
-          <div className='bg-gray-100 px-6 py-8 sm:px-8 sm:py-10'>
-            <Tabs defaultValue='results'>
+
+          <div className='bg-gray-50 px-6 py-8 sm:p-10'>
+            <Tabs defaultValue='results' onValueChange={setActiveTab}>
               <TabsList className='flex justify-center space-x-4 mb-8'>
                 {profileTabs.map((tab) => (
                   <TabsTrigger
                     key={tab.label}
                     value={tab.value}
-                    className='flex items-center justify-center space-x-2 text-purple-600 font-semibold cursor-pointer transition-colors duration-200 ease-in-out hover:bg-purple-600 hover:text-white px-4 py-2 rounded-md'
+                    className='flex items-center justify-center space-x-2 text-purple-600 font-semibold cursor-pointer transition-all duration-200 ease-in-out hover:bg-purple-600 hover:text-white px-4 py-2 rounded-md'
                   >
-                    {tab.icon}
+                    <motion.div>
+                      {React.cloneElement(tab.icon, { className: 'w-6 h-6' })}
+                    </motion.div>
                     <span className='hidden sm:inline'>{tab.label}</span>
                   </TabsTrigger>
                 ))}
               </TabsList>
-              <TabsContent value='results'>
-                <TeamResult />
-              </TabsContent>
-              <TabsContent value='matches'>
-                <TeamMatches />
-              </TabsContent>
-              <TabsContent value='squad'>
-                <SquadTable />
-              </TabsContent>
-              <TabsContent value='teamStats'>
-                <TeamStats />
-              </TabsContent>
+              <AnimatePresence mode='wait'>
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <TabsContent value='results'>
+                    <TeamResult />
+                  </TabsContent>
+                  <TabsContent value='matches'>
+                    <TeamMatches />
+                  </TabsContent>
+                  <TabsContent value='squad'>
+                    <SquadTable />
+                  </TabsContent>
+                  <TabsContent value='teamStats'>
+                    <TeamStats />
+                  </TabsContent>
+                </motion.div>
+              </AnimatePresence>
             </Tabs>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </>
+    </motion.div>
   );
 };
+
+const TeamInfoSection = ({
+  founded,
+  stadium,
+  country,
+  league,
+  coach,
+  onDownload,
+}) => (
+  <div className='space-y-4'>
+    {founded && <InfoItem label='Founded' value={founded} />}
+    {stadium && (
+      <InfoItem
+        label='Stadium'
+        value={
+          <Link to={`/stadium/${stadium._id}`}>
+            <Badge
+              variant='outline'
+              className='cursor-pointer hover:bg-purple-100'
+            >
+              {stadium.name}
+            </Badge>
+          </Link>
+        }
+      />
+    )}
+    {country && <InfoItem label='Country' value={country} />}
+    {league && <InfoItem label='League' value={league} />}
+    {coach && (
+      <InfoItem
+        label='Coach'
+        value={
+          <Link to={`/coach/${coach._id}`}>
+            <Badge
+              variant='outline'
+              className='cursor-pointer hover:bg-purple-100'
+            >{`${coach.name} ${coach.surname}`}</Badge>
+          </Link>
+        }
+      />
+    )}
+    {onDownload && (
+      <div>
+        <p className='text-gray-700 font-semibold mb-2'>Download team info:</p>
+        <Button
+          onClick={onDownload}
+          className='bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-200'
+        >
+          Download PDF
+        </Button>
+      </div>
+    )}
+  </div>
+);
+
+const InfoItem = ({ label, value }) => (
+  <div>
+    <p className='text-gray-700 font-semibold mb-1'>{label}:</p>
+    <div className='text-gray-600'>{value}</div>
+  </div>
+);
 
 export default TeamDetails;
