@@ -1,3 +1,5 @@
+import React from 'react';
+import { motion } from 'framer-motion';
 import {
   Table,
   TableBody,
@@ -11,7 +13,7 @@ import Spinner from '../../Spinner';
 import { useFetchTeamPlayers } from '../../hooks/useFetchTeamPlayers';
 
 const SquadTable = () => {
-  const teamId = useParams().id;
+  const { id: teamId } = useParams();
   const navigate = useNavigate();
   const { players: playersData, loading } = useFetchTeamPlayers(teamId);
 
@@ -33,75 +35,76 @@ const SquadTable = () => {
     );
 
     return (
-      <div className='mb-8'>
-        <h2 className='text-2xl font-semibold text-gray-800 mb-4'>
-          {position}
-        </h2>
-        <div className='overflow-x-auto'>
-          <Table className='min-w-full divide-y divide-gray-200 shadow-sm'>
-            <TableHeader className='bg-gray-50'>
-              <TableRow>
-                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Image
-                </TableHead>
-                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Name
-                </TableHead>
-                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Surname
-                </TableHead>
-                <TableHead className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                  Age
-                </TableHead>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className='mb-8'
+        key={position}
+      >
+        <h3 className='text-2xl font-bold mb-4 text-purple-700'>{position}</h3>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className='w-1/5'>Image</TableHead>
+              <TableHead className='w-1/5'>Name</TableHead>
+              <TableHead className='w-1/5'>Surname</TableHead>
+              <TableHead className='w-1/5'>Age</TableHead>
+              <TableHead className='w-1/5'>Position</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredPlayers.map((player) => (
+              <TableRow
+                key={player._id}
+                className='cursor-pointer hover:bg-purple-50 transition-colors duration-200'
+                onClick={() => navigate(`/player/${player._id}`)}
+              >
+                <TableCell>
+                  <img
+                    src={
+                      player?.imageUrl ||
+                      'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                    }
+                    alt={`${player.name} ${player.surname}`}
+                    className='w-12 h-12 rounded-full object-cover'
+                  />
+                </TableCell>
+                <TableCell>{player.name}</TableCell>
+                <TableCell>{player.surname}</TableCell>
+                <TableCell>{player.age}</TableCell>
+                <TableCell>{player.position}</TableCell>
               </TableRow>
-            </TableHeader>
-            <TableBody className='bg-white divide-y divide-gray-200'>
-              {filteredPlayers.map((player) => (
-                <TableRow
-                  key={player._id}
-                  className='hover:bg-gray-100 cursor-pointer'
-                  onClick={() => navigate(`/player/${player._id}`)}
-                >
-                  <TableCell className='px-6 py-4 whitespace-nowrap'>
-                    <img
-                      src={
-                        player?.imageUrl ||
-                        'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-                      }
-                      alt={player.name}
-                      className='w-10 h-10 rounded-full object-cover'
-                    />
-                  </TableCell>
-                  <TableCell className='px-6 py-4 whitespace-nowrap'>
-                    {player.name}
-                  </TableCell>
-                  <TableCell className='px-6 py-4 whitespace-nowrap'>
-                    {player.surname}
-                  </TableCell>
-                  <TableCell className='px-6 py-4 whitespace-nowrap'>
-                    {player.age}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
+            ))}
+          </TableBody>
+        </Table>
+      </motion.div>
     );
   };
 
   if (loading) {
-    return <Spinner />;
+    return (
+      <div className='flex justify-center items-center h-64'>
+        <Spinner />
+      </div>
+    );
   }
 
   return (
-    <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+    <div className='p-4'>
       {playersData?.length ? (
-        Object.keys(playerPositions).map((position) => (
-          <div key={position}>{renderPlayerList(position)}</div>
-        ))
+        Object.keys(playerPositions).map((position) =>
+          renderPlayerList(position)
+        )
       ) : (
-        <p className='text-center text-gray-500'>No players found</p>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className='text-center text-gray-600 text-xl'
+        >
+          No players found
+        </motion.div>
       )}
     </div>
   );
