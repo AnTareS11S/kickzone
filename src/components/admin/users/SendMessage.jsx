@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
 const MessageSchema = z.object({
+  title: z.string().min(1, { message: 'Title is required' }),
   message: z.string().min(1, { message: 'Message is required' }),
 });
 
@@ -18,6 +19,7 @@ const SendMessage = ({ row, onEntityUpdated }) => {
   const form = useForm({
     resolver: zodResolver(MessageSchema),
     defaultValues: {
+      title: '',
       message: '',
     },
     mode: 'onChange',
@@ -66,6 +68,12 @@ const SendMessage = ({ row, onEntityUpdated }) => {
         data={row}
         isMessage
         fields={[
+          {
+            id: 'title',
+            type: 'text',
+            name: 'title',
+            placeholder: 'Enter title',
+          },
           {
             id: 'message',
             type: 'textarea',
