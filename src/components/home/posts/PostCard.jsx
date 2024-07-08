@@ -24,8 +24,6 @@ const PostCard = ({
   const [showOptions, setShowOptions] = useState(false);
   const navigate = useNavigate();
 
-  console.log(currentUserId, author?._id);
-
   useEffect(() => {
     setLiked(currentUserId && initialLikes?.includes(currentUserId));
   }, [currentUserId, initialLikes]);
