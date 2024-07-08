@@ -1,18 +1,10 @@
 import { useLocation, useNavigate } from 'react-router-dom';
 import ModalDialog from '../../ModalDialog';
+import { useToast } from '../../ui/use-toast';
 
-const DeletePost = ({
-  postId,
-  currentUserId,
-  authorId,
-  parentId,
-  isComment,
-  setDeleteSuccess,
-}) => {
-  const { pathname } = useLocation();
+const DeletePost = ({ postId, parentId, isComment, setDeleteSuccess }) => {
   const navigate = useNavigate();
-
-  if (currentUserId !== authorId || pathname === '/') return null;
+  const { toast } = useToast();
 
   const handleDeletePost = async () => {
     try {
@@ -23,10 +15,20 @@ const DeletePost = ({
         },
         body: JSON.stringify({ id: postId }),
       });
-      if (!res.ok) {
-        throw new Error('Failed to fetch data!');
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Post deleted successfully',
+        });
+
+        setDeleteSuccess(true);
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to delete post',
+          variant: 'destructive',
+        });
       }
-      setDeleteSuccess(true);
       if (!parentId || !isComment) navigate('/');
     } catch (error) {
       console.log(error);
@@ -36,7 +38,12 @@ const DeletePost = ({
   return (
     <ModalDialog
       description='Are you sure you want to delete this post?'
-      handleClick={() => handleDeletePost() && setDeleteSuccess(false)}
+      type='button'
+      title='Delete Post'
+      handleClick={() => {
+        handleDeletePost();
+        setDeleteSuccess(false);
+      }}
     />
   );
 };
