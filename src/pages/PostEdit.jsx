@@ -2,7 +2,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useFetchPostById } from '../components/hooks/useFetchPostById';
 import Spinner from '../components/Spinner';
 import { Button } from '../components/ui/button';
-import { Card, CardContent } from '../components/ui/card';
+import { Card, CardContent, CardFooter } from '../components/ui/card';
 import { postFormSchema } from '../lib/validation/PostValidation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -10,7 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import FormArea from '../components/FormArea';
 import { Form } from '../components/ui/form';
 import { useToast } from '../components/ui/use-toast';
-import { FaImage } from 'react-icons/fa';
+import { FaImage, FaTimes } from 'react-icons/fa';
 
 const PostEdit = () => {
   const postId = useParams().id;
@@ -76,81 +76,79 @@ const PostEdit = () => {
   }
 
   return (
-    <div className='container mx-auto py-8'>
+    <div className='container mx-auto py-8 px-4 max-w-4xl'>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           encType='multipart/form-data'
         >
-          <Card className='bg-white shadow-lg rounded-lg overflow-hidden'>
-            <CardContent className='p-6'>
-              <div className='flex flex-col md:flex-row gap-6'>
-                <div
-                  className={`flex-1 ${isComment ? 'md:w-full' : 'md:w-1/2'}`}
-                >
-                  {post.postPhoto && !isComment && (
-                    <div className='relative mb-4'>
+          <Card className='bg-white shadow-xl rounded-lg overflow-hidden transition-shadow duration-300 hover:shadow-2xl'>
+            <CardContent className='p-6 space-y-6'>
+              <CardContent className='p-6 space-y-6'>
+                {!isComment && (
+                  <FormArea
+                    id='title'
+                    type='text'
+                    label='Title'
+                    form={form}
+                    name='title'
+                    placeholder='Enter post title'
+                    className='mb-4 text-lg font-semibold'
+                  />
+                )}
+                <FormArea
+                  id='postContent'
+                  type='textarea'
+                  label='Content'
+                  form={form}
+                  name='postContent'
+                  placeholder='Write your post content here...'
+                  className={`w-full ${isComment ? 'h-40' : 'h-60'} text-base`}
+                />
+                {!isComment && post.postPhoto && (
+                  <div className='space-y-4'>
+                    <label className='block text-sm font-medium text-gray-700'>
+                      Post Image
+                    </label>
+                    <div className='relative h-80 w-full'>
                       <img
                         src={post.imageUrl}
-                        alt='postPhoto'
-                        className='object-contain w-full h-auto rounded-lg'
+                        alt='Post'
+                        className='object-cover object-center w-full h-full rounded-md'
                       />
-                      <div className='w-fit'>
-                        <FormArea
-                          id='photo'
-                          type='file'
-                          label={'Photo'}
-                          form={form}
-                          name='postPhoto'
-                          fileRef={fileRef}
-                          setFile={setFile}
-                          icon={<FaImage className='text-gray-500' />}
-                        />
-                      </div>
                     </div>
-                  )}
-                </div>
-                <div
-                  className={`flex-1 ${isComment ? 'md:w-full' : 'md:w-1/2'}`}
-                >
-                  {!isComment && (
                     <FormArea
-                      id='title'
-                      type='text'
-                      label={'Title'}
+                      id='photo'
+                      type='file'
+                      label={'Photo'}
                       form={form}
-                      name='title'
-                      placeholder='Title'
-                      className='mb-4'
+                      name='postPhoto'
+                      fileRef={fileRef}
+                      setFile={setFile}
+                      icon={<FaImage className='text-gray-500' />}
                     />
-                  )}
-                  <FormArea
-                    id='postContent'
-                    type='textarea'
-                    label={'Content'}
-                    form={form}
-                    name='postContent'
-                    placeholder='Content'
-                    className={`w-full ${isComment ? 'h-40' : ''}`}
-                  />
-                </div>
-              </div>
+                  </div>
+                )}
+              </CardContent>
             </CardContent>
-            <div className='p-4 flex justify-end gap-4'>
-              <Button
-                type='submit'
-                className='bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md shadow transition-colors duration-300'
-              >
-                Save
-              </Button>
-              <Button
-                type='button'
-                className='bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md shadow transition-colors duration-300'
-                onClick={() => navigate(-1)}
-              >
-                Cancel
-              </Button>
-            </div>
+            <CardFooter className='bg-gray-50 px-6 py-4'>
+              <div className='flex justify-end gap-4 w-full'>
+                <Button
+                  type='button'
+                  variant='outline'
+                  onClick={() => navigate(-1)}
+                  className='px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type='submit'
+                  className='px-4 py-2 text-white bg-primary-500 rounded-md shadow-sm hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+                >
+                  Save Changes
+                </Button>
+              </div>
+            </CardFooter>
           </Card>
         </form>
       </Form>
