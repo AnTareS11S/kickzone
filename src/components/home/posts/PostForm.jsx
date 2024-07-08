@@ -1,20 +1,25 @@
 import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
-import { Form } from '../../ui/form';
-import FormArea from '../../FormArea';
-import { useRef, useState } from 'react';
-import { Button } from '../../ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { postFormSchema } from '../../../lib/validation/PostValidation';
 import { useNavigate } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import { FaEdit, FaImage } from 'react-icons/fa';
+
+import { Form } from '../../ui/form';
+import { Button } from '../../ui/button';
 import { Card, CardHeader, CardContent } from '../../ui/card';
-import { FaEdit } from 'react-icons/fa';
+import FormArea from '../../FormArea';
+import { postFormSchema } from '../../../lib/validation/PostValidation';
+import { useToast } from '../../ui/use-toast';
 
 const PostForm = () => {
   const fileRef = useRef(null);
-  const [file, setFile] = useState();
+  const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState('');
   const { currentUser } = useSelector((state) => state.user);
+  const { toast } = useToast();
   const navigate = useNavigate();
+
   const form = useForm({
     resolver: zodResolver(postFormSchema(false)),
     defaultValues: {
@@ -31,69 +36,98 @@ const PostForm = () => {
     data.append('postContent', formData.postContent);
     data.append('postPhoto', file);
     data.append('author', currentUser._id);
+
     try {
       const res = await fetch('/api/post/add', {
         method: 'POST',
         body: data,
       });
-      if (!res.ok) {
-        throw new Error('Failed to fetch data!');
+      if (res.ok) {
+        toast({
+          title: 'Success!',
+          description: 'Post created successfully',
+        });
+        form.reset();
+        navigate('/');
+      } else {
+        toast({
+          title: 'Error!',
+          description: 'Failed to create post',
+          variant: 'destructive',
+        });
       }
-      form.reset();
-      navigate('/');
     } catch (error) {
-      console.log('Error creating post: ', error);
+      console.error('Error creating post:', error);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile) {
+      const url = URL.createObjectURL(selectedFile);
+      setPreviewUrl(url);
     }
   };
 
   return (
-    <div className='container mx-auto py-8'>
+    <div className='container max-w-2xl mx-auto py-8 px-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <Card className='bg-white shadow-md rounded-lg'>
-            <CardHeader className='bg-gray-100 p-4 rounded-t-lg flex items-center'>
-              <FaEdit className='text-gray-500 mr-2' />
-              <h2 className='text-lg font-semibold'>Create Post</h2>
+          <Card className='bg-white shadow-lg rounded-xl overflow-hidden'>
+            <CardHeader className='bg-gradient-to-r from-primary-500 to-primary-600 p-6'>
+              <div className='flex items-center text-white'>
+                <FaEdit className='text-2xl mr-3' />
+                <h2 className='text-2xl font-bold'>Create New Post</h2>
+              </div>
             </CardHeader>
-            <CardContent className='p-6'>
-              <div className='mb-6'>
-                <FormArea
-                  id='title'
-                  label='Title'
-                  type='text'
-                  form={form}
-                  name='title'
-                  className='w-full'
-                />
-              </div>
-              <div className='mb-6'>
-                <FormArea
-                  id='content'
-                  label='Content'
-                  type='textarea'
-                  form={form}
-                  name='postContent'
-                  className='w-full'
-                />
-              </div>
-              <div className='mb-6 w-fit'>
-                <FormArea
-                  id='postPhoto'
-                  label='Photo'
-                  type='file'
-                  form={form}
-                  name='postPhoto'
-                  fileRef={fileRef}
-                  setFile={setFile}
-                  className='w-full'
-                />
+            <CardContent className='p-6 space-y-6'>
+              <FormArea
+                id='title'
+                label='Title'
+                type='text'
+                form={form}
+                name='title'
+                className='w-full'
+                placeholder='Enter post title'
+              />
+              <FormArea
+                id='content'
+                label='Content'
+                type='textarea'
+                form={form}
+                name='postContent'
+                className='w-full'
+                placeholder='Write your post content here...'
+                rows={6}
+              />
+              <div className='space-y-2'>
+                <div className='flex items-center space-x-4'>
+                  <FormArea
+                    id='postPhoto'
+                    label='Photo'
+                    type='file'
+                    form={form}
+                    name='postPhoto'
+                    fileRef={fileRef}
+                    setFile={setFile}
+                    className='w-full'
+                  />
+                  {previewUrl && (
+                    <img
+                      src={previewUrl}
+                      alt='Preview'
+                      className='w-20 h-20 object-cover rounded-lg'
+                    />
+                  )}
+                </div>
               </div>
               <div className='flex justify-end'>
                 <Button
                   type='submit'
-                  className='bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-md shadow transition-colors duration-300'
+                  className='bg-primary-500 hover:bg-primary-600 text-white py-3 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105'
                 >
-                  Save
+                  Publish Post
                 </Button>
               </div>
             </CardContent>
