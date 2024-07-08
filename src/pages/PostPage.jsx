@@ -38,6 +38,7 @@ const PostPage = () => {
       <div className='mt-7'>
         <Comment
           postId={id}
+          currentUserId={currentUser?._id}
           isLogged={currentUser === null ? false : true}
           currentUserImg={user?.imageUrl}
           setUpdateSuccess={setUpdateSuccess}
