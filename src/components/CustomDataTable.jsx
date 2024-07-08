@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { Card } from './ui/card';
 import DataTable from 'react-data-table-component';
 import { Input } from './ui/input';
 import Spinner from './Spinner';
-import { FaArrowDownLong } from 'react-icons/fa6';
+import { FaSearch } from 'react-icons/fa';
 import ExpandedStatsComponent from './ExpandedStatsComponent';
 
 const CustomDataTable = ({
@@ -26,56 +26,83 @@ const CustomDataTable = ({
     return () => clearTimeout(timeout);
   }, []);
 
-  const filteredData = data.filter(
-    (item) =>
-      (item.name && item.name.toLowerCase().includes(search.toLowerCase())) ||
-      (item.username &&
-        item.username.toLowerCase().includes(search.toLowerCase())) ||
-      (item.surname &&
-        item.surname.toLowerCase().includes(search.toLowerCase()))
-  );
+  const filteredData = useMemo(() => {
+    return data?.filter((item) =>
+      Object.values(item)?.some(
+        (val) =>
+          typeof val === 'string' &&
+          val.toLowerCase().includes(search.toLowerCase())
+      )
+    );
+  }, [data, search]);
 
-  const tableHeaderStyle = {
+  const tableCustomStyles = {
+    table: {
+      style: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: '8px',
+        overflow: 'hidden',
+      },
+    },
+    headRow: {
+      style: {
+        backgroundColor: '#F3F4F6',
+        borderBottomWidth: '2px',
+        borderBottomColor: '#E5E7EB',
+      },
+    },
     headCells: {
       style: {
-        color: '#333333', // Dark gray color for better readability
-        fontSize: '16px', // Slightly larger font size
-        fontWeight: '600', // Semi-bold font weight
-        backgroundColor: '#F8F9FA', // Light gray background color
-        padding: '12px', // Equal padding for left and right
-        borderBottom: '1px solid #D1D5DB', // Thinner bottom border with a slightly darker color
+        color: '#111827',
+        fontSize: '14px',
+        fontWeight: '600',
+        padding: '16px',
+        textTransform: 'uppercase',
+      },
+    },
+    cells: {
+      style: {
+        padding: '16px',
+        fontSize: '14px',
       },
     },
     rows: {
       style: {
-        backgroundColor: '#FFFFFF', // White background color for rows
-        borderBottom: '1px solid #E5E7EB', // Light gray bottom border for rows
-        borderRadius: '6px', // Slightly smaller border radius
-        cursor: 'pointer', // Pointer cursor on hover
-        transition: 'box-shadow 0.3s', // Transition for the box-shadow effect
-        '&:hover': {
-          boxShadow:
-            '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', // Box-shadow effect on hover
+        backgroundColor: '#FFFFFF',
+        '&:nth-of-type(odd)': {
+          backgroundColor: '#F9FAFB',
         },
+        '&:hover': {
+          backgroundColor: '#F3F4F6',
+          transition: 'all 0.3s',
+        },
+      },
+    },
+    pagination: {
+      style: {
+        borderTop: 'none',
+        backgroundColor: '#F9FAFB',
       },
     },
   };
 
   return (
-    <Card className='w-full overflow-hidden rounded-md shadow-md'>
+    <Card className='w-full overflow-hidden rounded-lg shadow-lg'>
       <DataTable
         columns={columns}
         data={searchable ? filteredData : data}
-        customStyles={tableHeaderStyle}
+        customStyles={tableCustomStyles}
         highlightOnHover
+        pointerOnHover
         subHeader={searchable}
         subHeaderComponent={
           searchable && (
-            <div className='flex justify-end w-full p-2'>
+            <div className='flex items-center w-full p-4 bg-white'>
+              <FaSearch className='text-gray-400 mr-2' />
               <Input
                 type='text'
                 placeholder='Search...'
-                className='w-full md:w-64 p-2 rounded-md ring-2 ring-gray-300 focus:ring-primary-500 transition duration-300 bg-white'
+                className='w-full md:w-64 p-2 rounded-md border-none focus:ring-2 focus:ring-blue-500 transition duration-300 bg-gray-100'
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -86,14 +113,16 @@ const CustomDataTable = ({
         progressComponent={<Spinner />}
         persistTableHead
         pagination={pagination}
-        sortIcon={<FaArrowDownLong />}
+        paginationPerPage={10}
+        paginationRowsPerPageOptions={[10, 25, 50, 100]}
         expandableRows={isExpandable}
         expandableRowsComponent={ExpandedStatsComponent}
-        expandOnRowClicked={true}
+        expandOnRowClicked
         defaultSortFieldId={defaultSortFieldId}
         defaultSortAsc={false}
-        responsive={true}
-        noHeader={true}
+        responsive
+        noHeader
+        dense
       />
     </Card>
   );
