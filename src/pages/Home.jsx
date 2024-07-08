@@ -6,6 +6,7 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
+  const [deleteSuccess, setDeleteSuccess] = useState(false);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -21,7 +22,7 @@ const Home = () => {
       }
     };
     fetchPosts();
-  }, []);
+  }, [deleteSuccess]);
 
   if (loading) {
     return <Spinner />;
@@ -47,6 +48,7 @@ const Home = () => {
                 author={post.author}
                 createdAt={post.createdAt}
                 comments={post.children}
+                setDeleteSuccess={setDeleteSuccess}
               />
             ))}
           </>
