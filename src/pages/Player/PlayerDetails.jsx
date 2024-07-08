@@ -1,3 +1,7 @@
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { motion } from 'framer-motion';
 import Spinner from '../../components/Spinner';
 import {
   Card,
@@ -8,7 +12,6 @@ import {
 } from '../../components/ui/card';
 import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
-import { useParams } from 'react-router-dom';
 import { useFetchPlayerById } from '../../components/hooks/useFetchPlayerById';
 import CustomDataTable from '../../components/CustomDataTable';
 import { useFetchPlayerStatsById } from '../../components/hooks/useFetchPlayerStatsById';
@@ -17,10 +20,9 @@ import {
   FaRulerVertical,
   FaWeight,
   FaBirthdayCake,
+  FaFutbol,
 } from 'react-icons/fa';
-import { useEffect, useState } from 'react';
 import { useToast } from '../../components/ui/use-toast';
-import { useSelector } from 'react-redux';
 import { Button } from '../../components/ui/button';
 
 const PlayerDetails = () => {
@@ -162,103 +164,157 @@ const PlayerDetails = () => {
   ];
 
   if (loading) {
-    return <Spinner />;
+    return (
+      <div className='flex items-center justify-center h-screen'>
+        <Spinner size='large' />
+      </div>
+    );
+  }
+
+  if (!player) {
+    return (
+      <div className='text-center py-12'>
+        <h2 className='text-2xl font-bold text-gray-700'>Player not found</h2>
+        <p className='text-gray-500 mt-2'>
+          The requested player could not be found.
+        </p>
+        <BackButton className='mt-4' />
+      </div>
+    );
   }
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className='container mx-auto px-4 py-8'
+    >
       <BackButton />
-      <Separator />
-      <Card className='bg-white shadow-lg rounded-lg flex flex-col'>
-        <CardHeader className='bg-gray-100 p-6 flex flex-col lg:flex-row items-center justify-between space-y-4 lg:space-y-0'>
-          <div className='flex flex-col lg:flex-row items-center'>
-            <div className='w-40 h-40 rounded-full mb-4 lg:mb-0 lg:mr-6'>
-              <img
-                src={
-                  player?.imageUrl ||
-                  'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-                }
-                alt={`Photo of ${player?.name}`}
-                className='object-cover w-full h-full rounded-full'
-              />
-            </div>
-            <div className='text-center lg:text-left'>
-              <CardTitle className='text-2xl font-bold mb-2'>
-                {player?.name + ' ' + player?.surname}
-              </CardTitle>
-              <CardDescription className='text-gray-600'>
-                {player?.position} | {player?.currentTeam}
-              </CardDescription>
-            </div>
-          </div>
-          <div className='flex flex-col lg:flex-row items-center space-y-2 lg:space-y-0 lg:space-x-4'>
-            <span className='text-gray-600 font-semibold'>
-              {player?.fans?.length} fans
-            </span>
-            {currentUser && (
-              <div className='flex space-x-2'>
-                <Button
-                  className={`bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center transition-all duration-300 ease-in-out ${
-                    isFan ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  onClick={handleFollow}
-                  disabled={isFan}
-                >
-                  <span className='text-sm'>Follow</span>
-                </Button>
-                <Button
-                  className={`bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white font-semibold py-1.5 px-4 rounded-full flex items-center transition-all duration-300 ease-in-out ${
-                    !isFan ? 'opacity-50 cursor-not-allowed' : ''
-                  }`}
-                  onClick={handleUnfollow}
-                  disabled={!isFan}
-                >
-                  <span className='text-sm'>Unfollow</span>
-                </Button>
+      <Separator className='my-4' />
+      <div className='grid grid-cols-1 lg:grid-cols-3 gap-8'>
+        <div className='col-span-1 lg:col-span-3'>
+          <Card className='bg-white shadow-lg rounded-lg overflow-hidden'>
+            <CardHeader className='bg-gradient-to-r from-blue-500 to-purple-500 p-6'>
+              <div className='flex flex-col lg:flex-row items-center justify-between'>
+                <div className='flex flex-col lg:flex-row items-center'>
+                  <img
+                    src={
+                      player?.imageUrl ||
+                      'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                    }
+                    alt={`Photo of ${player?.name}`}
+                    className='w-32 h-32 rounded-full border-4 border-white mb-4 lg:mb-0 lg:mr-6'
+                  />
+                  <div className='text-center lg:text-left'>
+                    <CardTitle className='text-3xl font-bold text-white mb-2'>
+                      {player?.name} {player?.surname}
+                    </CardTitle>
+                    <CardDescription className='text-white text-lg'>
+                      {player?.position} | {player?.currentTeam}
+                    </CardDescription>
+                  </div>
+                </div>
+                <div className='mt-4 lg:mt-0'>
+                  <span className='text-white font-semibold text-lg'>
+                    {player?.fans?.length} fans
+                  </span>
+                  {currentUser && (
+                    <div className='flex space-x-2 mt-2'>
+                      <Button
+                        className={`bg-white text-blue-500 hover:bg-blue-100 font-semibold py-2 px-4 rounded-full transition-all duration-300 ease-in-out ${
+                          isFan ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        onClick={handleFollow}
+                        disabled={isFan}
+                      >
+                        Follow
+                      </Button>
+                      <Button
+                        className={`bg-red-500 text-white hover:bg-red-600 font-semibold py-2 px-4 rounded-full transition-all duration-300 ease-in-out ${
+                          !isFan ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                        onClick={handleUnfollow}
+                        disabled={!isFan}
+                      >
+                        Unfollow
+                      </Button>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-        </CardHeader>
-        <CardContent className='p-6 grid grid-cols-1 lg:grid-cols-2 gap-8'>
-          <div>
-            <h3 className='text-lg font-semibold mb-2'>Personal Information</h3>
-            <div className='flex items-center mb-2'>
-              <FaBirthdayCake className='text-gray-500 mr-2' />
-              <p className='text-gray-700'>{player?.age}</p>
-            </div>
-            <div className='flex items-center mb-2'>
-              <FaFlag className='text-gray-500 mr-2' />
-              <p className='text-gray-700'>{player?.nationality}</p>
-            </div>
-            <div className='flex items-center mb-2'>
-              <FaRulerVertical className='text-gray-500 mr-2' />
-              <p className='text-gray-700'>{player?.height}</p>
-            </div>
-            <div className='flex items-center mb-2'>
-              <FaWeight className='text-gray-500 mr-2' />
-              <p className='text-gray-700'>{player?.weight}</p>
-            </div>
-          </div>
-          <div>
-            <h3 className='text-lg font-semibold mb-2'>Previous Teams</h3>
-            <ul className='list-disc pl-4 text-gray-700'>
-              {player.teams?.map((team, index) => (
-                <li key={index}>{team.split(':')[0]}</li>
-              ))}
-            </ul>
-          </div>
-        </CardContent>
-        <div className='p-6 grid mt-5 w-full rounded-none shadow-md'>
-          <h3 className='text-lg font-semibold mb-4'>Player Stats</h3>
-          <CustomDataTable
-            columns={columns}
-            data={playerStats}
-            pending
-            searchable={false}
-          />
+            </CardHeader>
+          </Card>
         </div>
-      </Card>
-    </>
+
+        <div className='col-span-1 lg:col-span-2'>
+          <Card className='h-full'>
+            <CardHeader>
+              <CardTitle className='text-2xl font-bold'>
+                Personal Information
+              </CardTitle>
+            </CardHeader>
+            <CardContent className='grid grid-cols-2 gap-4'>
+              <div className='flex items-center'>
+                <FaBirthdayCake className='text-gray-500 mr-2 text-xl' />
+                <p className='text-gray-700'>{player?.age} years old</p>
+              </div>
+              <div className='flex items-center'>
+                <FaFlag className='text-gray-500 mr-2 text-xl' />
+                <p className='text-gray-700'>{player?.nationality}</p>
+              </div>
+              <div className='flex items-center'>
+                <FaRulerVertical className='text-gray-500 mr-2 text-xl' />
+                <p className='text-gray-700'>{player?.height} cm</p>
+              </div>
+              <div className='flex items-center'>
+                <FaWeight className='text-gray-500 mr-2 text-xl' />
+                <p className='text-gray-700'>{player?.weight} kg</p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className='col-span-1'>
+          <Card className='h-full'>
+            <CardHeader>
+              <CardTitle className='text-2xl font-bold'>
+                Previous Teams
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className='space-y-2'>
+                {player.teams?.map((team, index) => (
+                  <li key={index} className='flex items-center'>
+                    <FaFutbol className='text-gray-500 mr-2' />
+                    <span className='text-gray-700'>{team.split(':')[0]}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className='col-span-1 lg:col-span-3'>
+          <Card>
+            <CardHeader>
+              <CardTitle className='text-2xl font-bold'>Player Stats</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <CustomDataTable
+                columns={columns}
+                data={playerStats}
+                pending={loading}
+                searchable={false}
+                pagination
+                paginationPerPage={5}
+                paginationRowsPerPageOptions={[5, 10, 15, 20]}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 
