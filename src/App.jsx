@@ -59,6 +59,7 @@ import SeasonManage from './pages/Season/SeasonManage';
 import TeamDetails from './components/home/team/TeamDetails';
 import LineupManage from './pages/Coach/LineupManage';
 import FormationManage from './pages/Coach/FormationManage';
+import Messages from './pages/Messages';
 
 const App = () => {
   return (
@@ -75,6 +76,7 @@ const App = () => {
           <Route path='/activity' element={<Activity />} />
           <Route path='/search' element={<Search />} />
           <Route path='/profile/:id' element={<HomeProfile />} />
+          <Route path='/messages' element={<Messages />} />
           <Route path='/leagues' element={<Leagues />} />
           <Route path='/league/:id' element={<LeaguePage />} />
           <Route path='/league/team/:id' element={<TeamDetails />} />
