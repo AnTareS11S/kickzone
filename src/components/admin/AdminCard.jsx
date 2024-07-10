@@ -1,13 +1,30 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { FaChevronRight } from 'react-icons/fa';
 
-const AdminCard = ({ title, linkTo }) => {
+const AdminCard = ({ title, linkTo, icon: Icon }) => {
   return (
-    <Link
-      to={linkTo}
-      className='flex flex-col items-center justify-center gap-2 rounded-lg bg-white p-6 shadow-md transition-colors duration-200 hover:bg-gray-100'
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: 'spring', stiffness: 300 }}
     >
-      <h3 className='text-lg font-semibold text-gray-800'>{title}</h3>
-    </Link>
+      <Link
+        to={linkTo}
+        className='flex items-center justify-between p-6 bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-all duration-300'
+      >
+        <div className='flex items-center space-x-4'>
+          {Icon && (
+            <Icon className='text-2xl text-blue-500 dark:text-blue-400' />
+          )}
+          <h3 className='text-lg font-semibold text-gray-800 dark:text-white'>
+            {title}
+          </h3>
+        </div>
+        <FaChevronRight className='text-gray-400 dark:text-gray-500' />
+      </Link>
+    </motion.div>
   );
 };
 
