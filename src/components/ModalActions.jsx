@@ -69,8 +69,10 @@ const ModalActions = ({
       open={isOpen}
       onOpenChange={(open) => (open ? onOpen() : onClose())}
     >
-      <DialogTrigger asChild>{renderTrigger()}</DialogTrigger>
-      <DialogContent className='sm:max-w-[825px] w-full mx-auto'>
+      <DialogTrigger asChild className='mb-4'>
+        {renderTrigger()}
+      </DialogTrigger>
+      <DialogContent className='sm:max-w-[825px] w-full mx-auto '>
         <div className='max-h-[80vh] overflow-y-auto p-6'>
           <DialogHeader>
             <DialogTitle className='text-2xl font-semibold mb-2'>
