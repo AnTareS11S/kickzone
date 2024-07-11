@@ -129,7 +129,6 @@ const CrudPanel = ({
           label='Add'
           onSubmit={onSubmit}
           title={`Add ${title}`}
-          desc={`Add a new ${title}`}
           form={form}
           fields={fields}
           setFile={setFile}
