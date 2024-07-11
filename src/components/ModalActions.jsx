@@ -19,7 +19,6 @@ import {
 const ModalActions = ({
   label,
   title,
-  desc,
   onSubmit,
   data,
   fields,
@@ -69,16 +68,13 @@ const ModalActions = ({
       open={isOpen}
       onOpenChange={(open) => (open ? onOpen() : onClose())}
     >
-      <DialogTrigger asChild className='mb-4'>
-        {renderTrigger()}
-      </DialogTrigger>
+      <DialogTrigger asChild>{renderTrigger()}</DialogTrigger>
       <DialogContent className='sm:max-w-[825px] w-full mx-auto '>
         <div className='max-h-[80vh] overflow-y-auto p-6'>
           <DialogHeader>
-            <DialogTitle className='text-2xl font-semibold mb-2'>
+            <DialogTitle className='text-body-semibold mb-2'>
               {title}
             </DialogTitle>
-            {desc && <p className='text-gray-600 mb-4'>{desc}</p>}
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
