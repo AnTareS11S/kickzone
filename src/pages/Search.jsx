@@ -35,7 +35,9 @@ const SearchResult = ({ title, items, icon: Icon, linkPrefix }) => (
         >
           <img
             src={
-              item.imageUrl || item.logoUrl || 'https://via.placeholder.com/48'
+              item.imageUrl ||
+              item.logoUrl ||
+              'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
             }
             alt={item.name}
             className='rounded-full w-12 h-12 object-cover mr-4'
