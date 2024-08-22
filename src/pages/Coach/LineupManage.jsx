@@ -1,6 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { DndProvider, useDrag, useDrop } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { motion } from 'framer-motion';
 import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
 import { useFetchTeamPlayers } from '../../components/hooks/useFetchTeamPlayers';
@@ -74,15 +75,14 @@ const Position = ({ position, player, onDrop, onRemove, fieldDimensions }) => {
   });
 
   const isActive = canDrop && isOver;
-
   const { fieldWidth, fieldHeight } = fieldDimensions;
   const positionX = (position.x * fieldWidth) / 100;
   const positionY = (position.y * fieldHeight) / 100;
 
   return (
-    <div
+    <motion.div
       ref={drop}
-      className={`absolute flex flex-col text-body-medium transition-colors ${
+      className={`absolute flex flex-col items-center transition-colors ${
         isActive ? 'border-green-500' : 'border-gray-300'
       }`}
       style={{
@@ -90,37 +90,28 @@ const Position = ({ position, player, onDrop, onRemove, fieldDimensions }) => {
         left: `${positionX}px`,
       }}
       onClick={() => onRemove(position.name)}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
     >
       <div
-        className={`bg-white border-2 text-body-medium rounded-full max-md:w-8 max-md:h-8 max-lg:w-8 max-lg:h-8 w-12 h-12 text-center flex items-center justify-center  ${
+        className={`bg-white border-2 rounded-full w-12 h-12 md:w-16 md:h-16 text-center flex items-center justify-center text-sm md:text-base font-semibold ${
           isActive ? 'border-green-500' : 'border-gray-300'
         }`}
       >
-        {player
-          ? player
-              .slice(0, 2)
-              .split(' ')
-              .map((name) => name[0])
-          : ''}
+        {player ? player.slice(0, 2) : position.name}
       </div>
-      <span className='mt-1 '>{player}</span>
-    </div>
+      <span className='mt-1 text-xs md:text-sm'>{player || 'Empty'}</span>
+    </motion.div>
   );
 };
 
 const LineupManage = () => {
   const [selectedFormation, setSelectedFormation] = useState(formations[0]);
   const { coach } = useFetchCoachByUserId();
-  const { playersToSelect: players } = useFetchTeamPlayers(coach?.currentTeam);
-  const [lineup, setLineup] = useState(
-    selectedFormation.positions.reduce((acc, pos) => {
-      acc[pos.name] = null;
-      return acc;
-    }, {})
+  const { playersToSelect: players, isLoading } = useFetchTeamPlayers(
+    coach?.currentTeam
   );
-
-  console.log(lineup);
-
+  const [lineup, setLineup] = useState({});
   const [fieldDimensions, setFieldDimensions] = useState({
     fieldWidth: 0,
     fieldHeight: 0,
@@ -128,46 +119,48 @@ const LineupManage = () => {
   const fieldImageRef = useRef(null);
 
   useEffect(() => {
-    const fieldImage = fieldImageRef.current;
+    const resetLineup = () => {
+      setLineup(
+        selectedFormation.positions.reduce((acc, pos) => {
+          acc[pos.name] = null;
+          return acc;
+        }, {})
+      );
+    };
 
+    resetLineup();
     const observer = new ResizeObserver((entries) => {
       const { width, height } = entries[0].contentRect;
       setFieldDimensions({ fieldWidth: width, fieldHeight: height });
     });
 
-    observer.observe(fieldImage);
+    if (fieldImageRef.current) {
+      observer.observe(fieldImageRef.current);
+    }
 
-    return () => {
-      observer.disconnect();
-    };
-  }, []);
+    return () => observer.disconnect();
+  }, [selectedFormation]);
 
-  const handleFormationChange = (event) => {
+  const handleFormationChange = useCallback((event) => {
     const selectedFormationObj = formations.find(
       (formation) => formation.name === event.target.value
     );
     setSelectedFormation(selectedFormationObj);
-    setLineup(
-      selectedFormationObj.positions.reduce((acc, pos) => {
-        acc[pos.name] = null;
-        return acc;
-      }, {})
-    );
-  };
+  }, []);
 
-  const handleDrop = (position, player) => {
+  const handleDrop = useCallback((position, player) => {
     setLineup((prevLineup) => ({
       ...prevLineup,
       [position]: player,
     }));
-  };
+  }, []);
 
-  const handleRemove = (position) => {
+  const handleRemove = useCallback((position) => {
     setLineup((prevLineup) => ({
       ...prevLineup,
       [position]: null,
     }));
-  };
+  }, []);
 
   const handleSaveLineup = async () => {
     try {
@@ -178,12 +171,6 @@ const LineupManage = () => {
         },
         body: JSON.stringify({ lineup }),
       });
-
-      if (response.ok) {
-        console.log('Lineup saved successfully');
-      } else {
-        console.error('Failed to save lineup');
-      }
     } catch (error) {
       console.error('Error saving lineup:', error);
     }
@@ -191,22 +178,32 @@ const LineupManage = () => {
 
   const assignedPlayers = Object.values(lineup).filter(Boolean);
 
+  if (isLoading) {
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        Loading...
+      </div>
+    );
+  }
+
   return (
-    <div className='space-y-6 p-4'>
+    <div className='space-y-6 p-4 max-w-7xl mx-auto'>
       <BackButton />
       <div>
-        <h2 className='text-2xl font-bold'>Team Lineup</h2>
-        <p className='text-gray-600'>Manage team lineup.</p>
+        <h2 className='text-3xl font-bold'>Team Lineup</h2>
+        <p className='text-gray-600'>
+          Manage and customize your team's formation
+        </p>
       </div>
       <Separator />
 
       <DndProvider backend={HTML5Backend}>
-        <div className='flex flex-col md:flex-row justify-around h-screen w-full'>
-          <div className='relative w-full md:w-3/4 h-1/2 md:h-full border-gray-300 rounded-lg overflow-hidden bg-contain bg-center'>
+        <div className='flex flex-col lg:flex-row justify-between gap-8'>
+          <div className='relative w-full lg:w-3/4 aspect-video border border-gray-300 rounded-lg overflow-hidden'>
             <img
               src='/stadium_draft.png'
               alt='soccer field'
-              className='w-full h-full object-contain'
+              className='w-full h-full object-cover'
               ref={fieldImageRef}
             />
             <div className='absolute inset-0 flex items-center justify-center'>
@@ -222,8 +219,8 @@ const LineupManage = () => {
               ))}
             </div>
           </div>
-          <div className='flex flex-col w-full md:w-1/4 p-4 mt-4 md:mt-0'>
-            <div className='mb-4'>
+          <div className='flex flex-col w-full lg:w-1/4 space-y-6'>
+            <div>
               <label
                 htmlFor='formation-select'
                 className='block font-bold mb-2'
@@ -245,8 +242,8 @@ const LineupManage = () => {
             </div>
 
             <div>
-              <h3 className='font-bold mb-2'>Players</h3>
-              <div className='flex flex-wrap gap-2'>
+              <h3 className='font-bold mb-2'>Available Players</h3>
+              <div className='flex flex-wrap gap-2 max-h-64 overflow-y-auto'>
                 {players
                   ?.filter(
                     (player) => !assignedPlayers.includes(player.split(':')[0])
@@ -260,12 +257,14 @@ const LineupManage = () => {
               </div>
             </div>
 
-            <button
-              className='bg-primary-500 hover:bg-purple-500 mt-5 text-white font-bold py-2 px-4 rounded'
+            <motion.button
+              className='bg-primary-500 hover:bg-primary-600 text-white font-bold py-2 px-4 rounded shadow-lg'
               onClick={handleSaveLineup}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               Save Lineup
-            </button>
+            </motion.button>
           </div>
         </div>
       </DndProvider>
