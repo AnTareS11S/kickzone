@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
 
-const Conversation = ({ conversation, currentUser }) => {
+const Conversation = ({ conversation }) => {
   const [user, setUser] = useState(null);
+  const { currentUser } = useSelector((state) => state.user);
 
   useEffect(() => {
-    const friendId = conversation.members.find((m) => m !== currentUser?._id);
-
     const getUser = async () => {
       try {
-        const res = await fetch(`/api/user/get-user-info/${friendId}`);
+        const res = await fetch(
+          `/api/user/get-user-info/${currentUser?._id}?conversationId=${conversation._id}`
+        );
         if (!res.ok) throw new Error('Failed to fetch user');
         const data = await res.json();
         setUser(data);
