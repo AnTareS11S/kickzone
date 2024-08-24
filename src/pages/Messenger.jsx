@@ -12,70 +12,102 @@ import {
 import Conversation from '../components/home/conversations/Conversation';
 import Message from '../components/home/message/Message';
 import { FiSearch, FiSend } from 'react-icons/fi';
+import { io } from 'socket.io-client';
+
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [searchTerm, setSearchTerm] = useState('');
   const [users, setUsers] = useState([]);
+  const [accountId, setAccountId] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
+  const [arrivalMessage, setArrivalMessage] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const socket = useRef();
   const scrollRef = useRef();
 
   useEffect(() => {
-    fetchConversations();
-  }, [currentUser._id]);
+    socket.current = io('ws://localhost:8900');
+    socket.current.on('getMessage', (data) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+  }, []);
 
   useEffect(() => {
-    if (currentChat) {
-      getMessages();
-    }
-  }, [currentChat]);
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    const debounce = setTimeout(() => {
-      if (searchTerm) fetchUsers();
-    }, 300);
-
-    return () => clearTimeout(debounce);
-  }, [searchTerm]);
+    socket.current.emit('addUser', accountId);
+    socket.current.on('getUsers', (users) => {
+      console.log(users);
+    });
+  }, [accountId]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const fetchConversations = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch(`/api/conversations/${currentUser._id}`);
-      if (!res.ok) throw new Error('Failed to fetch conversations');
-      const data = await res.json();
-      setConversations(data);
-    } catch (error) {
-      setError('Error fetching conversations. Please try again.');
-      console.error('Error fetching conversations:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        setIsLoading(true);
+        const res = await fetch(`/api/conversations/${accountId}`);
+        if (!res.ok) throw new Error('Failed to fetch conversations');
+        const data = await res.json();
+        setConversations(data);
+      } catch (error) {
+        setError('Error fetching conversations. Please try again.');
+        console.error('Error fetching conversations:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchConversations();
+  }, [currentUser._id, accountId]);
 
-  const getMessages = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch(`/api/messages/${currentChat._id}`);
-      if (!res.ok) throw new Error('Failed to fetch messages');
-      const data = await res.json();
-      setMessages(data);
-    } catch (error) {
-      setError('Error fetching messages. Please try again.');
-      console.error('Error fetching messages:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        setIsLoading(true);
+        if (!currentChat) return;
+        const res = await fetch(`/api/messages/${currentChat?._id}`);
+        if (!res.ok) throw new Error('Failed to fetch messages');
+        const data = await res.json();
+        setMessages(data);
+      } catch (error) {
+        console.error('Error fetching messages:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getMessages();
+  }, [currentChat]);
+
+  useEffect(() => {
+    const getAccountId = async () => {
+      try {
+        const res = await fetch(`/api/user/get-account-id/${currentUser?._id}`);
+        if (!res.ok) throw new Error('Failed to fetch account id');
+        const data = await res.json();
+        setAccountId(data);
+      } catch (error) {
+        console.error('Error fetching account id:', error);
+      }
+    };
+
+    getAccountId();
+  }, [currentUser._id]);
 
   const fetchUsers = async () => {
     try {
@@ -105,9 +137,19 @@ const Messenger = () => {
 
     const message = {
       conversation: currentChat._id,
-      sender: currentUser._id,
+      sender: accountId,
       text: newMessage,
     };
+
+    const receiverId = currentChat.members.find(
+      (member) => member !== accountId
+    );
+
+    socket.current.emit('sendMessage', {
+      senderId: accountId,
+      receiverId,
+      text: newMessage,
+    });
 
     try {
       setIsLoading(true);
@@ -122,12 +164,12 @@ const Messenger = () => {
       setMessages([...messages, data]);
       setNewMessage('');
     } catch (error) {
-      setError('Error sending message. Please try again.');
       console.error('Error sending message:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -151,32 +193,16 @@ const Messenger = () => {
               value='conversations'
               className='flex-grow overflow-y-auto p-4'
             >
-              {isLoading ? (
-                <div className='flex justify-center items-center h-full'>
-                  <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
-                </div>
-              ) : error ? (
-                <div className='text-red-500 text-center'>{error}</div>
-              ) : (
-                <AnimatePresence>
-                  {conversations.map((conversation) => (
-                    <motion.div
-                      key={conversation._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                      onClick={() => setCurrentChat(conversation)}
-                      className='mb-2'
-                    >
-                      <Conversation
-                        conversation={conversation}
-                        user={currentUser}
-                      />
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
-              )}
+              <>
+                {conversations.map((conversation) => (
+                  <div
+                    key={conversation._id}
+                    onClick={() => setCurrentChat(conversation)}
+                  >
+                    <Conversation conversation={conversation} />
+                  </div>
+                ))}
+              </>
             </TabsContent>
             <TabsContent
               value='search'
@@ -236,32 +262,20 @@ const Messenger = () => {
         <div className='lg:col-span-2 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col'>
           {currentChat ? (
             <>
-              <div className='p-4 bg-gray-100 border-b'></div>
               <div className='flex-grow overflow-y-auto p-4'>
-                {isLoading ? (
-                  <div className='flex justify-center items-center h-full'>
-                    <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
-                  </div>
-                ) : error ? (
+                {error ? (
                   <div className='text-red-500 text-center'>{error}</div>
                 ) : (
-                  <AnimatePresence>
+                  <>
                     {messages.map((message) => (
-                      <motion.div
-                        key={message._id}
-                        ref={scrollRef}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.3 }}
-                      >
+                      <div ref={scrollRef} key={message._id}>
                         <Message
                           message={message}
-                          own={message.sender === currentUser._id}
+                          own={message.sender === accountId}
                         />
-                      </motion.div>
+                      </div>
                     ))}
-                  </AnimatePresence>
+                  </>
                 )}
               </div>
               <div className='p-4 bg-gray-100'>
