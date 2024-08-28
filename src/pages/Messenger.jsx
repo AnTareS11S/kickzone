@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { Input } from '../components/ui/input';
 import { Button } from '../components/ui/button';
@@ -11,8 +11,9 @@ import {
 } from '../components/ui/tabs';
 import Conversation from '../components/home/conversations/Conversation';
 import Message from '../components/home/message/Message';
-import { FiSearch, FiSend } from 'react-icons/fi';
+import { FiSend } from 'react-icons/fi';
 import { io } from 'socket.io-client';
+import ChatUsers from '../components/home/chatUsers/ChatUsers';
 
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -24,7 +25,6 @@ const Messenger = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  const [selectedUser, setSelectedUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const socket = useRef();
@@ -50,7 +50,7 @@ const Messenger = () => {
   useEffect(() => {
     socket.current.emit('addUser', accountId);
     socket.current.on('getUsers', (users) => {
-      console.log(users);
+      setUsers(users);
     });
   }, [accountId]);
 
@@ -108,28 +108,6 @@ const Messenger = () => {
 
     getAccountId();
   }, [currentUser._id]);
-
-  const fetchUsers = async () => {
-    try {
-      setIsLoading(true);
-      const res = await fetch(
-        `/api/conversation/get-people?term=${searchTerm}`
-      );
-      if (!res.ok) throw new Error('Failed to fetch users');
-      const data = await res.json();
-      setUsers(data);
-    } catch (error) {
-      setError('Error searching users. Please try again.');
-      console.error('Error fetching users:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleUserSelect = async (user) => {
-    setSelectedUser(user);
-    // Create or fetch conversation logic here
-  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -208,53 +186,15 @@ const Messenger = () => {
               value='search'
               className='flex-grow overflow-y-auto p-4'
             >
-              <div className='relative mb-4'>
-                <Input
-                  type='text'
-                  placeholder='Search users...'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className='pl-10'
-                />
-                <FiSearch
-                  className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400'
-                  size={18}
-                />
-              </div>
-              {isLoading ? (
-                <div className='flex justify-center items-center h-full'>
-                  <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900'></div>
-                </div>
-              ) : error ? (
+              {error ? (
                 <div className='text-red-500 text-center'>{error}</div>
               ) : (
-                <AnimatePresence>
-                  {users.map((user) => (
-                    <motion.div
-                      key={user._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.3 }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className='flex items-center p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200 mb-2'
-                      onClick={() => handleUserSelect(user)}
-                    >
-                      <img
-                        src={
-                          user.imageUrl ||
-                          'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-                        }
-                        alt={user.name}
-                        className='mr-3 w-10 h-10 rounded-full object-cover'
-                      />
-                      <span className='font-medium text-gray-700'>
-                        {user.name} {user.surname}
-                      </span>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                <>
+                  <ChatUsers
+                    currentId={accountId}
+                    setCurrentChat={setCurrentChat}
+                  />
+                </>
               )}
             </TabsContent>
           </Tabs>
