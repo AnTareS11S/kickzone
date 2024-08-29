@@ -3,7 +3,7 @@ import { FiSearch, FiUser } from 'react-icons/fi';
 import { Input } from '../../ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ChatUsers = ({ user, currentId, setCurrentChat }) => {
+const ChatUsers = ({ currentId, setCurrentChat, setIsConversationOpen }) => {
   const [allUsers, setAllUsers] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -43,6 +43,7 @@ const ChatUsers = ({ user, currentId, setCurrentChat }) => {
       if (!res.ok) throw new Error('Failed to fetch conversation');
       const data = await res.json();
       setCurrentChat(data);
+      setIsConversationOpen(true);
     } catch (error) {
       console.error('Error starting conversation:', error);
     }
