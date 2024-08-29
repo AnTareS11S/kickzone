@@ -11,7 +11,7 @@ import {
 } from '../components/ui/tabs';
 import Conversation from '../components/home/conversations/Conversation';
 import Message from '../components/home/message/Message';
-import { FiSend, FiUser } from 'react-icons/fi';
+import { FiSend } from 'react-icons/fi';
 import { io } from 'socket.io-client';
 import ChatUsers from '../components/home/chatUsers/ChatUsers';
 
@@ -71,7 +71,7 @@ const Messenger = () => {
       }
     };
     fetchConversations();
-  }, [currentUser._id, accountId, isConversationOpen]);
+  }, [currentUser, accountId, isConversationOpen]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -109,12 +109,13 @@ const Messenger = () => {
   useEffect(() => {
     if (currentChat) {
       const chatPartnerId = currentChat.members.find(
-        (member) => member !== currentUser?._id
+        (member) => member === accountId
       );
+
       const fetchChatPartner = async () => {
         try {
           const res = await fetch(
-            `/api/user/get-user-info/${chatPartnerId}?conversationId=${currentChat._id}`
+            `/api/user/get-user-info/${chatPartnerId}?conversationId=${currentChat?._id}`
           );
           if (!res.ok) throw new Error('Failed to fetch chat partner');
           const data = await res.json();
@@ -221,9 +222,9 @@ const Messenger = () => {
 
         {/* Messages Section */}
         <div className='lg:col-span-2 bg-white rounded-lg shadow-xl overflow-hidden flex flex-col'>
-          {currentChat ? (
-            <>
-              <div className='bg-primary-100 p-4 flex items-center border-b border-gray-200'>
+          <div className='bg-primary-100 p-4 flex items-center border-b border-gray-200'>
+            {currentChatUser && (
+              <>
                 <img
                   src={currentChatUser?.imageUrl}
                   alt='User'
@@ -234,7 +235,11 @@ const Messenger = () => {
                     {currentChatUser?.name + ' ' + currentChatUser?.surname}
                   </h2>
                 </div>
-              </div>
+              </>
+            )}
+          </div>
+          {currentChat ? (
+            <>
               <div className='flex-grow overflow-y-auto p-4'>
                 {error ? (
                   <div className='text-red-500 text-center'>{error}</div>
