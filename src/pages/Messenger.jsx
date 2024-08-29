@@ -11,21 +11,21 @@ import {
 } from '../components/ui/tabs';
 import Conversation from '../components/home/conversations/Conversation';
 import Message from '../components/home/message/Message';
-import { FiSend } from 'react-icons/fi';
+import { FiSend, FiUser } from 'react-icons/fi';
 import { io } from 'socket.io-client';
 import ChatUsers from '../components/home/chatUsers/ChatUsers';
 
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [users, setUsers] = useState([]);
   const [accountId, setAccountId] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
+  const [currentChatUser, setCurrentChatUser] = useState(null);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [error, setError] = useState(null);
   const socket = useRef();
   const scrollRef = useRef();
@@ -49,9 +49,6 @@ const Messenger = () => {
 
   useEffect(() => {
     socket.current.emit('addUser', accountId);
-    socket.current.on('getUsers', (users) => {
-      setUsers(users);
-    });
   }, [accountId]);
 
   useEffect(() => {
@@ -74,7 +71,7 @@ const Messenger = () => {
       }
     };
     fetchConversations();
-  }, [currentUser._id, accountId]);
+  }, [currentUser._id, accountId, isConversationOpen]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -108,6 +105,27 @@ const Messenger = () => {
 
     getAccountId();
   }, [currentUser._id]);
+
+  useEffect(() => {
+    if (currentChat) {
+      const chatPartnerId = currentChat.members.find(
+        (member) => member !== currentUser?._id
+      );
+      const fetchChatPartner = async () => {
+        try {
+          const res = await fetch(
+            `/api/user/get-user-info/${chatPartnerId}?conversationId=${currentChat._id}`
+          );
+          if (!res.ok) throw new Error('Failed to fetch chat partner');
+          const data = await res.json();
+          setCurrentChatUser(data);
+        } catch (error) {
+          console.error('Error fetching chat partner:', error);
+        }
+      };
+      fetchChatPartner();
+    }
+  }, [currentChat, accountId]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -155,11 +173,12 @@ const Messenger = () => {
       transition={{ duration: 0.5 }}
       className='container mx-auto p-4 max-w-7xl h-[calc(100vh-80px)]'
     >
-      <h1 className='text-3xl font-bold mb-6 text-gray-800'>Messages</h1>
+      <h1 className='text-4xl font-extrabold mb-6 text-gray-800'>Messages</h1>
       <div className='grid grid-cols-1 lg:grid-cols-3 gap-6 h-full'>
-        <div className='lg:col-span-1 bg-white rounded-lg shadow-lg overflow-hidden'>
+        {/* Conversations List */}
+        <div className='lg:col-span-1 bg-white rounded-lg shadow-xl overflow-hidden'>
           <Tabs defaultValue='conversations' className='h-full flex flex-col'>
-            <TabsList className='mb-4 p-2 bg-gray-100'>
+            <TabsList className='mb-4 p-2 bg-gradient-to-r from-gray-100 to-gray-200'>
               <TabsTrigger value='conversations' className='flex-1'>
                 Conversations
               </TabsTrigger>
@@ -176,6 +195,7 @@ const Messenger = () => {
                   <div
                     key={conversation._id}
                     onClick={() => setCurrentChat(conversation)}
+                    className='cursor-pointer transition transform hover:scale-105'
                   >
                     <Conversation conversation={conversation} />
                   </div>
@@ -189,19 +209,32 @@ const Messenger = () => {
               {error ? (
                 <div className='text-red-500 text-center'>{error}</div>
               ) : (
-                <>
-                  <ChatUsers
-                    currentId={accountId}
-                    setCurrentChat={setCurrentChat}
-                  />
-                </>
+                <ChatUsers
+                  currentId={accountId}
+                  setCurrentChat={setCurrentChat}
+                  setIsConversationOpen={setIsConversationOpen}
+                />
               )}
             </TabsContent>
           </Tabs>
         </div>
-        <div className='lg:col-span-2 bg-white rounded-lg shadow-lg overflow-hidden flex flex-col'>
+
+        {/* Messages Section */}
+        <div className='lg:col-span-2 bg-white rounded-lg shadow-xl overflow-hidden flex flex-col'>
           {currentChat ? (
             <>
+              <div className='bg-primary-100 p-4 flex items-center border-b border-gray-200'>
+                <img
+                  src={currentChatUser?.imageUrl}
+                  alt='User'
+                  className='w-12 h-12 rounded-full object-cover mr-4'
+                />
+                <div>
+                  <h2 className='text-lg font-semibold text-gray-800'>
+                    {currentChatUser?.name + ' ' + currentChatUser?.surname}
+                  </h2>
+                </div>
+              </div>
               <div className='flex-grow overflow-y-auto p-4'>
                 {error ? (
                   <div className='text-red-500 text-center'>{error}</div>
@@ -228,11 +261,11 @@ const Messenger = () => {
                     placeholder='Type a message...'
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    className='flex-grow mr-2'
+                    className='flex-grow mr-2 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500'
                   />
                   <Button
                     type='submit'
-                    className='bg-primary-500 hover:bg-primary-600 transition-colors duration-200'
+                    className='bg-primary-500 hover:bg-primary-600 text-white p-3 rounded-lg transition-colors duration-200 flex items-center'
                     disabled={isLoading || !newMessage.trim()}
                   >
                     <FiSend size={18} className='mr-2' />
