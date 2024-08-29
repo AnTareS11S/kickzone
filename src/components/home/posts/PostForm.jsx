@@ -71,7 +71,7 @@ const PostForm = () => {
   };
 
   return (
-    <div className='container max-w-2xl mx-auto py-8 px-4'>
+    <div className='max-w-5xl mx-auto py-8 px-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Card className='bg-white shadow-lg rounded-xl overflow-hidden'>
