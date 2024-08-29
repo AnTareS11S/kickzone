@@ -146,19 +146,19 @@ const TeamStats = () => {
         <div className='grid grid-cols-1 md:grid-cols-3 gap-8 my-8'>
           <StatCard
             title='Wins'
-            value={stats.wins}
+            value={stats.wins || 0}
             icon={<FaCheckCircle className='text-green-500' />}
             color='green-500'
           />
           <StatCard
             title='Draws'
-            value={stats.draws}
+            value={stats.draws || 0}
             icon={<FaHandshake className='text-blue-500' />}
             color='blue-500'
           />
           <StatCard
             title='Losses'
-            value={stats.losses}
+            value={stats.losses || 0}
             icon={<FaTimesCircle className='text-gray-500' />}
             color='gray-500'
           />
