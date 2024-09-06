@@ -60,6 +60,9 @@ import TeamDetails from './components/home/team/TeamDetails';
 import LineupManage from './pages/Coach/LineupManage';
 import FormationManage from './pages/Coach/FormationManage';
 import Messenger from './pages/Messenger';
+import TermsManage from './pages/Terms/TermsManage';
+import TermsPage from './pages/Terms/TermsPage';
+import ContactPage from './pages/Contact/ContactPage';
 
 const App = () => {
   return (
@@ -87,6 +90,8 @@ const App = () => {
           <Route path='/training' element={<TrainingPage />} />
           <Route path='/training/:id' element={<TrainingDetails />} />
           <Route path='/results/:id' element={<ResultDetails />} />
+          <Route path='/terms' element={<TermsPage />} />
+          <Route path='/contact' element={<ContactPage />} />
 
           <Route path='/dashboard/referee' element={<RefereeRoute />}>
             <Route path='/dashboard/referee' element={<LeagueScheduleCard />} />
@@ -144,6 +149,7 @@ const App = () => {
               path='/dashboard/admin/sponsors'
               element={<SponsorManage />}
             />
+            <Route path='/dashboard/admin/terms' element={<TermsManage />} />
           </Route>
 
           <Route path='/dashboard/coach' element={<CoachRoute />}>
