@@ -158,6 +158,22 @@ const Sidebar = () => {
     <>
       <aside className='custom-scrollbar leftsidebar'>
         <div className='flex flex-1 flex-col gap-2 px-4'>{renderLinks()}</div>
+        <footer className='mt-auto text-black text-center text-tiny-medium'>
+          <div className='mx-auto flex flex-col gap-4'>
+            <div className='flex justify-center gap-4'>
+              <Link to='/terms' className='hover:underline'>
+                Terms
+              </Link>
+              <Link to='/privacy' className='hover:underline'>
+                Privacy Policy
+              </Link>
+              <Link to='/contact' className='hover:underline'>
+                Contact
+              </Link>
+            </div>
+            <p>&copy; 2024 KickZone</p>
+          </div>
+        </footer>
       </aside>
       <nav className='bottombar'>
         <div className='bottombar_container'>{renderLinks()}</div>
