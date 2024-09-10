@@ -9,7 +9,8 @@ import { z } from 'zod';
 const termsSchema = () =>
   z.object({
     term: z.string().min(3, 'Term is required'),
-    definition: z.string().min(3, 'Definition is required'),
+    content: z.string().min(3, 'Content is required'),
+    active: z.boolean(),
   });
 
 const TermsManage = () => {
@@ -24,6 +25,11 @@ const TermsManage = () => {
       selector: (row) => row.term,
       sortable: true,
     },
+    {
+      name: 'Active',
+      selector: (row) => (row.active ? 'Yes' : 'No'),
+      sortable: true,
+    },
   ];
 
   const fields = [
@@ -34,10 +40,16 @@ const TermsManage = () => {
       name: 'term',
     },
     {
-      id: 'definition',
-      label: 'Definition',
+      id: 'content',
+      label: 'Content',
       type: 'textarea',
-      name: 'definition',
+      name: 'content',
+    },
+    {
+      id: 'active',
+      label: 'Active',
+      type: 'checkbox',
+      name: 'active',
     },
   ];
 
@@ -59,7 +71,8 @@ const TermsManage = () => {
         formSchema={termsSchema}
         defaultValues={{
           term: '',
-          definition: '',
+          content: '',
+          active: true,
         }}
         isExpandable={false}
         isAction={true}
