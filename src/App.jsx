@@ -63,6 +63,8 @@ import Messenger from './pages/Messenger';
 import TermsManage from './pages/Terms/TermsManage';
 import TermsPage from './pages/Terms/TermsPage';
 import ContactPage from './pages/Contact/ContactPage';
+import PrivacyManage from './pages/Privacy/PrivacyManage';
+import PrivacyPage from './pages/Privacy/PrivacyPage';
 
 const App = () => {
   return (
@@ -91,6 +93,7 @@ const App = () => {
           <Route path='/training/:id' element={<TrainingDetails />} />
           <Route path='/results/:id' element={<ResultDetails />} />
           <Route path='/terms' element={<TermsPage />} />
+          <Route path='/privacy' element={<PrivacyPage />} />
           <Route path='/contact' element={<ContactPage />} />
 
           <Route path='/dashboard/referee' element={<RefereeRoute />}>
@@ -150,6 +153,10 @@ const App = () => {
               element={<SponsorManage />}
             />
             <Route path='/dashboard/admin/terms' element={<TermsManage />} />
+            <Route
+              path='/dashboard/admin/privacy'
+              element={<PrivacyManage />}
+            />
           </Route>
 
           <Route path='/dashboard/coach' element={<CoachRoute />}>
