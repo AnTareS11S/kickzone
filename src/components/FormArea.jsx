@@ -146,7 +146,13 @@ const TextareaInput = ({ field, name, placeholder, form, ...rest }) => (
     {...field}
     id={name}
     placeholder={placeholder}
-    rows={name === 'postContent' || 'content' ? 15 : name === 'message' ? 5 : 3}
+    rows={
+      name === 'postContent' || name === 'content'
+        ? 15
+        : name === 'message'
+        ? 5
+        : 3
+    }
     className={classNames(
       'w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 transition duration-300',
       name === 'postContent' && 'h-64',
