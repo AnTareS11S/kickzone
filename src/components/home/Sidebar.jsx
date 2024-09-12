@@ -1,71 +1,69 @@
+import React, { useEffect, useState, useMemo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import {
+  FaChartBar,
+  FaDumbbell,
+  FaHeart,
+  FaHome,
+  FaPlus,
+  FaSearch,
+  FaUsers,
+} from 'react-icons/fa';
 
 const sidebarLinks = [
+  { icon: <FaHome className='w-6 h-6' />, route: '/', label: 'Home' },
+  { icon: <FaSearch className='w-6 h-6' />, route: '/search', label: 'Search' },
   {
-    imgURL: '/home.svg',
-    route: '/',
-    label: 'Home',
-  },
-  {
-    imgURL: '/search.svg',
-    route: '/search',
-    label: 'Search',
-  },
-  {
-    imgURL: '/heart.svg',
+    icon: <FaHeart className='w-6 h-6' />,
     route: '/activity',
     label: 'Activity',
   },
   {
-    imgURL: '/create.svg',
+    icon: <FaPlus className='w-6 h-6' />,
     route: '/post/create',
     label: 'Create Post',
   },
   {
-    imgURL: '/community.svg',
+    icon: <FaUsers className='w-6 h-6' />,
     route: '/leagues',
     label: 'Leagues',
   },
   {
-    imgURL: '/training.png',
+    icon: <FaDumbbell className='w-6 h-6' />,
     route: '/training',
     label: 'Training',
   },
   {
-    imgURL: '/dashboard.png',
+    icon: <FaChartBar className='w-6 h-6' />,
     route: '/dashboard/referee',
     label: 'Dashboard',
   },
   {
-    imgURL: '/dashboard.png',
+    icon: <FaChartBar className='w-6 h-6' />,
     route: '/dashboard/admin',
     label: 'Dashboard',
   },
   {
-    imgURL: '/dashboard.png',
+    icon: <FaChartBar className='w-6 h-6' />,
     route: '/dashboard/coach',
     label: 'Dashboard',
   },
 ];
 
-const SidebarLink = ({ link, isActive }) => (
+const SidebarLink = React.memo(({ link, isActive }) => (
   <Link
     to={link.route}
-    key={link.label}
-    className={`leftsidebar_link ${isActive && 'bg-primary-500'}`}
+    className={`flex items-center p-2 rounded-lg transition-all duration-300 ${
+      isActive
+        ? 'bg-primary-500 text-white'
+        : 'text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
+    }`}
   >
-    <img
-      src={link.imgURL}
-      alt={link.label}
-      width={24}
-      height={24}
-      className='text-dark-2'
-    />
-    <p className='text-dark-2 max-lg:hidden'>{link.label}</p>
+    <span className='mr-3'>{link.icon}</span>
+    <span className='hidden md:block'>{link.label}</span>
   </Link>
-);
+));
 
 const Sidebar = () => {
   const { pathname } = useLocation();
@@ -74,109 +72,78 @@ const Sidebar = () => {
 
   useEffect(() => {
     const getPlayer = async () => {
-      try {
-        if (!currentUser?._id || currentUser?.role !== 'player') {
-          return;
-        }
+      if (!currentUser?._id || currentUser?.role !== 'player') return;
 
-        const res = await fetch(`/api/player/get/${currentUser?._id}`);
+      try {
+        const res = await fetch(`/api/player/get/${currentUser._id}`);
         if (!res.ok) {
-          throw new Error(data.message || 'Failed to fetch data!');
+          throw new Error('Failed to fetch data!');
         }
         const data = await res.json();
         setPlayer(data);
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching player data:', error);
       }
     };
 
     getPlayer();
   }, [currentUser?._id, currentUser?.role]);
 
-  const isAdminOrCoachOrReferee =
-    currentUser && ['admin', 'coach', 'referee'].includes(currentUser?.role);
-
+  const isAdminOrCoachOrReferee = ['admin', 'coach', 'referee'].includes(
+    currentUser?.role
+  );
   const isCoachWithTeam =
-    (currentUser && currentUser?.role === 'coach') ||
-    player?.currentTeam !== undefined;
+    currentUser?.role === 'coach' || player?.currentTeam !== undefined;
 
-  const canShowCreatePostLink = () =>
-    (currentUser && isAdminOrCoachOrReferee) ||
-    (currentUser && currentUser.role === 'coach' && isCoachWithTeam);
+  const canShowCreatePostLink =
+    isAdminOrCoachOrReferee ||
+    (currentUser?.role === 'coach' && isCoachWithTeam);
+  const canShowTrainingLink = currentUser?.role === 'coach' || isCoachWithTeam;
+  const canShowActivityLink = ['admin', 'coach', 'player', 'referee'].includes(
+    currentUser?.role
+  );
 
-  const canShowTrainingLink = () =>
-    currentUser && (currentUser.role === 'coach' || isCoachWithTeam);
-
-  const canShowActivityLink = () =>
-    currentUser &&
-    ['admin', 'coach', 'player', 'referee'].includes(currentUser.role);
-
-  const shouldRenderLink = (link) => {
-    const userRole = currentUser?.role;
-
-    if (link.route === '/post/create' && canShowCreatePostLink()) {
-      return true;
-    }
-
-    if (link.route === '/training' && canShowTrainingLink()) {
-      return true;
-    }
-
-    if (link.route === '/activity' && canShowActivityLink()) {
-      return true;
-    }
-
-    if (link.route === '/leagues') {
-      return true;
-    }
-
-    if (link.route === '/dashboard/referee' && userRole === 'referee') {
-      return true;
-    }
-
-    if (link.route === '/dashboard/admin' && userRole === 'admin') {
-      return true;
-    }
-
-    if (link.route === '/dashboard/coach' && userRole === 'coach') {
-      return true;
-    }
-
-    return ['/', '/search'].includes(link.route);
-  };
+  const visibleLinks = useMemo(() => {
+    return sidebarLinks.filter((link) => {
+      if (link.route === '/search') return true;
+      if (link.route === '/post/create') return canShowCreatePostLink;
+      if (link.route === '/training') return canShowTrainingLink;
+      if (link.route === '/activity') return canShowActivityLink;
+      if (link.route === '/leagues') return true;
+      if (link.route.startsWith('/dashboard/'))
+        return link.route === `/dashboard/${currentUser?.role}`;
+      return ['/'].includes(link.route);
+    });
+  }, [
+    currentUser?.role,
+    canShowCreatePostLink,
+    canShowTrainingLink,
+    canShowActivityLink,
+  ]);
 
   const renderLinks = () =>
-    sidebarLinks.map((link) => {
-      const isActive = pathname === link.route;
-      if (shouldRenderLink(link)) {
-        return <SidebarLink key={link.label} link={link} isActive={isActive} />;
-      }
-      return null;
-    });
+    visibleLinks.map((link) => (
+      <SidebarLink
+        key={link.label}
+        link={link}
+        isActive={pathname === link.route}
+      />
+    ));
 
   return (
     <>
-      <aside className='custom-scrollbar leftsidebar'>
-        <div className='flex flex-1 flex-col gap-2 px-4'>{renderLinks()}</div>
-        <footer className='mt-auto text-black text-center text-tiny-medium'>
-          <div className='mx-auto flex flex-col gap-4'>
-            <div className='flex justify-center gap-4'>
-              <Link to='/terms' className='hover:underline'>
-                Terms
-              </Link>
-              <Link to='/privacy' className='hover:underline'>
-                Privacy Policy
-              </Link>
-              <Link to='/contact' className='hover:underline'>
-                Contact
-              </Link>
-            </div>
-            <p>&copy; 2024 KickZone</p>
-          </div>
+      <aside className='hidden md:flex flex-col  bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 transition-all duration-300'>
+        <div className='flex-1 overflow-y-auto py-4 px-3'>
+          <nav className='space-y-2'>{renderLinks()}</nav>
+        </div>
+        <footer className='border-t file:border-gray-200 dark:border-gray-700 p-4'>
+          <p className='text-sm text-gray-500 dark:text-gray-400 text-center'>
+            &copy; 2024 KickZone
+          </p>
         </footer>
       </aside>
-      <nav className='bottombar'>
-        <div className='bottombar_container'>{renderLinks()}</div>
+      <nav className='bottombar md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700'>
+        <div className='bottombar_container gap-1 p-1 m-1'>{renderLinks()}</div>
       </nav>
     </>
   );
