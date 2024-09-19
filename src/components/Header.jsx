@@ -73,6 +73,7 @@ const Header = () => {
         className={`text-gray-600 hover:text-primary-500 transition-colors ${
           mobile ? 'block py-2 px-4 text-base' : ''
         }`}
+        onClick={mobile ? () => setMobileMenuOpen(false) : undefined}
       >
         Explore
       </Link>
@@ -81,6 +82,7 @@ const Header = () => {
         className={`text-gray-600 hover:text-primary-500 transition-colors ${
           mobile ? 'block py-2 px-4 text-base' : ''
         }`}
+        onClick={mobile ? () => setMobileMenuOpen(false) : undefined}
       >
         About
       </Link>
@@ -105,10 +107,14 @@ const Header = () => {
 
   return (
     <nav className='bg-white shadow-sm'>
-      <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
+      <div className='px-4 sm:px-6 lg:px-8'>
         <div className='flex justify-between h-16'>
           <div className='flex items-center'>
-            <Link to='/' className='flex-shrink-0 flex items-center'>
+            <Link
+              to='/'
+              className='flex-shrink-0 flex items-center'
+              onClick={() => setMobileMenuOpen(false)}
+            >
               <img src='/logo_black.png' alt='logo' className='h-8 w-auto' />
               <span className='ml-2 text-xl font-bold text-gray-900'>
                 KickZone
@@ -209,6 +215,7 @@ const Header = () => {
                 <Link
                   to='/notifications'
                   className='flex items-center text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base'
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <FaBell className='w-5 h-5 mr-3' />
                   Notifications
@@ -216,6 +223,7 @@ const Header = () => {
                 <Link
                   to='/messages'
                   className='flex items-center text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base'
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <FaEnvelope className='w-5 h-5 mr-3' />
                   Messages
@@ -223,6 +231,7 @@ const Header = () => {
                 <Link
                   to='/user/profile'
                   className='flex items-center text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base'
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <FaUser className='w-5 h-5 mr-3' />
                   Profile
@@ -230,6 +239,7 @@ const Header = () => {
                 <Link
                   to='/user/settings'
                   className='flex items-center text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base'
+                  onClick={() => setMobileMenuOpen(false)}
                 >
                   <FaCog className='w-5 h-5 mr-3' />
                   Settings
@@ -250,6 +260,20 @@ const Header = () => {
                 Log In
               </Link>
             )}
+            <Link
+              to='/privacy'
+              className='block text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base font-medium'
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              to='/terms'
+              className='block text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base font-medium'
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Terms
+            </Link>
           </div>
         </div>
       )}
