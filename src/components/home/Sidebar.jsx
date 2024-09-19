@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import {
   FaChartBar,
   FaDumbbell,
-  FaHeart,
   FaHome,
   FaPlus,
   FaSearch,
@@ -14,11 +13,6 @@ import {
 const sidebarLinks = [
   { icon: <FaHome className='w-6 h-6' />, route: '/', label: 'Home' },
   { icon: <FaSearch className='w-6 h-6' />, route: '/search', label: 'Search' },
-  {
-    icon: <FaHeart className='w-6 h-6' />,
-    route: '/activity',
-    label: 'Activity',
-  },
   {
     icon: <FaPlus className='w-6 h-6' />,
     route: '/post/create',
@@ -69,6 +63,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const { currentUser } = useSelector((state) => state.user);
   const [player, setPlayer] = useState({});
+  const currentYear = new Date().getFullYear();
 
   useEffect(() => {
     const getPlayer = async () => {
@@ -99,27 +94,18 @@ const Sidebar = () => {
     isAdminOrCoachOrReferee ||
     (currentUser?.role === 'coach' && isCoachWithTeam);
   const canShowTrainingLink = currentUser?.role === 'coach' || isCoachWithTeam;
-  const canShowActivityLink = ['admin', 'coach', 'player', 'referee'].includes(
-    currentUser?.role
-  );
 
   const visibleLinks = useMemo(() => {
     return sidebarLinks.filter((link) => {
       if (link.route === '/search') return true;
       if (link.route === '/post/create') return canShowCreatePostLink;
       if (link.route === '/training') return canShowTrainingLink;
-      if (link.route === '/activity') return canShowActivityLink;
       if (link.route === '/leagues') return true;
       if (link.route.startsWith('/dashboard/'))
         return link.route === `/dashboard/${currentUser?.role}`;
       return ['/'].includes(link.route);
     });
-  }, [
-    currentUser?.role,
-    canShowCreatePostLink,
-    canShowTrainingLink,
-    canShowActivityLink,
-  ]);
+  }, [currentUser?.role, canShowCreatePostLink, canShowTrainingLink]);
 
   const renderLinks = () =>
     visibleLinks.map((link) => (
@@ -137,9 +123,23 @@ const Sidebar = () => {
           <nav className='space-y-2'>{renderLinks()}</nav>
         </div>
         <footer className='border-t file:border-gray-200 dark:border-gray-700 p-4'>
-          <p className='text-sm text-gray-500 dark:text-gray-400 text-center'>
-            &copy; 2024 KickZone
-          </p>
+          <div className='flex flex-col justify-center items-center'>
+            <div className='flex gap-8 p-4'>
+              <Link
+                to='/terms'
+                className='text-sm hover:text-primary transition-colors'
+              >
+                Terms
+              </Link>
+              <Link
+                to='/privacy'
+                className='text-sm hover:text-primary transition-colors'
+              >
+                Privacy Policy
+              </Link>
+            </div>
+            <div className='text-center'>&copy; {currentYear} KickZone.</div>
+          </div>
         </footer>
       </aside>
       <nav className='bottombar md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700'>
