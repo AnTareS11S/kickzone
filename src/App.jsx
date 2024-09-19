@@ -80,7 +80,7 @@ const App = () => {
           <Route path='/post/:id' element={<PostPage />} />
           <Route path='/post/edit/:id' element={<PostEdit />} />
           <Route path='/post/comment/edit/:id' element={<CommentEdit />} />
-          <Route path='/activity' element={<Activity />} />
+          <Route path='/notifications' element={<Activity />} />
           <Route path='/search' element={<Search />} />
           <Route path='/profile/:id' element={<HomeProfile />} />
           <Route path='/messages' element={<Messenger />} />
