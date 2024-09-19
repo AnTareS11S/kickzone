@@ -124,7 +124,7 @@ const Activity = () => {
     <Card className='max-w-4xl mx-auto'>
       <CardHeader>
         <CardTitle className='text-2xl font-semibold text-gray-800'>
-          Activity
+          Notifications
         </CardTitle>
       </CardHeader>
       <CardContent>
