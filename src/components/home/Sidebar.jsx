@@ -118,11 +118,11 @@ const Sidebar = () => {
 
   return (
     <>
-      <aside className='hidden md:flex flex-col  bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 transition-all duration-300'>
+      <aside className='hidden md:flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 transition-all duration-300'>
         <div className='flex-1 overflow-y-auto py-4 px-3'>
           <nav className='space-y-2'>{renderLinks()}</nav>
         </div>
-        <footer className='border-t file:border-gray-200 dark:border-gray-700 p-4'>
+        <footer className='border-t file:border-gray-200 dark:border-gray-700'>
           <div className='flex flex-col justify-center items-center'>
             <div className='flex gap-8 p-4'>
               <Link
@@ -138,12 +138,12 @@ const Sidebar = () => {
                 Privacy Policy
               </Link>
             </div>
-            <div className='text-center'>&copy; {currentYear} KickZone.</div>
+            <div className='text-center'>&copy; {currentYear} KickZone</div>
           </div>
         </footer>
       </aside>
-      <nav className='bottombar md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700'>
-        <div className='bottombar_container gap-1 p-1 m-1'>{renderLinks()}</div>
+      <nav className='bottombar md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700'>
+        <div className='bottombar_container m-0'>{renderLinks()}</div>
       </nav>
     </>
   );
