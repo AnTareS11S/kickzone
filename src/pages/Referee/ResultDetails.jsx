@@ -43,8 +43,6 @@ const ResultDetails = () => {
       } catch (error) {
         console.error(error);
         setLoading(false);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -59,38 +57,47 @@ const ResultDetails = () => {
     <div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
       <BackButton />
       <Separator className='my-6' />
-      <div className='bg-white rounded-lg shadow-md overflow-hidden'>
-        <div className='px-6 py-8 sm:px-8 sm:py-10'>
+
+      <div className='bg-white rounded-lg shadow-lg overflow-hidden'>
+        <div className='px-8 py-10'>
+          {/* Header: Teams and Score */}
           <div className='flex flex-col sm:flex-row justify-between items-center text-center mb-6'>
-            <div className='flex items-center space-x-4 sm:space-x-20 mb-4 sm:mb-0'>
+            {/* Home Team */}
+            <div className='flex items-center space-x-4 sm:space-x-8 mb-4 sm:mb-0'>
               {match?.homeTeam?.logo && (
                 <img
                   src={match?.homeTeam?.logoUrl}
                   alt={`Logo of ${match?.homeTeam?.name}`}
-                  className='w-16 h-16 rounded-md object-cover'
+                  className='w-20 h-20 rounded-full object-cover border-2 border-gray-300 shadow-sm'
                 />
               )}
-              <span className='text-2xl font-bold text-gray-800'>
+              <span className='text-2xl font-semibold text-gray-800'>
                 {match?.homeTeam?.name}
               </span>
             </div>
-            <div className='text-4xl font-bold text-gray-800'>
+
+            {/* Score */}
+            <div className='text-5xl font-bold text-primary-600'>
               {result?.homeTeamScore} : {result?.awayTeamScore}
             </div>
-            <div className='flex items-center space-x-4 sm:space-x-20'>
-              <span className='text-2xl font-bold text-gray-800'>
+
+            {/* Away Team */}
+            <div className='flex items-center space-x-4 sm:space-x-8'>
+              <span className='text-2xl font-semibold text-gray-800'>
                 {match?.awayTeam?.name}
               </span>
               {match?.awayTeam?.logo && (
                 <img
                   src={match?.awayTeam?.logoUrl}
                   alt={`Logo of ${match?.awayTeam?.name}`}
-                  className='w-16 h-16 rounded-md object-cover'
+                  className='w-20 h-20 rounded-full object-cover border-2 border-gray-300 shadow-sm'
                 />
               )}
             </div>
           </div>
-          <p className='text-gray-600 text-center mb-8'>
+
+          {/* Date and Time */}
+          <p className='text-gray-600 text-center text-lg mb-10'>
             {new Date(match?.startDate).toLocaleString('en-US', {
               day: 'numeric',
               month: 'long',
@@ -99,160 +106,142 @@ const ResultDetails = () => {
               minute: 'numeric',
             })}
           </p>
-          <div>
-            <h3 className='text-xl font-semibold text-gray-800 mb-4'>
-              Main Referee
-            </h3>
-            <Link
-              to={`/referee/${match?.mainReferee?._id}`}
-              className='text-gray-800 hover:text-primary-500 transition-colors'
-            >
-              {match?.mainReferee?.name} {match?.mainReferee?.surname}
-            </Link>
 
-            <div className='flex items-center mt-4'>
-              <h3 className='text-xl font-semibold text-gray-800 mr-4'>
-                Assistant Referees
-              </h3>
+          {/* Referee Information */}
+          <div className='bg-gray-50 p-6 rounded-lg shadow-sm mb-8'>
+            <h3 className='text-xl font-semibold text-gray-800 mb-4'>
+              Match Officials
+            </h3>
+            <div className='grid grid-cols-1 sm:grid-cols-3 gap-6'>
+              {/* Main Referee */}
               <div>
-                <div className='flex items-center'>
-                  <h4 className='text-gray-800 mr-2'>1st:</h4>
-                  <Link
-                    to={`/referee/${match?.firstAssistantReferee?._id}`}
-                    className='text-gray-800 hover:text-primary-500 transition-colors'
-                  >
-                    {match?.firstAssistantReferee?.name}
-                    {match?.firstAssistantReferee?.surname}
-                  </Link>
-                </div>
-                <div className='flex items-center mt-2'>
-                  <h4 className='text-gray-800 mr-2'>2nd:</h4>
-                  <Link
-                    to={`/referee/${match?.secondAssistantReferee?._id}`}
-                    className='text-gray-800 hover:text-primary-500 transition-colors'
-                  >
-                    {match?.secondAssistantReferee?.name}
-                    {match?.secondAssistantReferee?.surname}
-                  </Link>
-                </div>
+                <h4 className='font-medium text-gray-700'>Main Referee:</h4>
+                <Link
+                  to={`/referee/${match?.mainReferee?._id}`}
+                  className='text-primary-500 hover:underline'
+                >
+                  {match?.mainReferee?.name} {match?.mainReferee?.surname}
+                </Link>
+              </div>
+
+              {/* First Assistant */}
+              <div>
+                <h4 className='font-medium text-gray-700'>1st Assistant:</h4>
+                <Link
+                  to={`/referee/${match?.firstAssistantReferee?._id}`}
+                  className='text-primary-500 hover:underline'
+                >
+                  {match?.firstAssistantReferee?.name}{' '}
+                  {match?.firstAssistantReferee?.surname}
+                </Link>
+              </div>
+
+              {/* Second Assistant */}
+              <div>
+                <h4 className='font-medium text-gray-700'>2nd Assistant:</h4>
+                <Link
+                  to={`/referee/${match?.secondAssistantReferee?._id}`}
+                  className='text-primary-500 hover:underline'
+                >
+                  {match?.secondAssistantReferee?.name}{' '}
+                  {match?.secondAssistantReferee?.surname}
+                </Link>
               </div>
             </div>
           </div>
-          <Separator className='mb-8' />
-          <div className='flex flex-col sm:flex-row justify-center'>
+
+          {/* Teams Players Stats */}
+          <div className='flex flex-col sm:flex-row gap-8'>
             {/* Home Team Players */}
-            <div className='w-full sm:w-1/2 mb-8 sm:mb-0'>
+            <div className='flex-1'>
               <h3 className='text-xl font-semibold text-gray-800 mb-4'>
                 Home Team Players
               </h3>
-              <ul>
+              <ul className='space-y-4'>
                 {homeTeamPlayersStats?.map((player) => (
-                  <li key={player._id} className='flex items-center mb-4'>
-                    <div className='flex items-center'>
-                      {player?.matchStats
-                        .map((stat) =>
-                          Array.from({ length: stat.goals }, (_, i) => i)
-                        )
-                        .flat()
-                        .map((index) => (
-                          <img
-                            key={index}
-                            src='/football.png'
-                            alt='football'
-                            className='w-5 h-5 mr-2'
-                          />
-                        ))}
-                      {player?.matchStats
-                        .map((stat) =>
-                          Array.from({ length: stat.yellowCards }, (_, i) => i)
-                        )
-                        .flat()
-                        .map((index) => (
-                          <img
-                            key={index}
-                            src='/yellow-card.png'
-                            alt='yellowCard'
-                            className='w-5 h-5 mr-2'
-                          />
-                        ))}
-                      {player?.matchStats
-                        .map((stat) =>
-                          Array.from({ length: stat.redCards }, (_, i) => i)
-                        )
-                        .flat()
-                        .map((index) => (
-                          <img
-                            key={index}
-                            src='/red-card.png'
-                            alt='redCards'
-                            className='w-5 h-5 mr-2'
-                          />
-                        ))}
+                  <li key={player._id} className='flex items-center space-x-4'>
+                    <div className='flex space-x-2'>
+                      {player?.matchStats.map((stat, index) => (
+                        <div key={index} className='flex items-center'>
+                          {Array.from({ length: stat.goals }).map((_, i) => (
+                            <img
+                              key={i}
+                              src='/football.png'
+                              alt='Goal'
+                              className='w-6 h-6'
+                            />
+                          ))}
+                          {Array.from({ length: stat.yellowCards }).map(
+                            (_, i) => (
+                              <img
+                                key={i}
+                                src='/yellow-card.png'
+                                alt='Yellow Card'
+                                className='w-6 h-6'
+                              />
+                            )
+                          )}
+                          {Array.from({ length: stat.redCards }).map((_, i) => (
+                            <img
+                              key={i}
+                              src='/red-card.png'
+                              alt='Red Card'
+                              className='w-6 h-6'
+                            />
+                          ))}
+                        </div>
+                      ))}
                     </div>
-                    <span className='text-gray-800 ml-4'>
-                      {player.player?.name} {player?.player?.surname}
+                    <span className='text-gray-800'>
+                      {player?.player?.name} {player?.player?.surname}
                     </span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            {/* Separator */}
-            <div className='hidden sm:block w-1/12'>
-              <Separator orientation='vertical' className='h-full' />
-            </div>
-
             {/* Away Team Players */}
-            <div className='w-full sm:w-1/2'>
+            <div className='flex-1'>
               <h3 className='text-xl font-semibold text-gray-800 mb-4'>
                 Away Team Players
               </h3>
-              <ul>
-                {awayTeamPlayersStats.map((player) => (
-                  <li key={player._id} className='flex items-center mb-4'>
-                    <div className='flex items-center'>
-                      {player?.matchStats
-                        .map((stat) =>
-                          Array.from({ length: stat.goals }, (_, i) => i)
-                        )
-                        .flat()
-                        .map((index) => (
-                          <img
-                            key={index}
-                            src='/football.png'
-                            alt='football'
-                            className='w-5 h-5 mr-2'
-                          />
-                        ))}
-                      {player?.matchStats
-                        .map((stat) =>
-                          Array.from({ length: stat.yellowCards }, (_, i) => i)
-                        )
-                        .flat()
-                        .map((index) => (
-                          <img
-                            key={index}
-                            src='/yellow-card.png'
-                            alt='yellowCard'
-                            className='w-5 h-5 mr-2'
-                          />
-                        ))}
-                      {player?.matchStats
-                        .map((stat) =>
-                          Array.from({ length: stat.redCards }, (_, i) => i)
-                        )
-                        .flat()
-                        .map((index) => (
-                          <img
-                            key={index}
-                            src='/red-card.png'
-                            alt='redCards'
-                            className='w-5 h-5 mr-2'
-                          />
-                        ))}
+              <ul className='space-y-4'>
+                {awayTeamPlayersStats?.map((player) => (
+                  <li key={player._id} className='flex items-center space-x-4'>
+                    <div className='flex space-x-2'>
+                      {player?.matchStats.map((stat, index) => (
+                        <div key={index} className='flex items-center'>
+                          {Array.from({ length: stat.goals }).map((_, i) => (
+                            <img
+                              key={i}
+                              src='/football.png'
+                              alt='Goal'
+                              className='w-6 h-6'
+                            />
+                          ))}
+                          {Array.from({ length: stat.yellowCards }).map(
+                            (_, i) => (
+                              <img
+                                key={i}
+                                src='/yellow-card.png'
+                                alt='Yellow Card'
+                                className='w-6 h-6'
+                              />
+                            )
+                          )}
+                          {Array.from({ length: stat.redCards }).map((_, i) => (
+                            <img
+                              key={i}
+                              src='/red-card.png'
+                              alt='Red Card'
+                              className='w-6 h-6'
+                            />
+                          ))}
+                        </div>
+                      ))}
                     </div>
-                    <span className='text-gray-800 ml-4'>
-                      {player.player?.name} {player?.player?.surname}
+                    <span className='text-gray-800'>
+                      {player?.player?.name} {player?.player?.surname}
                     </span>
                   </li>
                 ))}
