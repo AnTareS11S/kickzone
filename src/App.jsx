@@ -67,6 +67,7 @@ import PrivacyManage from './pages/Privacy/PrivacyManage';
 import PrivacyPage from './pages/Privacy/PrivacyPage';
 import AboutManage from './pages/About/AboutManage';
 import AboutPage from './pages/About/AboutPage';
+import ExplorePage from './pages/Explore/ExplorePage';
 
 const App = () => {
   return (
@@ -98,6 +99,7 @@ const App = () => {
           <Route path='/privacy' element={<PrivacyPage />} />
           <Route path='/contact' element={<ContactPage />} />
           <Route path='/about' element={<AboutPage />} />
+          <Route path='/explore' element={<ExplorePage />} />
 
           <Route path='/dashboard/referee' element={<RefereeRoute />}>
             <Route path='/dashboard/referee' element={<LeagueScheduleCard />} />
