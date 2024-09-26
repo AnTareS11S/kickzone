@@ -135,7 +135,13 @@ const Sidebar = () => {
                 to='/privacy'
                 className='text-sm hover:text-primary transition-colors'
               >
-                Privacy Policy
+                Privacy
+              </Link>
+              <Link
+                to='/contact'
+                className='text-sm hover:text-primary transition-colors'
+              >
+                Contact
               </Link>
             </div>
             <div className='text-center'>&copy; {currentYear} KickZone</div>

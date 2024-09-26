@@ -28,6 +28,11 @@ import {
   FaCog,
   FaSignOutAlt,
 } from 'react-icons/fa';
+import {
+  MdPrivacyTip,
+  MdOutlineMenuBook,
+  MdOutlineConnectWithoutContact,
+} from 'react-icons/md';
 
 const Header = () => {
   const { user, currentUser } = useFetchUserById();
@@ -261,18 +266,28 @@ const Header = () => {
               </Link>
             )}
             <Link
-              to='/privacy'
-              className='block text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base font-medium'
+              to='/terms'
+              className='flex items-center text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base'
               onClick={() => setMobileMenuOpen(false)}
             >
-              Privacy Policy
+              <MdOutlineMenuBook className='w-5 h-5 mr-3' />
+              Terms
             </Link>
             <Link
-              to='/terms'
-              className='block text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base font-medium'
+              to='/privacy'
+              className='flex items-center text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base'
               onClick={() => setMobileMenuOpen(false)}
             >
-              Terms
+              <MdPrivacyTip className='w-5 h-5 mr-3' />
+              Privacy
+            </Link>
+            <Link
+              to='/contact'
+              className='flex items-center text-gray-600 hover:text-primary-500 transition-colors py-2 px-4 text-base'
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <MdOutlineConnectWithoutContact className='w-5 h-5 mr-3' />
+              Contact
             </Link>
           </div>
         </div>
