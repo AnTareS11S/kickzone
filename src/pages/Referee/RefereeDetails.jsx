@@ -115,7 +115,7 @@ const LastMatch = ({ lastMatchId, lastMatchName }) => (
   <div className='flex items-center space-x-3'>
     <FaCalendar className='w-6 h-6 text-gray-500' />
     <div>
-      <p className='text-sm text-gray-500'>Last Match as Main Referee</p>
+      <p className='text-sm text-gray-500'>Last Match as Referee</p>
       {lastMatchId ? (
         <Link
           to={`/results/${lastMatchId}`}
