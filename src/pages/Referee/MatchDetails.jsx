@@ -44,21 +44,26 @@ const MatchDetails = () => {
     try {
       const res = await fetch(`/api/referee/download-match-details-pdf/${id}`);
 
+      // Check if the response is OK
       if (!res.ok) {
         throw new Error(`Failed to download PDF. Status: ${res.status}`);
       }
 
+      // Read the response as a blob
       const blob = await res.blob();
+      // Sanitize the file name
       const fileName = sanitizeFileName(name);
+      // Create a URL for the blob
       const url = window.URL.createObjectURL(blob);
-
+      // Create a link element and click it to download the PDF
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `${fileName}.pdf`);
       document.body.appendChild(link);
       link.click();
+      // Remove the link element
       document.body.removeChild(link);
-
+      // Revoke the URL
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading PDF:', error);
