@@ -68,6 +68,7 @@ import PrivacyPage from './pages/Privacy/PrivacyPage';
 import AboutManage from './pages/About/AboutManage';
 import AboutPage from './pages/About/AboutPage';
 import ExplorePage from './pages/Explore/ExplorePage';
+import MatchOverview from './pages/Match/MatchOverview';
 
 const App = () => {
   return (
@@ -95,6 +96,7 @@ const App = () => {
           <Route path='/training' element={<TrainingPage />} />
           <Route path='/training/:id' element={<TrainingDetails />} />
           <Route path='/results/:id' element={<ResultDetails />} />
+          <Route path='/match/:id' element={<MatchOverview />} />
           <Route path='/terms' element={<TermsPage />} />
           <Route path='/privacy' element={<PrivacyPage />} />
           <Route path='/contact' element={<ContactPage />} />
