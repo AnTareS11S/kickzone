@@ -1,111 +1,133 @@
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '../../components/ui/card';
-import Spinner from '../../components/Spinner';
+import React from 'react';
 import { Link, useParams } from 'react-router-dom';
-import BackButton from '../../components/BackButton';
+import { Card, CardContent, CardHeader } from '../../components/ui/card';
 import { Separator } from '../../components/ui/separator';
+import Spinner from '../../components/Spinner';
+import BackButton from '../../components/BackButton';
 import { useFetchRefereeById } from '../../components/hooks/useFetchRefereeById';
-import { FaFlag, FaCity, FaBirthdayCake, FaCalendar } from 'react-icons/fa';
-import { TbRectangleVerticalFilled, TbBuildingStadium } from 'react-icons/tb';
 import { useFetchRefereeStatsById } from '../../components/hooks/useFetchRefereeStatsById';
+import { FaBirthdayCake, FaFlag, FaCity, FaCalendar } from 'react-icons/fa';
+import { MdSportsSoccer } from 'react-icons/md';
+import { TbRectangleVerticalFilled as RefereeCard } from 'react-icons/tb';
 
 const RefereeDetails = () => {
   const refereeId = useParams().id;
   const { referee, loading } = useFetchRefereeById(refereeId);
-  const { refereeStats, loading: load } = useFetchRefereeStatsById(refereeId);
+  const { refereeStats, loading: statsLoading } =
+    useFetchRefereeStatsById(refereeId);
 
-  if (loading || load) {
+  if (loading || statsLoading) {
     return <Spinner />;
   }
 
   return (
-    <article className='py-8'>
+    <div className='container mx-auto px-4 py-8'>
       <BackButton />
-      <Separator />
-      <Card className='bg-white shadow-lg rounded-lg'>
-        <CardHeader className='bg-gray-100 p-6 flex flex-col md:flex-row items-center'>
-          <div className='w-40 h-40 rounded-full mb-4 md:mb-0 md:mr-6'>
-            <img
-              src={
-                referee?.imageUrl ||
-                'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-              }
-              alt={`Photo of ${referee?.name}`}
-              className='object-cover w-full h-full'
-            />
-          </div>
-          <div>
-            <CardTitle className='text-3xl font-bold mb-2'>
-              {referee?.name + ' ' + referee?.surname}
-            </CardTitle>
-            <CardDescription className='text-gray-600'>
-              {referee?.bio}
-            </CardDescription>
+      <Separator className='my-6' />
+      <Card className='bg-white shadow-xl rounded-lg overflow-hidden'>
+        <CardHeader className='bg-gradient-to-r from-blue-500 to-purple-600 p-6'>
+          <div className='flex flex-col md:flex-row items-center'>
+            <div className='w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white shadow-lg mb-4 md:mb-0 md:mr-6'>
+              <img
+                src={
+                  referee?.imageUrl ||
+                  'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                }
+                alt={`Photo of ${referee?.name}`}
+                className='object-cover w-full h-full'
+              />
+            </div>
+            <div className='text-center md:text-left'>
+              <h1 className='text-3xl md:text-4xl font-bold text-white mb-2'>
+                {referee?.name} {referee?.surname}
+              </h1>
+              <p className='text-lg text-blue-100'>{referee?.bio}</p>
+            </div>
           </div>
         </CardHeader>
-        <CardContent className='p-6 grid grid-cols-1 md:grid-cols-2 gap-8'>
-          <div>
-            <h3 className='text-xl font-semibold mb-4'>Personal Information</h3>
-            <div className='flex items-center mb-2'>
-              <FaBirthdayCake className='h-5 w-5 text-gray-500 mr-2' />
-              <p className='text-gray-700'>
-                {referee.birthDate?.toString()?.slice(0, 10)}
-              </p>
+        <CardContent className='p-6'>
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-8'>
+            <div className='space-y-4'>
+              <h2 className='text-2xl font-semibold text-gray-800 mb-4'>
+                Personal Information
+              </h2>
+              <InfoItem
+                icon={FaBirthdayCake}
+                label='Birth Date'
+                value={referee.birthDate?.toString()?.slice(0, 10)}
+              />
+              <InfoItem
+                icon={FaFlag}
+                label='Nationality'
+                value={referee?.nationality?.name}
+              />
+              <InfoItem icon={FaCity} label='City' value={referee?.city} />
             </div>
-            <div className='flex items-center mb-2'>
-              <FaFlag className='h-5 w-5 text-gray-500 mr-2' />
-              <p className='text-gray-700'>{referee?.nationality?.name}</p>
-            </div>
-            <div className='flex items-center'>
-              <FaCity className='h-5 w-5 text-gray-500 mr-2' />
-              <p className='text-gray-700'>{referee?.city}</p>
-            </div>
-          </div>
-          <div>
-            <h3 className='text-xl font-semibold mb-4'>Referee Statistics</h3>
-            <div className='flex items-center mb-2'>
-              <TbRectangleVerticalFilled className='h-5 w-5 text-yellow-500 mr-2' />
-              <p className='text-gray-700'>
-                Yellow Cards: {refereeStats?.yellowCards || 0}
-              </p>
-            </div>
-            <div className='flex items-center mb-2'>
-              <TbRectangleVerticalFilled className='h-5 w-5 text-red-500 mr-2' />
-              <p className='text-gray-700'>
-                Red Cards: {refereeStats?.redCards || 0}
-              </p>
-            </div>
-            <div className='flex items-center mb-2'>
-              <TbBuildingStadium className='h-5 w-5 mr-2' />
-              <p className='text-gray-700'>
-                Matches: {refereeStats?.matches || 0}
-              </p>
-            </div>
-            <div className='flex items-center'>
-              <FaCalendar className='h-5 w-5 text-gray-500 mr-2' />
-              {refereeStats?.lastMatchId ? (
-                <Link to={`/results/${refereeStats?.lastMatchId}`}>
-                  <p className='text-gray-700 hover:text-primary-500'>
-                    Last Match as Main Referee:{' '}
-                    {refereeStats.lastMatchId
-                      ? refereeStats.lastMatchName
-                      : 'N/A'}
-                  </p>
-                </Link>
-              ) : (
-                <p className='text-gray-700'>Last Match as Main Referee: N/A</p>
-              )}
+            <div className='space-y-4'>
+              <h2 className='text-2xl font-semibold text-gray-800 mb-4'>
+                Referee Statistics
+              </h2>
+              <InfoItem
+                icon={RefereeCard}
+                label='Yellow Cards'
+                value={refereeStats?.yellowCards || 0}
+                iconColor='text-yellow-500'
+              />
+              <InfoItem
+                icon={RefereeCard}
+                label='Red Cards'
+                value={refereeStats?.redCards || 0}
+                iconColor='text-red-500'
+              />
+              <InfoItem
+                icon={MdSportsSoccer}
+                label='Matches'
+                value={refereeStats?.matches || 0}
+              />
+              <LastMatch
+                lastMatchId={refereeStats?.lastMatchId}
+                lastMatchName={refereeStats?.lastMatchName}
+              />
             </div>
           </div>
         </CardContent>
       </Card>
-    </article>
+    </div>
   );
 };
+
+const InfoItem = ({
+  icon: Icon,
+  label,
+  value,
+  iconColor = 'text-gray-500',
+}) => (
+  <div className='flex items-center space-x-3'>
+    <Icon className={`w-6 h-6 ${iconColor}`} />
+    <div>
+      <p className='text-sm text-gray-500'>{label}</p>
+      <p className='text-lg font-medium text-gray-900'>{value}</p>
+    </div>
+  </div>
+);
+
+const LastMatch = ({ lastMatchId, lastMatchName }) => (
+  <div className='flex items-center space-x-3'>
+    <FaCalendar className='w-6 h-6 text-gray-500' />
+    <div>
+      <p className='text-sm text-gray-500'>Last Match as Main Referee</p>
+      {lastMatchId ? (
+        <Link
+          to={`/results/${lastMatchId}`}
+          className='text-lg font-medium text-blue-600 hover:text-blue-800'
+        >
+          {lastMatchName}
+        </Link>
+      ) : (
+        <p className='text-lg font-medium text-gray-900'>N/A</p>
+      )}
+    </div>
+  </div>
+);
 
 export default RefereeDetails;
