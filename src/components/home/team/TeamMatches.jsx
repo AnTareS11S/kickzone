@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import Spinner from '../../Spinner';
 import { useFetchSeasons } from '../../hooks/useFetchSeasons';
 import {
@@ -88,8 +88,9 @@ const TeamMatches = () => {
       {filteredMatches.length ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
           {filteredMatches.map((match) => (
-            <div
+            <Link
               key={match._id}
+              to={`/match/${match._id}`}
               className='bg-white rounded-lg shadow-md overflow-hidden transition-transform transform hover:scale-105'
             >
               <div className='p-6'>
@@ -110,7 +111,7 @@ const TeamMatches = () => {
                   Opponent: {match.opponent.name}
                 </p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (
