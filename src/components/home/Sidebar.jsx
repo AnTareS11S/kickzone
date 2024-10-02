@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, memo } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
@@ -46,7 +46,7 @@ const sidebarLinks = [
 ];
 
 // eslint-disable-next-line react/display-name
-const SidebarLink = React.memo(({ link, isActive }) => (
+const SidebarLink = memo(({ link, isActive }) => (
   <Link
     to={link.route}
     className={`flex items-center p-2 rounded-lg transition-all duration-300 ${
