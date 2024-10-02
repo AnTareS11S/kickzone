@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { cloneElement, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -248,7 +248,7 @@ const TeamDetails = () => {
                     className='flex items-center justify-center space-x-2 text-purple-600 font-semibold cursor-pointer transition-all duration-200 ease-in-out hover:bg-purple-600 hover:text-white px-4 py-2 rounded-md'
                   >
                     <motion.div>
-                      {React.cloneElement(tab.icon, { className: 'w-6 h-6' })}
+                      {cloneElement(tab.icon, { className: 'w-6 h-6' })}
                     </motion.div>
                     <span className='hidden sm:inline'>{tab.label}</span>
                   </TabsTrigger>
