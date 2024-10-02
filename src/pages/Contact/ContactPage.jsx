@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Card,
   CardContent,
@@ -18,7 +17,8 @@ const ContactPage = () => {
       <CardHeader>
         <CardTitle>Contact Us</CardTitle>
         <CardDescription>
-          Fill out the form below and we'll get back to you as soon as possible.
+          Fill out the form below and we&apos;ll get back to you as soon as
+          possible.
         </CardDescription>
       </CardHeader>
       <CardContent>

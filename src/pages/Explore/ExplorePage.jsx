@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Card,
   CardContent,
@@ -68,7 +68,7 @@ const ExplorePage = () => {
           <CardHeader className='bg-gradient-to-r from-primary-500 to-purple-500 text-white'>
             <CardTitle className='flex items-center text-2xl'>
               <span className='mr-2'>&#128197;</span>
-              Today's Matches
+              Today&apos;s Matches
             </CardTitle>
           </CardHeader>
           <CardContent className='p-4'>

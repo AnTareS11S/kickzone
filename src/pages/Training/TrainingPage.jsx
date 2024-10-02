@@ -1,4 +1,3 @@
-import React from 'react';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import { useFetchPlayerByUserId } from '../../components/hooks/useFetchPlayerByUserId';
 import { useFetchTeamById } from '../../components/hooks/useFetchTeamById';

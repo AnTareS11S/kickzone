@@ -45,6 +45,7 @@ const sidebarLinks = [
   },
 ];
 
+// eslint-disable-next-line react/display-name
 const SidebarLink = React.memo(({ link, isActive }) => (
   <Link
     to={link.route}
