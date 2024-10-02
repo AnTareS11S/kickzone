@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiSearch, FiUser } from 'react-icons/fi';
 import { Input } from '../../ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -33,6 +33,7 @@ const ChatUsers = ({ currentId, setCurrentChat, setIsConversationOpen }) => {
 
   useEffect(() => {
     setOnlineUsers(allUsers.filter((u) => onlineUsers.includes(u._id)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleClick = async (user) => {
