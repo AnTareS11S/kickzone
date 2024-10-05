@@ -24,6 +24,7 @@ const AdminDashboard = () => {
         <AdminCard title='About' linkTo='/dashboard/admin/about' />
         <AdminCard title='Terms' linkTo='/dashboard/admin/terms' />
         <AdminCard title='Privacy' linkTo='/dashboard/admin/privacy' />
+        <AdminCard title='Contact' linkTo='/dashboard/admin/contact' />
         <AdminCard title='FAQ' linkTo='/dashboard/admin/faq' />
       </div>
     </div>
