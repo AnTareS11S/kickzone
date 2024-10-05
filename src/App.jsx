@@ -69,6 +69,8 @@ import AboutManage from './pages/About/AboutManage';
 import AboutPage from './pages/About/AboutPage';
 import ExplorePage from './pages/Explore/ExplorePage';
 import MatchOverview from './pages/Match/MatchOverview';
+import FAQManage from './pages/FAQ/FAQManage';
+import ContactManage from './pages/Contact/ContactManage';
 
 const App = () => {
   return (
@@ -165,6 +167,11 @@ const App = () => {
               element={<PrivacyManage />}
             />
             <Route path='/dashboard/admin/about' element={<AboutManage />} />
+            <Route
+              path='/dashboard/admin/contact'
+              element={<ContactManage />}
+            />
+            <Route path='/dashboard/admin/faq' element={<FAQManage />} />
           </Route>
 
           <Route path='/dashboard/coach' element={<CoachRoute />}>
