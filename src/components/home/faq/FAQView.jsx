@@ -3,6 +3,7 @@ import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 const FAQView = () => {
   const [faqs, setFaqs] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(null); // Active FAQ index
 
   useEffect(() => {
     const fetchFaqs = async () => {
@@ -19,25 +20,35 @@ const FAQView = () => {
     fetchFaqs();
   }, []);
 
+  const handleToggle = (index) => {
+    setActiveIndex(activeIndex === index ? null : index); // Toggle open FAQ
+  };
+
   return (
     <div className='container mx-auto px-4 py-8'>
       <div className='space-y-4'>
-        {faqs.map((faq, index) => (
-          <FAQItem key={index} question={faq.question} answer={faq.answer} />
-        ))}
+        {faqs
+          .filter((faq) => faq.active)
+          .map((faq, index) => (
+            <FAQItem
+              key={index}
+              question={faq.question}
+              answer={faq.answer}
+              isOpen={activeIndex === index}
+              onToggle={() => handleToggle(index)}
+            />
+          ))}
       </div>
     </div>
   );
 };
 
-const FAQItem = ({ question, answer }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const FAQItem = ({ question, answer, isOpen, onToggle }) => {
   return (
     <div className='border-b border-gray-200 py-4'>
       <button
         className='flex w-full items-center justify-between text-left'
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={onToggle}
       >
         <h3 className='text-lg font-semibold text-gray-900'>{question}</h3>
         {isOpen ? (
