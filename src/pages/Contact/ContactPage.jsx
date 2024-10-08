@@ -7,6 +7,7 @@ import {
 import FAQView from '../../components/home/faq/FAQView';
 import { FaHome, FaMailBulk, FaPhone, FaUser } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
+import Spinner from '../../components/Spinner';
 
 const ContactInfo = ({ icon: Icon, label, value }) => (
   <div className='flex items-center space-x-4 p-4 bg-gray-50 rounded-lg'>
@@ -20,6 +21,7 @@ const ContactInfo = ({ icon: Icon, label, value }) => (
 
 const ContactPage = () => {
   const [contactInfo, setContactInfo] = useState({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchContactInfo = async () => {
@@ -28,13 +30,17 @@ const ContactPage = () => {
         if (!res.ok) throw new Error('Failed to fetch contact info');
         const data = await res.json();
         setContactInfo(data);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching contact info:', error);
+        setLoading(false);
       }
     };
 
     fetchContactInfo();
   }, []);
+
+  if (loading) return <Spinner />;
 
   return (
     <div className='container mx-auto px-4 py-12'>
