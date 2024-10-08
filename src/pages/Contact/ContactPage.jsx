@@ -1,64 +1,86 @@
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
-import { Label } from '../../components/ui/label';
-import { Input } from '../../components/ui/input';
-import { Textarea } from '../../components/ui/textarea';
-import { Button } from '../../components/ui/button';
+import FAQView from '../../components/home/faq/FAQView';
+import { FaHome, FaMailBulk, FaPhone, FaUser } from 'react-icons/fa';
+import { useEffect, useState } from 'react';
+
+const ContactInfo = ({ icon: Icon, label, value }) => (
+  <div className='flex items-center space-x-4 p-4 bg-gray-50 rounded-lg'>
+    <Icon className='h-6 w-6 text-blue-500' />
+    <div>
+      <p className='text-sm font-medium text-gray-500'>{label}</p>
+      <p className='text-base font-semibold text-gray-900'>{value}</p>
+    </div>
+  </div>
+);
 
 const ContactPage = () => {
+  const [contactInfo, setContactInfo] = useState({});
+
+  useEffect(() => {
+    const fetchContactInfo = async () => {
+      try {
+        const res = await fetch('/api/admin/contactOne');
+        if (!res.ok) throw new Error('Failed to fetch contact info');
+        const data = await res.json();
+        setContactInfo(data);
+      } catch (error) {
+        console.error('Error fetching contact info:', error);
+      }
+    };
+
+    fetchContactInfo();
+  }, []);
+
   return (
-    <Card className='mx-auto max-w-md'>
-      <CardHeader>
-        <CardTitle>Contact Us</CardTitle>
-        <CardDescription>
-          Fill out the form below and we&apos;ll get back to you as soon as
-          possible.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form className='space-y-4'>
-          <div className='grid grid-cols-2 gap-4'>
-            <div className='space-y-2'>
-              <Label htmlFor='first-name'>First Name</Label>
-              <Input id='first-name' placeholder='John' required />
-            </div>
-            <div className='space-y-2'>
-              <Label htmlFor='last-name'>Last Name</Label>
-              <Input id='last-name' placeholder='Doe' required />
-            </div>
-          </div>
-          <div className='space-y-2'>
-            <Label htmlFor='email'>Email</Label>
-            <Input
-              id='email'
-              type='email'
-              placeholder='m@example.com'
-              required
+    <div className='container mx-auto px-4 py-12'>
+      <div className='space-y-12'>
+        <Card>
+          <CardHeader>
+            <CardTitle className='text-2xl font-bold'>
+              Contact Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent className='space-y-4'>
+            <ContactInfo
+              icon={FaUser}
+              label='Contact Person'
+              value={contactInfo.name + ' ' + contactInfo.lastName}
             />
-          </div>
-          <div className='space-y-2'>
-            <Label htmlFor='message'>Message</Label>
-            <Textarea
-              id='message'
-              placeholder='How can we help you?'
-              className='min-h-[100px]'
-              required
+            <ContactInfo
+              icon={FaMailBulk}
+              label='Email Address'
+              value={contactInfo.email}
             />
-          </div>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <Button type='submit' className='w-full'>
-          Submit
-        </Button>
-      </CardFooter>
-    </Card>
+            <ContactInfo
+              icon={FaPhone}
+              label='Phone Number'
+              value={contactInfo.phone}
+            />
+            <ContactInfo
+              icon={FaHome}
+              label='Office Location'
+              value={contactInfo.address}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className='text-2xl font-bold'>
+              Frequently Asked Questions
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <FAQView />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
   );
 };
 
