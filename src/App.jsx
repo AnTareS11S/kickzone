@@ -9,7 +9,7 @@ import AdminRoute from './pages/AdminRoute';
 import UserManage from './pages/User/UserManage';
 import RefereeProfile from './pages/Referee/RefereeProfile';
 import RefereeRoute from './pages/Referee/RefereeRoute';
-import CoachProfile from './pages/CoachProfile';
+import CoachProfile from './pages/Coach/CoachProfile';
 import TeamManage from './pages/Team/TeamManage';
 import LeagueManage from './pages/League/LeagueManage';
 import Layout from './pages/Layout';
