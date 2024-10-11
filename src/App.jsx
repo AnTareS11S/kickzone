@@ -71,6 +71,7 @@ import ExplorePage from './pages/Explore/ExplorePage';
 import MatchOverview from './pages/Match/MatchOverview';
 import FAQManage from './pages/FAQ/FAQManage';
 import ContactManage from './pages/Contact/ContactManage';
+import AdminProfile from './pages/Admin/AdminProfile';
 
 const App = () => {
   return (
@@ -233,7 +234,12 @@ const App = () => {
             <Route path='/user/player' element={<PlayerRoute />}>
               <Route path='/user/player/profile' element={<PlayerProfile />} />
             </Route>
-            <Route path='/user/coach/profile' element={<CoachProfile />} />
+            <Route path='/user/coach' element={<CoachRoute />}>
+              <Route path='/user/coach/profile' element={<CoachProfile />} />
+            </Route>
+            <Route path='/user/admin' element={<AdminRoute />}>
+              <Route path='/user/admin/profile' element={<AdminProfile />} />
+            </Route>
           </Route>
         </Route>
       </Routes>
