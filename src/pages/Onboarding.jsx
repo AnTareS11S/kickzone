@@ -5,15 +5,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '../components/ui/form';
 import FormArea from '../components/FormArea';
 import { useToast } from '../components/ui/use-toast';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { onboardingFormSchema } from '../lib/validation/AuthFormSchema';
 import { Button } from '../components/ui/button';
+import { fetchUserData, updateOnboarding } from '../redux/user/userSlice';
 
 const Onboarding = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const dispatch = useDispatch();
 
   const form = useForm({
     resolver: zodResolver(onboardingFormSchema()),
@@ -36,6 +38,7 @@ const Onboarding = () => {
 
   const onSubmit = async (formData) => {
     try {
+      setLoading(true);
       const userId = currentUser?._id;
       const res = await fetch('/api/auth/complete-onboarding', {
         method: 'POST',
@@ -46,40 +49,41 @@ const Onboarding = () => {
       });
 
       if (res.ok) {
+        dispatch(updateOnboarding(true));
+
+        await dispatch(fetchUserData(userId));
+
         toast({
           title: 'Onboarding completed',
-          description: 'Your profile is now updated',
+          description: 'Your profile has been successfully updated!',
         });
-        setLoading(true);
-        navigate('/');
+        setTimeout(() => navigate('/'), 1500);
       } else {
-        toast({
-          title: 'Error!',
-          description: 'Failed to complete onboarding',
-          variant: 'destructive',
-        });
-        setLoading(false);
+        throw new Error('Failed to complete onboarding');
       }
     } catch (error) {
+      toast({
+        title: 'Error!',
+        description:
+          error.message || 'Failed to complete onboarding. Please try again.',
+        variant: 'destructive',
+      });
       setLoading(false);
     }
   };
 
   return (
-    <div className='flex items-center justify-center min-h-screen px-4 py-8 bg-gray-100 sm:px-6 lg:px-8'>
-      <div className='max-w-xl w-full bg-white rounded-lg shadow-lg p-6'>
+    <div className='flex items-center justify-center min-h-screen bg-gray-100 p-4 sm:p-6 lg:p-8'>
+      <div className='max-w-xl w-full bg-white rounded-xl shadow-lg p-8 transform transition duration-500 hover:shadow-2xl'>
+        <h1 className='text-3xl font-semibold text-center text-gray-800 mb-6'>
+          Update Your Profile
+        </h1>
+        <p className='text-center text-gray-500 mb-8'>
+          Fill in the details below to update your profile and choose your role.
+        </p>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className='mb-6'>
-              <h1 className='text-2xl font-bold text-gray-800'>
-                Update Your Profile
-              </h1>
-              <p className='text-gray-600'>
-                Enter the new details to update your profile and choose your
-                role in the platform
-              </p>
-            </div>
-            <div className='grid gap-4'>
+            <div className='grid gap-6'>
               <div>
                 <FormArea
                   id='username'
@@ -87,7 +91,7 @@ const Onboarding = () => {
                   type='text'
                   form={form}
                   name='username'
-                  placeholder='Enter username'
+                  placeholder='Enter your username'
                 />
               </div>
               <div>
@@ -97,28 +101,30 @@ const Onboarding = () => {
                   type='text'
                   form={form}
                   name='bio'
-                  placeholder='Enter bio'
+                  placeholder='Tell us about yourself'
                 />
               </div>
               <div>
                 <FormArea
                   id='wantedRole'
-                  label='Wanted role'
+                  label='Role'
                   type='select'
                   form={form}
                   items={['Player:1', 'Coach:2', 'Referee:3']}
                   name='wantedRole'
-                  placeholder='Select role'
+                  placeholder='Select your role'
                 />
               </div>
             </div>
-            <div className='flex justify-end mt-6'>
+            <div className='flex justify-end mt-8'>
               <Button
                 type='submit'
-                className='px-4 py-2 text-white bg-primary-500 rounded-md hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-2'
-                aria-label={loading ? 'Loading...' : 'Update Profile'}
+                className={`px-6 py-3 text-white bg-primary-500 rounded-md hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition duration-300 ${
+                  loading ? 'opacity-70 cursor-not-allowed' : ''
+                }`}
+                disabled={loading}
               >
-                {loading ? 'Loading...' : 'Update Profile'}
+                Update Profile
               </Button>
             </div>
           </form>
