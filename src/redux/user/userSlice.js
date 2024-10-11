@@ -1,4 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+export const fetchUserData = createAsyncThunk(
+  'user/fetchUserData',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await fetch(`/api/user/get/${userId}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
 
 const initialState = {
   currentUser: null,
@@ -60,9 +76,24 @@ const userSlice = createSlice({
       state.error = action.payload;
     },
     updateOnboarding(state, action) {
-      if (state.user) {
-        state.user.isOnboardingComplete = action.payload;
+      if (state.currentUser) {
+        state.currentUser.isOnboardingCompleted = action.payload;
       }
+    },
+    extraReducers: (builder) => {
+      builder
+        .addCase(fetchUserData.pending, (state) => {
+          state.loading = true;
+        })
+        .addCase(fetchUserData.fulfilled, (state, action) => {
+          state.currentUser = action.payload;
+          state.loading = false;
+          state.error = null;
+        })
+        .addCase(fetchUserData.rejected, (state, action) => {
+          state.loading = false;
+          state.error = action.payload;
+        });
     },
   },
 });
