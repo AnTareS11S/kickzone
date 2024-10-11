@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-export const useFetchAdminByUserId = (id) => {
+export const useFetchAdminByUserId = (isChanged) => {
+  const { currentUser } = useSelector((state) => state?.user);
   const [admin, setAdmin] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchAdminById = async () => {
       try {
-        if (!id) return;
-        const res = await fetch(`/api/admin/${id}`);
-        const data = await res.json();
-        setAdmin(data);
-        setLoading(false);
+        if (!currentUser?._id || currentUser?.role !== 'admin') return;
+        const res = await fetch(`/api/admin/get/${currentUser?._id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setAdmin(data);
+          setLoading(false);
+        } else {
+          setAdmin([]);
+        }
       } catch (error) {
-        console.log(error);
+        setError(error);
         setLoading(false);
       } finally {
         setLoading(false);
@@ -21,7 +28,7 @@ export const useFetchAdminByUserId = (id) => {
     };
 
     fetchAdminById();
-  }, [id]);
+  }, [currentUser, isChanged]);
 
-  return { admin, loading };
+  return { admin, loading, error };
 };
