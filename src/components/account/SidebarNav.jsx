@@ -30,6 +30,11 @@ const sidebarNavItems = [
     role: 'coach',
   },
   {
+    title: 'Admin Profile',
+    href: '/user/admin/profile',
+    role: 'admin',
+  },
+  {
     title: 'Settings',
     href: '/user/settings',
   },
