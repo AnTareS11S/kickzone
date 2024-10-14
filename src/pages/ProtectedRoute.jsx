@@ -19,11 +19,6 @@ const ProtectedRoute = () => {
     return <Spinner />;
   }
 
-  if (!isAuthenticated) {
-    // If user is not authenticated, redirect to login page
-    return <Navigate to='/sign-in' />;
-  }
-
   if (isAuthenticated && !currentUser.isOnboardingCompleted) {
     // If user is authenticated but hasn't completed onboarding, redirect to onboarding page
     return <Navigate to='/onboarding' />;
