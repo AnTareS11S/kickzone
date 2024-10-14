@@ -14,6 +14,7 @@ import Message from '../components/home/message/Message';
 import { FiSend } from 'react-icons/fi';
 import { io } from 'socket.io-client';
 import ChatUsers from '../components/home/chatUsers/ChatUsers';
+import Spinner from '../components/Spinner';
 
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -24,8 +25,9 @@ const Messenger = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isMessageLoaded, setIsMessageLoaded] = useState(true);
   const [isConversationOpen, setIsConversationOpen] = useState(false);
+  const [isConversationDeleted, setIsConversationDeleted] = useState(false);
   const [error, setError] = useState(null);
   const socket = useRef();
   const scrollRef = useRef();
@@ -58,7 +60,6 @@ const Messenger = () => {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        setIsLoading(true);
         const res = await fetch(`/api/conversations/${accountId}`);
         if (!res.ok) throw new Error('Failed to fetch conversations');
         const data = await res.json();
@@ -66,26 +67,24 @@ const Messenger = () => {
       } catch (error) {
         setError('Error fetching conversations. Please try again.');
         console.error('Error fetching conversations:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
     fetchConversations();
-  }, [currentUser, accountId, isConversationOpen]);
+  }, [currentUser, accountId, isConversationOpen, isConversationDeleted]);
 
   useEffect(() => {
     const getMessages = async () => {
       try {
-        setIsLoading(true);
         if (!currentChat) return;
         const res = await fetch(`/api/messages/${currentChat?._id}`);
         if (!res.ok) throw new Error('Failed to fetch messages');
         const data = await res.json();
         setMessages(data);
+        setIsMessageLoaded(false);
       } catch (error) {
         console.error('Error fetching messages:', error);
       } finally {
-        setIsLoading(false);
+        setIsMessageLoaded(false);
       }
     };
     getMessages();
@@ -149,7 +148,6 @@ const Messenger = () => {
     });
 
     try {
-      setIsLoading(true);
       const res = await fetch('/api/messages/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -162,10 +160,15 @@ const Messenger = () => {
       setNewMessage('');
     } catch (error) {
       console.error('Error sending message:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (isConversationDeleted) {
+      setCurrentChat(null);
+      setCurrentChatUser(null);
+    }
+  }, [isConversationDeleted]);
 
   return (
     <motion.div
@@ -198,7 +201,10 @@ const Messenger = () => {
                     onClick={() => setCurrentChat(conversation)}
                     className='cursor-pointer transition transform hover:scale-105'
                   >
-                    <Conversation conversation={conversation} />
+                    <Conversation
+                      conversation={conversation}
+                      setIsConversationDeleted={setIsConversationDeleted}
+                    />
                   </div>
                 ))}
               </>
@@ -227,7 +233,7 @@ const Messenger = () => {
               <>
                 <img
                   src={currentChatUser?.imageUrl}
-                  alt='User'
+                  alt={currentChatUser?.name}
                   className='w-12 h-12 rounded-full object-cover mr-4'
                 />
                 <div>
@@ -240,44 +246,50 @@ const Messenger = () => {
           </div>
           {currentChat ? (
             <>
-              <div className='flex-grow overflow-y-auto p-4'>
-                {error ? (
-                  <div className='text-red-500 text-center'>{error}</div>
-                ) : (
-                  <>
-                    {messages.map((message) => (
-                      <div ref={scrollRef} key={message._id}>
-                        <Message
-                          message={message}
-                          own={message.sender === accountId}
-                        />
-                      </div>
-                    ))}
-                  </>
-                )}
-              </div>
-              <div className='p-4 bg-gray-100'>
-                <form
-                  onSubmit={handleSendMessage}
-                  className='flex items-center'
-                >
-                  <Input
-                    type='text'
-                    placeholder='Type a message...'
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    className='flex-grow mr-2 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500'
-                  />
-                  <Button
-                    type='submit'
-                    className='bg-primary-500 hover:bg-primary-600 text-white p-3 rounded-lg transition-colors duration-200 flex items-center'
-                    disabled={isLoading || !newMessage.trim()}
-                  >
-                    <FiSend size={18} className='mr-2' />
-                    Send
-                  </Button>
-                </form>
-              </div>
+              {!isMessageLoaded ? (
+                <>
+                  <div className='flex-grow overflow-y-auto p-4'>
+                    {error ? (
+                      <div className='text-red-500 text-center'>{error}</div>
+                    ) : (
+                      <>
+                        {messages.map((message) => (
+                          <div ref={scrollRef} key={message._id}>
+                            <Message
+                              message={message}
+                              own={message.sender === accountId}
+                            />
+                          </div>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                  <div className='p-4 bg-gray-100'>
+                    <form
+                      onSubmit={handleSendMessage}
+                      className='flex items-center'
+                    >
+                      <Input
+                        type='text'
+                        placeholder='Type a message...'
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        className='flex-grow mr-2 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500'
+                      />
+                      <Button
+                        type='submit'
+                        className='bg-primary-500 hover:bg-primary-600 text-white p-3 rounded-lg transition-colors duration-200 flex items-center'
+                        disabled={isMessageLoaded || !newMessage.trim()}
+                      >
+                        <FiSend size={18} className='mr-2' />
+                        Send
+                      </Button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                <Spinner />
+              )}
             </>
           ) : (
             <div className='flex items-center justify-center h-full'>
