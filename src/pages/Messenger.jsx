@@ -27,7 +27,6 @@ const Messenger = () => {
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isMessageLoaded, setIsMessageLoaded] = useState(true);
   const [isConversationOpen, setIsConversationOpen] = useState(false);
-  const [isConversationDeleted, setIsConversationDeleted] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [error, setError] = useState(null);
   const socket = useRef();
@@ -71,7 +70,7 @@ const Messenger = () => {
       }
     };
     fetchConversations();
-  }, [currentUser, accountId, isConversationOpen, isConversationDeleted]);
+  }, [currentUser, accountId, isConversationOpen]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -218,12 +217,13 @@ const Messenger = () => {
     }
   };
 
-  useEffect(() => {
-    if (isConversationDeleted) {
-      setCurrentChat(null);
-      setCurrentChatUser(null);
-    }
-  }, [isConversationDeleted]);
+  const handleConversationDeleted = (deletedConversationId) => {
+    setConversations((prevConversations) =>
+      prevConversations.filter((conv) => conv._id !== deletedConversationId)
+    );
+    setCurrentChat(null);
+    setCurrentChatUser(null);
+  };
 
   return (
     <motion.div
@@ -258,7 +258,7 @@ const Messenger = () => {
                   >
                     <Conversation
                       conversation={conversation}
-                      setIsConversationDeleted={setIsConversationDeleted}
+                      onConversationDeleted={handleConversationDeleted}
                     />
                   </div>
                 ))}
