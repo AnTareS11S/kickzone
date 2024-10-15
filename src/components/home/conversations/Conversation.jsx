@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from '../../ui/alert-dialog';
 
-const Conversation = ({ conversation, setIsConversationDeleted }) => {
+const Conversation = ({ conversation, onConversationDeleted }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -54,7 +54,7 @@ const Conversation = ({ conversation, setIsConversationDeleted }) => {
         title: 'Success',
         description: 'Conversation deleted successfully',
       });
-      setIsConversationDeleted(true);
+      onConversationDeleted(conversation._id);
     } catch (error) {
       console.error('Error deleting conversation:', error);
       toast({
