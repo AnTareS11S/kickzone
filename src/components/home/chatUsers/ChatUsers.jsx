@@ -3,7 +3,12 @@ import { FiSearch, FiUser } from 'react-icons/fi';
 import { Input } from '../../ui/input';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ChatUsers = ({ currentId, setCurrentChat, setIsConversationOpen }) => {
+const ChatUsers = ({
+  currentId,
+  setCurrentChat,
+  onSelectUser,
+  setIsConversationOpen,
+}) => {
   const [allUsers, setAllUsers] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -50,6 +55,10 @@ const ChatUsers = ({ currentId, setCurrentChat, setIsConversationOpen }) => {
     }
   };
 
+  const handleSelectUser = (user) => {
+    onSelectUser(user);
+  };
+
   return (
     <div className='mb-6'>
       <div className='relative mb-4'>
@@ -74,15 +83,18 @@ const ChatUsers = ({ currentId, setCurrentChat, setIsConversationOpen }) => {
             className='bg-white rounded-lg shadow-md overflow-hidden'
           >
             {isLoading ? (
-              <div className='flex justify-center items-center py-4'>
-                <div className='animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900'></div>
+              <div className='flex items-center justify-center p-4 text-center'>
+                <div className='w-6 h-6'>Searching...</div>
               </div>
             ) : allUsers.length > 0 ? (
               allUsers.map((u) => (
                 <motion.div
                   key={u._id}
                   whileHover={{ backgroundColor: '#f3f4f6' }}
-                  onClick={() => handleClick(u)}
+                  onClick={() => {
+                    handleClick(u);
+                    handleSelectUser(u);
+                  }}
                   className='flex items-center p-3 cursor-pointer border-b border-gray-100 last:border-b-0'
                 >
                   {u.imageUrl ? (
