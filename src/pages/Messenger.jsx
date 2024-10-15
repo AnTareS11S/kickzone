@@ -28,6 +28,7 @@ const Messenger = () => {
   const [isMessageLoaded, setIsMessageLoaded] = useState(true);
   const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [isConversationDeleted, setIsConversationDeleted] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
   const [error, setError] = useState(null);
   const socket = useRef();
   const scrollRef = useRef();
@@ -129,17 +130,53 @@ const Messenger = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!newMessage.trim() || !currentChat) return;
+    if (!newMessage.trim()) return;
+
+    let conversationId = currentChat?._id;
+
+    if (!conversationId && selectedUser) {
+      try {
+        const res = await fetch(
+          `/api/conversations/${accountId}/${selectedUser._id}`
+        );
+        if (res.ok) {
+          const existingConversation = await res.json();
+          if (existingConversation) {
+            conversationId = existingConversation._id;
+            setCurrentChat(existingConversation);
+          }
+        }
+
+        if (!conversationId) {
+          const createRes = await fetch('/api/conversations', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              senderId: accountId,
+              receiverId: selectedUser._id,
+            }),
+          });
+          if (!createRes.ok) throw new Error('Failed to create conversation');
+          const newConversation = await createRes.json();
+          setConversations((prev) => [...prev, newConversation]);
+          setCurrentChat(newConversation);
+          conversationId = newConversation._id;
+        }
+      } catch (error) {
+        console.error('Error checking/creating conversation:', error);
+        return;
+      }
+    }
 
     const message = {
-      conversation: currentChat._id,
+      conversation: conversationId,
       sender: accountId,
       text: newMessage,
     };
 
-    const receiverId = currentChat.members.find(
-      (member) => member !== accountId
-    );
+    const receiverId =
+      selectedUser?._id ||
+      currentChat.members.find((member) => member !== accountId);
 
     socket.current.emit('sendMessage', {
       senderId: accountId,
@@ -156,10 +193,28 @@ const Messenger = () => {
 
       if (!res.ok) throw new Error('Failed to send message');
       const data = await res.json();
-      setMessages([...messages, data]);
+      setMessages((prev) => [...prev, data]);
       setNewMessage('');
+      setSelectedUser(null);
     } catch (error) {
       console.error('Error sending message:', error);
+    }
+  };
+
+  const handleSelectConversation = (conversation) => {
+    if (currentChat?._id !== conversation._id) {
+      setCurrentChat(conversation);
+      setSelectedUser(null);
+      setMessages([]);
+      setIsMessageLoaded(true);
+    }
+  };
+  const handleSelectUser = (user) => {
+    if (selectedUser?._id !== user._id) {
+      setSelectedUser(user);
+      setCurrentChat(null);
+      setMessages([]);
+      setIsMessageLoaded(true);
     }
   };
 
@@ -198,7 +253,7 @@ const Messenger = () => {
                 {conversations.map((conversation) => (
                   <div
                     key={conversation._id}
-                    onClick={() => setCurrentChat(conversation)}
+                    onClick={() => handleSelectConversation(conversation)}
                     className='cursor-pointer transition transform hover:scale-105'
                   >
                     <Conversation
@@ -219,6 +274,7 @@ const Messenger = () => {
                 <ChatUsers
                   currentId={accountId}
                   setCurrentChat={setCurrentChat}
+                  onSelectUser={handleSelectUser}
                   setIsConversationOpen={setIsConversationOpen}
                 />
               )}
@@ -229,22 +285,24 @@ const Messenger = () => {
         {/* Messages Section */}
         <div className='lg:col-span-2 bg-white rounded-lg shadow-xl overflow-hidden flex flex-col'>
           <div className='bg-primary-100 p-4 flex items-center border-b border-gray-200'>
-            {currentChatUser && (
+            {(currentChatUser || selectedUser) && (
               <>
                 <img
-                  src={currentChatUser?.imageUrl}
-                  alt={currentChatUser?.name}
+                  src={(selectedUser || currentChatUser)?.imageUrl}
+                  alt={(selectedUser || currentChatUser)?.name}
                   className='w-12 h-12 rounded-full object-cover mr-4'
                 />
                 <div>
                   <h2 className='text-lg font-semibold text-gray-800'>
-                    {currentChatUser?.name + ' ' + currentChatUser?.surname}
+                    {(selectedUser || currentChatUser)?.name +
+                      ' ' +
+                      (selectedUser || currentChatUser)?.surname}
                   </h2>
                 </div>
               </>
             )}
           </div>
-          {currentChat ? (
+          {currentChat || selectedUser ? (
             <>
               {!isMessageLoaded ? (
                 <>
