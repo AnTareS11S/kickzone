@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -40,6 +40,18 @@ const Header = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [newNotifications, setNewNotifications] = useState(0);
+  const [newMessages, setNewMessages] = useState(0);
+
+  const notificationCount = useSelector(
+    (state) => state.notifications?.unreadCount
+  );
+  const messageCount = useSelector((state) => state.messages?.unreadCount);
+
+  useEffect(() => {
+    setNewNotifications(notificationCount);
+    setNewMessages(messageCount);
+  }, [notificationCount, messageCount]);
 
   const handleSignOut = async () => {
     try {
@@ -95,21 +107,30 @@ const Header = () => {
         <>
           <Link
             to='/notifications'
-            className='text-gray-600 hover:text-primary-500 transition-colors'
+            className='text-gray-600 hover:text-primary-500 transition-colors relative'
           >
             <FaBell className='w-5 h-5' />
+            {newNotifications > 0 && (
+              <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center'>
+                {newNotifications}
+              </span>
+            )}
           </Link>
           <Link
             to='/messages'
-            className='text-gray-600 hover:text-primary-500 transition-colors'
+            className='text-gray-600 hover:text-primary-500 transition-colors relative'
           >
             <FaEnvelope className='w-5 h-5' />
+            {newMessages > 0 && (
+              <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center'>
+                {newMessages}
+              </span>
+            )}
           </Link>
         </>
       )}
     </>
   );
-
   return (
     <nav className='bg-white shadow-sm'>
       <div className='px-4 sm:px-6 lg:px-8'>
