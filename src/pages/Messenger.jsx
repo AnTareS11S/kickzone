@@ -25,7 +25,7 @@ const Messenger = () => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  const [isMessageLoaded, setIsMessageLoaded] = useState(true);
+  const [isMessageLoaded, setIsMessageLoaded] = useState(false);
   const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [error, setError] = useState(null);
@@ -75,18 +75,23 @@ const Messenger = () => {
   useEffect(() => {
     const getMessages = async () => {
       try {
-        if (!currentChat) return;
+        if (!currentChat) {
+          setIsMessageLoaded(false);
+          return;
+        }
+        setIsMessageLoaded(true);
         const res = await fetch(`/api/messages/${currentChat?._id}`);
         if (!res.ok) throw new Error('Failed to fetch messages');
         const data = await res.json();
         setMessages(data);
-        setIsMessageLoaded(false);
       } catch (error) {
         console.error('Error fetching messages:', error);
       } finally {
         setIsMessageLoaded(false);
       }
     };
+
+    setMessages([]);
     getMessages();
   }, [currentChat]);
 
@@ -106,24 +111,29 @@ const Messenger = () => {
   }, [currentUser._id]);
 
   useEffect(() => {
-    if (currentChat) {
-      const chatPartnerId = currentChat.members.find(
-        (member) => member === accountId
-      );
+    const fetchChatPartner = async () => {
+      try {
+        if (!currentChat) return; // Don't fetch if there's no current chat
 
-      const fetchChatPartner = async () => {
-        try {
-          const res = await fetch(
-            `/api/user/get-user-info/${chatPartnerId}?conversationId=${currentChat?._id}`
-          );
-          if (!res.ok) throw new Error('Failed to fetch chat partner');
-          const data = await res.json();
-          setCurrentChatUser(data);
-        } catch (error) {
-          console.error('Error fetching chat partner:', error);
-        }
-      };
+        const chatPartnerId = currentChat.members.find(
+          (member) => member === accountId
+        );
+        if (!chatPartnerId) return;
+
+        const res = await fetch(
+          `/api/user/get-user-info/${chatPartnerId}?conversationId=${currentChat?._id}`
+        );
+        if (!res.ok) throw new Error('Failed to fetch chat partner');
+        const data = await res.json();
+        setCurrentChatUser(data);
+      } catch (error) {
+        console.error('Error fetching chat partner:', error);
+      }
+    };
+    if (currentChat && accountId) {
       fetchChatPartner();
+    } else {
+      setCurrentChatUser(null);
     }
   }, [currentChat, accountId]);
 
@@ -131,36 +141,12 @@ const Messenger = () => {
     e.preventDefault();
     if (!newMessage.trim()) return;
 
-    let conversationId = currentChat?._id;
+    let conversation = currentChat;
 
-    if (!conversationId && selectedUser) {
+    if (!conversation && selectedUser) {
       try {
-        const res = await fetch(
-          `/api/conversations/${accountId}/${selectedUser._id}`
-        );
-        if (res.ok) {
-          const existingConversation = await res.json();
-          if (existingConversation) {
-            conversationId = existingConversation._id;
-            setCurrentChat(existingConversation);
-          }
-        }
-
-        if (!conversationId) {
-          const createRes = await fetch('/api/conversations', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              senderId: accountId,
-              receiverId: selectedUser._id,
-            }),
-          });
-          if (!createRes.ok) throw new Error('Failed to create conversation');
-          const newConversation = await createRes.json();
-          setConversations((prev) => [...prev, newConversation]);
-          setCurrentChat(newConversation);
-          conversationId = newConversation._id;
-        }
+        conversation = await getOrCreateConversation(selectedUser._id);
+        setCurrentChat(conversation);
       } catch (error) {
         console.error('Error checking/creating conversation:', error);
         return;
@@ -168,14 +154,14 @@ const Messenger = () => {
     }
 
     const message = {
-      conversation: conversationId,
+      conversation: conversation._id,
       sender: accountId,
       text: newMessage,
     };
 
     const receiverId =
       selectedUser?._id ||
-      currentChat.members.find((member) => member !== accountId);
+      conversation.members.find((member) => member !== accountId);
 
     socket.current.emit('sendMessage', {
       senderId: accountId,
@@ -208,12 +194,21 @@ const Messenger = () => {
       setIsMessageLoaded(true);
     }
   };
-  const handleSelectUser = (user) => {
+
+  const handleSelectUser = async (user) => {
     if (selectedUser?._id !== user._id) {
       setSelectedUser(user);
-      setCurrentChat(null);
       setMessages([]);
       setIsMessageLoaded(true);
+
+      try {
+        const conversation = await getOrCreateConversation(user._id);
+        setCurrentChat(conversation);
+      } catch (error) {
+        console.error('Error checking for existing conversation:', error);
+      } finally {
+        setIsMessageLoaded(false);
+      }
     }
   };
 
@@ -221,8 +216,40 @@ const Messenger = () => {
     setConversations((prevConversations) =>
       prevConversations.filter((conv) => conv._id !== deletedConversationId)
     );
-    setCurrentChat(null);
-    setCurrentChatUser(null);
+    if (currentChat?._id === deletedConversationId) {
+      setCurrentChat(null);
+      setCurrentChatUser(null);
+      setSelectedUser(null);
+      setMessages([]);
+    }
+  };
+
+  const getOrCreateConversation = async (userId) => {
+    try {
+      const res = await fetch(`/api/conversations/find/${accountId}/${userId}`);
+      if (res.ok) {
+        const existingConversation = await res.json();
+        if (existingConversation) {
+          return existingConversation;
+        }
+      }
+      // If no existing conversation, create a new one
+      const createRes = await fetch('/api/conversations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          senderId: accountId,
+          receiverId: userId,
+        }),
+      });
+      if (!createRes.ok) throw new Error('Failed to create conversation');
+      const newConversation = await createRes.json();
+      setConversations((prev) => [...prev, newConversation]);
+      return newConversation;
+    } catch (error) {
+      console.error('Error checking/creating conversation:', error);
+      return null;
+    }
   };
 
   return (
@@ -285,18 +312,21 @@ const Messenger = () => {
         {/* Messages Section */}
         <div className='lg:col-span-2 bg-white rounded-lg shadow-xl overflow-hidden flex flex-col'>
           <div className='bg-primary-100 p-4 flex items-center border-b border-gray-200'>
-            {(currentChatUser || selectedUser) && (
+            {(selectedUser || currentChatUser) && (
               <>
                 <img
-                  src={(selectedUser || currentChatUser)?.imageUrl}
+                  src={
+                    (selectedUser || currentChatUser)?.imageUrl ||
+                    'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                  }
                   alt={(selectedUser || currentChatUser)?.name}
                   className='w-12 h-12 rounded-full object-cover mr-4'
                 />
                 <div>
                   <h2 className='text-lg font-semibold text-gray-800'>
-                    {(selectedUser || currentChatUser)?.name +
-                      ' ' +
-                      (selectedUser || currentChatUser)?.surname}
+                    {`${(selectedUser || currentChatUser)?.name} ${
+                      (selectedUser || currentChatUser)?.surname
+                    }`}
                   </h2>
                 </div>
               </>
@@ -323,26 +353,32 @@ const Messenger = () => {
                     )}
                   </div>
                   <div className='p-4 bg-gray-100'>
-                    <form
-                      onSubmit={handleSendMessage}
-                      className='flex items-center'
-                    >
-                      <Input
-                        type='text'
-                        placeholder='Type a message...'
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        className='flex-grow mr-2 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500'
-                      />
-                      <Button
-                        type='submit'
-                        className='bg-primary-500 hover:bg-primary-600 text-white p-3 rounded-lg transition-colors duration-200 flex items-center'
-                        disabled={isMessageLoaded || !newMessage.trim()}
+                    {!currentUser.isProfileFilled ? (
+                      <div className='text-yellow-600 bg-yellow-100 p-3 rounded-lg'>
+                        Please complete your profile before sending messages.
+                      </div>
+                    ) : (
+                      <form
+                        onSubmit={handleSendMessage}
+                        className='flex items-center'
                       >
-                        <FiSend size={18} className='mr-2' />
-                        Send
-                      </Button>
-                    </form>
+                        <Input
+                          type='text'
+                          placeholder='Type a message...'
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          className='flex-grow mr-2 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500'
+                        />
+                        <Button
+                          type='submit'
+                          className='bg-primary-500 hover:bg-primary-600 text-white p-3 rounded-lg transition-colors duration-200 flex items-center'
+                          disabled={!newMessage.trim()}
+                        >
+                          <FiSend size={18} className='mr-2' />
+                          Send
+                        </Button>
+                      </form>
+                    )}
                   </div>
                 </>
               ) : (
