@@ -15,11 +15,6 @@ const sidebarNavItems = [
     role: 'player',
   },
   {
-    title: 'Player Profile',
-    href: '/user/player/profile',
-    role: 'user',
-  },
-  {
     title: 'Referee Profile',
     href: '/user/referee/profile',
     role: 'referee',
