@@ -15,6 +15,7 @@ import { FiSend } from 'react-icons/fi';
 import { io } from 'socket.io-client';
 import ChatUsers from '../components/home/chatUsers/ChatUsers';
 import Spinner from '../components/Spinner';
+import { Link } from 'react-router-dom';
 
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -98,6 +99,7 @@ const Messenger = () => {
   useEffect(() => {
     const getAccountId = async () => {
       try {
+        if (!currentUser?.isProfileFilled) return;
         const res = await fetch(`/api/user/get-account-id/${currentUser?._id}`);
         if (!res.ok) throw new Error('Failed to fetch account id');
         const data = await res.json();
@@ -108,7 +110,7 @@ const Messenger = () => {
     };
 
     getAccountId();
-  }, [currentUser._id]);
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchChatPartner = async () => {
@@ -251,6 +253,33 @@ const Messenger = () => {
       return null;
     }
   };
+
+  if (!currentUser?.isProfileFilled) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className='container mx-auto p-4 max-w-7xl h-[calc(100vh-80px)] flex flex-col items-center justify-center'
+      >
+        <div className='bg-white rounded-lg shadow-xl p-8 text-center max-w-md w-full'>
+          <h2 className='text-2xl font-bold mb-4 text-gray-800'>
+            Profile Incomplete
+          </h2>
+          <p className='text-gray-600 mb-6'>
+            To start chatting, you need to complete your profile information
+            first.
+          </p>
+          <Link
+            to='/user/profile'
+            className='bg-primary-500 hover:bg-primary-600 text-white py-2 px-4 rounded-lg transition-colors duration-200'
+          >
+            Complete Profile
+          </Link>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
