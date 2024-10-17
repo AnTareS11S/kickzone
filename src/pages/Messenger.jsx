@@ -29,6 +29,7 @@ const Messenger = () => {
   const [isMessageLoaded, setIsMessageLoaded] = useState(false);
   const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [activeConversation, setActiveConversation] = useState(null);
   const [error, setError] = useState(null);
   const socket = useRef();
   const scrollRef = useRef();
@@ -155,17 +156,19 @@ const Messenger = () => {
       }
     }
 
-    const message = {
-      conversation: conversation._id,
-      sender: accountId,
-      text: newMessage,
-    };
-
     const receiverId =
       selectedUser?._id ||
       conversation.members.find((member) => member !== accountId);
 
+    const message = {
+      conversation: conversation._id,
+      sender: accountId,
+      receiver: receiverId,
+      text: newMessage,
+    };
+
     socket.current.emit('sendMessage', {
+      conversationId: conversation._id,
       senderId: accountId,
       receiverId,
       text: newMessage,
@@ -194,6 +197,7 @@ const Messenger = () => {
       setSelectedUser(null);
       setMessages([]);
       setIsMessageLoaded(true);
+      setActiveConversation(conversation._id);
     }
   };
 
@@ -206,6 +210,7 @@ const Messenger = () => {
       try {
         const conversation = await getOrCreateConversation(user._id);
         setCurrentChat(conversation);
+        setActiveConversation(conversation._id);
       } catch (error) {
         console.error('Error checking for existing conversation:', error);
       } finally {
@@ -315,6 +320,7 @@ const Messenger = () => {
                     <Conversation
                       conversation={conversation}
                       onConversationDeleted={handleConversationDeleted}
+                      isActive={conversation._id === activeConversation}
                     />
                   </div>
                 ))}
