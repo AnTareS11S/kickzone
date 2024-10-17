@@ -16,6 +16,8 @@ import { io } from 'socket.io-client';
 import ChatUsers from '../components/home/chatUsers/ChatUsers';
 import Spinner from '../components/Spinner';
 import { Link } from 'react-router-dom';
+import DeleteConversation from '../components/home/conversations/DeleteConversation';
+import { MdOutlineClose } from 'react-icons/md';
 
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -319,7 +321,6 @@ const Messenger = () => {
                   >
                     <Conversation
                       conversation={conversation}
-                      onConversationDeleted={handleConversationDeleted}
                       isActive={conversation._id === activeConversation}
                     />
                   </div>
@@ -346,27 +347,49 @@ const Messenger = () => {
 
         {/* Messages Section */}
         <div className='lg:col-span-2 bg-white rounded-lg shadow-xl overflow-hidden flex flex-col'>
-          <div className='bg-primary-100 p-4 flex items-center border-b border-gray-200'>
+          <div className='flex items-center justify-between px-6 py-3 bg-white border-b shadow-sm'>
             {(selectedUser || currentChatUser) && (
               <>
-                <img
-                  src={
-                    (selectedUser || currentChatUser)?.imageUrl ||
-                    'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-                  }
-                  alt={(selectedUser || currentChatUser)?.name}
-                  className='w-12 h-12 rounded-full object-cover mr-4'
-                />
-                <div>
-                  <h2 className='text-lg font-semibold text-gray-800'>
-                    {`${(selectedUser || currentChatUser)?.name} ${
-                      (selectedUser || currentChatUser)?.surname
-                    }`}
-                  </h2>
+                <div className='flex items-center space-x-4'>
+                  <img
+                    src={
+                      (selectedUser || currentChatUser)?.imageUrl ||
+                      'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                    }
+                    alt={(selectedUser || currentChatUser)?.name}
+                    className='w-10 h-10 rounded-full object-cover ring-2 ring-gray-100'
+                  />
+                  <div className='flex flex-col'>
+                    <h2 className='text-base font-medium text-gray-900'>
+                      {`${(selectedUser || currentChatUser)?.name} ${
+                        (selectedUser || currentChatUser)?.surname
+                      }`}
+                    </h2>
+                  </div>
+                </div>
+
+                <div className='flex items-center space-x-3'>
+                  {currentChat && (
+                    <>
+                      <DeleteConversation
+                        conversation={currentChat}
+                        onConversationDeleted={handleConversationDeleted}
+                      />
+                      <Button
+                        variant='ghost'
+                        size='icon'
+                        onClick={() => setCurrentChat(null)}
+                        className='bg-gray-0 text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-red-500 focus:outline-none transition-colors duration-200'
+                      >
+                        <MdOutlineClose className='w-5 h-5' />
+                      </Button>
+                    </>
+                  )}
                 </div>
               </>
             )}
           </div>
+
           {currentChat || selectedUser ? (
             <>
               {!isMessageLoaded ? (
