@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from '../../ui/alert-dialog';
 
-const Conversation = ({ conversation, onConversationDeleted }) => {
+const Conversation = ({ conversation, onConversationDeleted, isActive }) => {
   const { currentUser } = useSelector((state) => state.user);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [user, setUser] = useState(null);
@@ -71,7 +71,9 @@ const Conversation = ({ conversation, onConversationDeleted }) => {
       <motion.div
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className='flex items-center justify-between p-3 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors duration-200 group'
+        className={`flex items-center justify-between p-3 rounded-lg cursor-pointer transition-colors duration-200 group ${
+          isActive ? 'bg-blue-100' : 'hover:bg-gray-100'
+        }`}
       >
         <>
           <div className='flex items-center flex-grow mr-2'>
