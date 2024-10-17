@@ -378,7 +378,10 @@ const Messenger = () => {
                       <Button
                         variant='ghost'
                         size='icon'
-                        onClick={() => setCurrentChat(null)}
+                        onClick={() => {
+                          setCurrentChat(null);
+                          setActiveConversation(null);
+                        }}
                         className='bg-gray-0 text-gray-500 hover:bg-gray-100 focus:ring-2 focus:ring-red-500 focus:outline-none transition-colors duration-200'
                       >
                         <MdOutlineClose className='w-5 h-5' />
