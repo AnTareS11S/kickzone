@@ -14,7 +14,6 @@ import TeamManage from './pages/Team/TeamManage';
 import LeagueManage from './pages/League/LeagueManage';
 import Layout from './pages/Layout';
 import PostPage from './pages/PostPage';
-import Activity from './pages/Activity';
 import HomeProfile from './pages/HomeProfile';
 import Leagues from './pages/League/Leagues';
 import LeaguePage from './pages/League/LeaguePage';
@@ -72,6 +71,7 @@ import MatchOverview from './pages/Match/MatchOverview';
 import FAQManage from './pages/FAQ/FAQManage';
 import ContactManage from './pages/Contact/ContactManage';
 import AdminProfile from './pages/Admin/AdminProfile';
+import Notification from './pages/Notification';
 
 const App = () => {
   return (
@@ -91,7 +91,7 @@ const App = () => {
             <Route path='/post/:id' element={<PostPage />} />
             <Route path='/post/edit/:id' element={<PostEdit />} />
             <Route path='/post/comment/edit/:id' element={<CommentEdit />} />
-            <Route path='/notifications' element={<Activity />} />
+            <Route path='/notifications' element={<Notification />} />
             <Route path='/search' element={<Search />} />
             <Route path='/profile/:id' element={<HomeProfile />} />
             <Route path='/messages' element={<Messenger />} />
