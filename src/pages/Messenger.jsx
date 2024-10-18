@@ -32,12 +32,13 @@ const Messenger = () => {
   const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
+
   const [error, setError] = useState(null);
   const socket = useRef();
   const scrollRef = useRef();
 
   useEffect(() => {
-    socket.current = io('ws://localhost:8900');
+    socket.current = io('ws://localhost:3000');
     socket.current.on('getMessage', (data) => {
       setArrivalMessage({
         sender: data.senderId,
