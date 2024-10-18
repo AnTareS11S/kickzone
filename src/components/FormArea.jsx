@@ -26,6 +26,7 @@ const FormArea = ({
   setFile,
   placeholder,
   isPortal,
+  onChange,
   defaultValue,
   initialDate,
   isDisabled,
@@ -50,6 +51,7 @@ const FormArea = ({
                   field={field}
                   fileRef={fileRef}
                   setFile={setFile}
+                  onChange={onChange}
                   name={name}
                   currentUserPhoto={currentUserPhoto}
                   {...rest}
@@ -110,6 +112,7 @@ const FileInput = ({
   fileRef,
   setFile,
   name,
+  onChange,
   currentUserPhoto,
   ...rest
 }) => (
@@ -131,7 +134,12 @@ const FileInput = ({
       ref={fileRef}
       accept='image/*'
       onChange={(e) => {
-        setFile(e.target.files[0]);
+        if (onChange) {
+          onChange(e);
+        }
+        if (setFile) {
+          setFile(e.target.files[0]);
+        }
         field.onChange(e.target.files?.[0] ?? undefined);
       }}
       className='file:mr-4 file:py-0 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100'
