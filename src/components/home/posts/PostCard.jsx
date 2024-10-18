@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaHeart, FaRegHeart, FaComment, FaEllipsisV } from 'react-icons/fa';
 import DeletePost from './DeletePost';
+import { io } from 'socket.io-client';
 
 const PostCard = ({
   id,
@@ -22,18 +23,41 @@ const PostCard = ({
   const [liked, setLiked] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [isLikeProcessing, setIsLikeProcessing] = useState(false);
   const navigate = useNavigate();
+  const socket = useRef();
+
+  useEffect(() => {
+    socket.current = io('ws://localhost:8900');
+
+    return () => {
+      socket.current.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     setLiked(currentUserId && initialLikes?.includes(currentUserId));
   }, [currentUserId, initialLikes]);
 
-  const handleLikeToggle = async () => {
+  const handleLikeToggle = async (type) => {
     if (!currentUserId) {
       navigate('/sign-in');
       return;
     }
+    // Prevent multiple simultaneous requests
+    if (isLikeProcessing) {
+      return;
+    }
+
+    setIsLikeProcessing(true);
+
     try {
+      type === 1 && setLiked(true);
+      socket.current.emit('sendNotification', {
+        senderId: currentUserId,
+        receiverId: author?._id,
+        type,
+      });
       const endpoint = liked
         ? `/api/post/unlike/${id}`
         : `/api/post/like/${id}`;
@@ -50,9 +74,22 @@ const PostCard = ({
             ? prev.filter((userId) => userId !== currentUserId)
             : [...prev, currentUserId]
         );
+
+        if (currentUserId !== author?._id) {
+          socket.current.emit('newUnreadNotification', {
+            userId: currentUserId,
+            authorId: author?._id,
+            isLiked: !liked,
+          });
+        }
       }
     } catch (error) {
       console.error('Error toggling like:', error);
+    } finally {
+      // Add a small delay before allowing the next like action
+      setTimeout(() => {
+        setIsLikeProcessing(false);
+      }, 300);
     }
   };
 
@@ -126,11 +163,15 @@ const PostCard = ({
             <div className='flex space-x-4'>
               <motion.button
                 whileTap={{ scale: 0.9 }}
-                onClick={handleLikeToggle}
+                onClick={() => handleLikeToggle(1)}
                 className={`flex items-center space-x-1 ${
                   liked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'
-                } ${!currentUserId ? 'opacity-50 cursor-not-allowed' : ''}`}
-                disabled={!currentUserId}
+                } ${
+                  !currentUserId || isLikeProcessing
+                    ? 'opacity-50 cursor-not-allowed'
+                    : ''
+                }`}
+                disabled={!currentUserId || isLikeProcessing}
               >
                 {liked ? <FaHeart /> : <FaRegHeart />}
                 <span>{likes?.length || 0}</span>
