@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Button } from './ui/button';
 import {
   DropdownMenu,
@@ -34,24 +34,65 @@ import {
   MdOutlineConnectWithoutContact,
 } from 'react-icons/md';
 
+import { io } from 'socket.io-client';
+
 const Header = () => {
   const { user, currentUser } = useFetchUserById();
   const dispatch = useDispatch();
+  const socket = useRef();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [newNotifications, setNewNotifications] = useState(0);
-  const [newMessages, setNewMessages] = useState(0);
-
-  const notificationCount = useSelector(
-    (state) => state.notifications?.unreadCount
-  );
-  const messageCount = useSelector((state) => state.messages?.unreadCount);
+  const [accountId, setAccountId] = useState(null);
+  const [unreadMessages, setUnreadMessages] = useState(0);
+  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
-    setNewNotifications(notificationCount);
-    setNewMessages(messageCount);
-  }, [notificationCount, messageCount]);
+    const getAccountId = async () => {
+      try {
+        if (!currentUser?.isProfileFilled) return;
+        const res = await fetch(`/api/user/get-account-id/${currentUser?._id}`);
+        if (!res.ok) throw new Error('Failed to fetch account id');
+        const data = await res.json();
+        setAccountId(data);
+      } catch (error) {
+        console.error('Error fetching account id:', error);
+      }
+    };
+
+    getAccountId();
+  }, [currentUser]);
+
+  useEffect(() => {
+    socket.current = io('ws://localhost:3000');
+
+    socket.current.on('getUnreadNotificationCount', (data) => {
+      setNotificationCount(data);
+    });
+
+    socket.current.on('updateUnreadCount', (count) => {
+      setUnreadMessages(count);
+    });
+
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await fetch(`/api/conversations/unread/${accountId}`);
+        const data = await res.json();
+        setUnreadMessages(data);
+      } catch (error) {
+        console.error('Error fetching unread count:', error);
+      }
+    };
+
+    if (currentUser) {
+      fetchUnreadCount();
+      socket.current.emit('addUser', currentUser._id);
+    }
+
+    return () => {
+      socket.current?.disconnect();
+    };
+  }, [currentUser, accountId]);
 
   const handleSignOut = async () => {
     try {
@@ -110,9 +151,9 @@ const Header = () => {
             className='text-gray-600 hover:text-primary-500 transition-colors relative'
           >
             <FaBell className='w-5 h-5' />
-            {newNotifications > 0 && (
+            {notificationCount > 0 && (
               <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center'>
-                {newNotifications}
+                {notificationCount}
               </span>
             )}
           </Link>
@@ -121,9 +162,9 @@ const Header = () => {
             className='text-gray-600 hover:text-primary-500 transition-colors relative'
           >
             <FaEnvelope className='w-5 h-5' />
-            {newMessages > 0 && (
+            {unreadMessages > 0 && (
               <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center'>
-                {newMessages}
+                {unreadMessages}
               </span>
             )}
           </Link>
