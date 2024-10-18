@@ -28,7 +28,7 @@ const PostCard = ({
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io('ws://localhost:8900');
+    socket.current = io('ws://localhost:3000');
 
     return () => {
       socket.current.disconnect();
