@@ -5,12 +5,15 @@ import { motion } from 'framer-motion';
 import { FaReply } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useToast } from '../../ui/use-toast';
+import { useEffect, useRef } from 'react';
+import { io } from 'socket.io-client';
 
 const Comment = ({
   postId,
   currentUserImg,
   currentUserId,
   isLogged,
+  authorId,
   setUpdateSuccess,
 }) => {
   const {
@@ -25,6 +28,16 @@ const Comment = ({
     },
   });
   const { toast } = useToast();
+
+  const socket = useRef();
+
+  useEffect(() => {
+    socket.current = io('ws://localhost:3000');
+
+    return () => {
+      socket.current.disconnect();
+    };
+  }, []);
 
   const onSubmit = async (formData) => {
     const updatedData = {
@@ -45,7 +58,22 @@ const Comment = ({
           title: 'Success!',
           description: 'Comment posted successfully',
         });
+
         setUpdateSuccess(true);
+        // Emit notification for new comment
+        if (currentUserId !== authorId) {
+          socket.current.emit('newUnreadNotification', {
+            userId: currentUserId,
+            authorId: authorId,
+            isComment: true,
+          });
+        }
+
+        socket.current.emit('sendNotification', {
+          senderId: currentUserId,
+          receiverId: authorId,
+          type: 2,
+        });
       } else {
         toast({
           title: 'Error!',
