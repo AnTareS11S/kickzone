@@ -10,13 +10,13 @@ import { useEffect, useRef, useState } from 'react';
 import FormArea from '../components/FormArea';
 import { Form } from '../components/ui/form';
 import { useToast } from '../components/ui/use-toast';
-import { FaImage, FaTimes } from 'react-icons/fa';
 
 const PostEdit = () => {
   const postId = useParams().id;
   const { post, loading } = useFetchPostById(postId);
   const fileRef = useRef(null);
   const [file, setFile] = useState();
+  const [previewUrl, setPreviewUrl] = useState('');
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -39,6 +39,14 @@ const PostEdit = () => {
       postPhoto: post?.photo || '',
     });
   }, [post, form]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
 
   const onSubmit = async (formData) => {
     const data = new FormData();
@@ -68,6 +76,15 @@ const PostEdit = () => {
       }
     } catch (error) {
       console.log('Error updating post: ', error);
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile) {
+      const url = URL.createObjectURL(selectedFile);
+      setPreviewUrl(url);
     }
   };
 
@@ -105,28 +122,26 @@ const PostEdit = () => {
                   placeholder='Write your post content here...'
                   className={`w-full ${isComment ? 'h-40' : 'h-60'} text-base`}
                 />
-                {!isComment && post.postPhoto && (
-                  <div className='space-y-4'>
-                    <label className='block text-sm font-medium text-gray-700'>
-                      Post Image
-                    </label>
-                    <div className='relative h-80 w-full'>
+                {!isComment && post.imageUrl && (
+                  <div className='space-y-2'>
+                    <div className='flex items-center space-x-4'>
+                      <FormArea
+                        id='photo'
+                        type='file'
+                        label='Photo'
+                        form={form}
+                        name='postPhoto'
+                        fileRef={fileRef}
+                        setFile={setFile}
+                        onChange={handleFileChange}
+                      />
+
                       <img
-                        src={post.imageUrl}
+                        src={previewUrl || post.imageUrl}
                         alt='Post'
-                        className='object-cover object-center w-full h-full rounded-md'
+                        className='w-20 h-20 object-cover rounded-lg'
                       />
                     </div>
-                    <FormArea
-                      id='photo'
-                      type='file'
-                      label={'Photo'}
-                      form={form}
-                      name='postPhoto'
-                      fileRef={fileRef}
-                      setFile={setFile}
-                      icon={<FaImage className='text-gray-500' />}
-                    />
                   </div>
                 )}
               </CardContent>
