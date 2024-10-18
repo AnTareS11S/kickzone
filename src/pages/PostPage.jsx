@@ -41,6 +41,7 @@ const PostPage = () => {
           currentUserId={currentUser?._id}
           isLogged={currentUser === null ? false : true}
           currentUserImg={user?.imageUrl}
+          authorId={post.author?._id}
           setUpdateSuccess={setUpdateSuccess}
         />
       </div>
