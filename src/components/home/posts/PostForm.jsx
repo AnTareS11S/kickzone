@@ -2,8 +2,8 @@ import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useNavigate } from 'react-router-dom';
-import { useRef, useState } from 'react';
-import { FaEdit, FaImage } from 'react-icons/fa';
+import { useEffect, useRef, useState } from 'react';
+import { FaEdit } from 'react-icons/fa';
 
 import { Form } from '../../ui/form';
 import { Button } from '../../ui/button';
@@ -61,6 +61,15 @@ const PostForm = () => {
     }
   };
 
+  useEffect(() => {
+    return () => {
+      // Cleanup preview URL
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -71,7 +80,7 @@ const PostForm = () => {
   };
 
   return (
-    <div className='max-w-5xl mx-auto py-8 px-4'>
+    <div className='max-w-7xl mx-auto py-8 px-4'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <Card className='bg-white shadow-lg rounded-xl overflow-hidden'>
@@ -110,6 +119,7 @@ const PostForm = () => {
                     form={form}
                     name='postPhoto'
                     fileRef={fileRef}
+                    onChange={handleFileChange}
                     setFile={setFile}
                     className='w-full'
                   />
