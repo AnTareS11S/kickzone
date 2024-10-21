@@ -58,6 +58,7 @@ const PostPage = () => {
             createdAt={comment.createdAt}
             comments={comment.children}
             setDeleteSuccess={setDeleteSuccess}
+            mainPostAuthorId={post.author._id}
             isComment
           />
         ))}
