@@ -18,6 +18,7 @@ const PostCard = ({
   comments,
   isComment,
   setDeleteSuccess,
+  mainPostAuthorId,
 }) => {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
@@ -39,7 +40,7 @@ const PostCard = ({
     setLiked(currentUserId && initialLikes?.includes(currentUserId));
   }, [currentUserId, initialLikes]);
 
-  const handleLikeToggle = async (type) => {
+  const handleLikeToggle = async () => {
     if (!currentUserId) {
       navigate('/sign-in');
       return;
@@ -52,12 +53,6 @@ const PostCard = ({
     setIsLikeProcessing(true);
 
     try {
-      type === 1 && setLiked(true);
-      socket.current.emit('sendNotification', {
-        senderId: currentUserId,
-        receiverId: author?._id,
-        type,
-      });
       const endpoint = liked
         ? `/api/post/unlike/${id}`
         : `/api/post/like/${id}`;
@@ -80,6 +75,7 @@ const PostCard = ({
             userId: currentUserId,
             authorId: author?._id,
             isLiked: !liked,
+            postId: id,
           });
         }
       }
@@ -163,7 +159,7 @@ const PostCard = ({
             <div className='flex space-x-4'>
               <motion.button
                 whileTap={{ scale: 0.9 }}
-                onClick={() => handleLikeToggle(1)}
+                onClick={handleLikeToggle}
                 className={`flex items-center space-x-1 ${
                   liked ? 'text-red-500' : 'text-gray-500 dark:text-gray-400'
                 } ${
@@ -214,6 +210,8 @@ const PostCard = ({
                           postId={id}
                           parentId={parentId}
                           isComment={isComment}
+                          authorId={isComment ? mainPostAuthorId : author?._id}
+                          userId={currentUserId}
                           setDeleteSuccess={setDeleteSuccess}
                         />
                       </>
