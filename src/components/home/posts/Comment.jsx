@@ -54,6 +54,8 @@ const Comment = ({
       });
 
       if (res.ok) {
+        const data = await res.json();
+
         toast({
           title: 'Success!',
           description: 'Comment posted successfully',
@@ -64,16 +66,11 @@ const Comment = ({
         if (currentUserId !== authorId) {
           socket.current.emit('newUnreadNotification', {
             userId: currentUserId,
-            authorId: authorId,
+            authorId,
             isComment: true,
+            postId: data._id,
           });
         }
-
-        socket.current.emit('sendNotification', {
-          senderId: currentUserId,
-          receiverId: authorId,
-          type: 2,
-        });
       } else {
         toast({
           title: 'Error!',
