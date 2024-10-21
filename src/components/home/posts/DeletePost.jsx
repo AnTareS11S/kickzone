@@ -1,10 +1,28 @@
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import ModalDialog from '../../ModalDialog';
 import { useToast } from '../../ui/use-toast';
+import { io } from 'socket.io-client';
+import { useEffect, useRef } from 'react';
 
-const DeletePost = ({ postId, parentId, isComment, setDeleteSuccess }) => {
+const DeletePost = ({
+  postId,
+  parentId,
+  isComment,
+  setDeleteSuccess,
+  authorId,
+  userId,
+}) => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const socket = useRef();
+
+  useEffect(() => {
+    socket.current = io('ws://localhost:3000');
+
+    return () => {
+      socket.current.disconnect();
+    };
+  }, []);
 
   const handleDeletePost = async () => {
     try {
@@ -16,6 +34,14 @@ const DeletePost = ({ postId, parentId, isComment, setDeleteSuccess }) => {
         body: JSON.stringify({ id: postId }),
       });
       if (res.ok) {
+        socket.current.emit('newUnreadNotification', {
+          postId,
+          userId,
+          isComment: true,
+          authorId,
+          isDelete: true,
+        });
+
         toast({
           title: 'Success!',
           description: 'Post deleted successfully',
