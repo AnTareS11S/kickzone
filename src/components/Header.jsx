@@ -64,6 +64,42 @@ const Header = () => {
   }, [currentUser]);
 
   useEffect(() => {
+    const fetchInitialNotifications = async () => {
+      try {
+        if (!currentUser?._id) return;
+
+        const res = await fetch(
+          `/api/notifications/unread-count/${currentUser._id}`
+        );
+        if (!res.ok) throw new Error('Failed to fetch notifications');
+        const data = await res.json();
+        setNotificationCount(data.unreadCount || 0);
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
+    };
+
+    fetchInitialNotifications();
+  }, [currentUser]);
+
+  useEffect(() => {
+    const fetchInitialUnreadMessages = async () => {
+      try {
+        if (!accountId) return;
+
+        const res = await fetch(`/api/conversations/unread/${accountId}`);
+        if (!res.ok) throw new Error('Failed to fetch unread messages');
+        const data = await res.json();
+        setUnreadMessages(data.unreadCount || 0);
+      } catch (error) {
+        console.error('Error fetching unread messages:', error);
+      }
+    };
+
+    fetchInitialUnreadMessages();
+  }, [accountId]);
+
+  useEffect(() => {
     socket.current = io('ws://localhost:3000');
 
     socket.current.on('getUnreadNotificationCount', (data) => {
@@ -74,25 +110,14 @@ const Header = () => {
       setUnreadMessages(count);
     });
 
-    const fetchUnreadCount = async () => {
-      try {
-        const res = await fetch(`/api/conversations/unread/${accountId}`);
-        const data = await res.json();
-        setUnreadMessages(data);
-      } catch (error) {
-        console.error('Error fetching unread count:', error);
-      }
-    };
-
     if (currentUser) {
-      fetchUnreadCount();
       socket.current.emit('addUser', currentUser._id);
     }
 
     return () => {
       socket.current?.disconnect();
     };
-  }, [currentUser, accountId]);
+  }, [currentUser]);
 
   const handleSignOut = async () => {
     try {
