@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import ModalDialog from '../../ModalDialog';
 import { useToast } from '../../ui/use-toast';
-import { io } from 'socket.io-client';
-import { useEffect, useRef } from 'react';
+import { useSocket } from '../../../hook/useSocket';
+import { useState } from 'react';
 
 const DeletePost = ({
   postId,
@@ -14,17 +14,11 @@ const DeletePost = ({
 }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const socket = useRef();
-
-  useEffect(() => {
-    socket.current = io('ws://localhost:3000');
-
-    return () => {
-      socket.current.disconnect();
-    };
-  }, []);
+  const { emit } = useSocket();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDeletePost = async () => {
+    setIsDeleting(true);
     try {
       const res = await fetch('/api/post/delete', {
         method: 'DELETE',
@@ -34,7 +28,7 @@ const DeletePost = ({
         body: JSON.stringify({ id: postId }),
       });
       if (res.ok) {
-        socket.current.emit('newUnreadNotification', {
+        emit('newUnreadNotification', {
           postId,
           userId,
           isComment: true,
@@ -48,6 +42,12 @@ const DeletePost = ({
         });
 
         setDeleteSuccess(true);
+
+        if (!parentId || !isComment) {
+          setTimeout(() => {
+            navigate('/');
+          }, 500);
+        }
       } else {
         toast({
           title: 'Error!',
@@ -55,9 +55,9 @@ const DeletePost = ({
           variant: 'destructive',
         });
       }
-      if (!parentId || !isComment) navigate('/');
     } catch (error) {
       console.log(error);
+      setIsDeleting(false);
     }
   };
 
@@ -70,6 +70,7 @@ const DeletePost = ({
         handleDeletePost();
         setDeleteSuccess(false);
       }}
+      isDeleting={isDeleting}
     />
   );
 };
