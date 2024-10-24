@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { Button } from './ui/button';
@@ -33,19 +33,24 @@ import {
   MdOutlineMenuBook,
   MdOutlineConnectWithoutContact,
 } from 'react-icons/md';
-
-import { io } from 'socket.io-client';
+import { useSocket } from '../hook/useSocket';
 
 const Header = () => {
   const { user, currentUser } = useFetchUserById();
   const dispatch = useDispatch();
-  const socket = useRef();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [accountId, setAccountId] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [notificationCount, setNotificationCount] = useState(0);
+  const { socket, emit, subscribe, unsubscribe, isConnected } = useSocket();
+
+  useEffect(() => {
+    if (socket) {
+      emit('addUser', currentUser?._id);
+    }
+  }, [socket, emit, currentUser?._id]);
 
   useEffect(() => {
     const getAccountId = async () => {
@@ -100,24 +105,21 @@ const Header = () => {
   }, [accountId]);
 
   useEffect(() => {
-    socket.current = io('ws://localhost:3000');
+    if (socket && isConnected) {
+      subscribe('getUnreadNotificationCount', (data) => {
+        setNotificationCount(data);
+      });
 
-    socket.current.on('getUnreadNotificationCount', (data) => {
-      setNotificationCount(data);
-    });
+      subscribe('updateUnreadCount', (count) => {
+        setUnreadMessages(count);
+      });
 
-    socket.current.on('updateUnreadCount', (count) => {
-      setUnreadMessages(count);
-    });
-
-    if (currentUser) {
-      socket.current.emit('addUser', currentUser._id);
+      return () => {
+        unsubscribe('getUnreadNotificationCount');
+        unsubscribe('updateUnreadCount');
+      };
     }
-
-    return () => {
-      socket.current?.disconnect();
-    };
-  }, [currentUser]);
+  }, [socket, subscribe, unsubscribe, isConnected]);
 
   const handleSignOut = async () => {
     try {
