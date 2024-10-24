@@ -5,8 +5,7 @@ import { motion } from 'framer-motion';
 import { FaReply } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 import { useToast } from '../../ui/use-toast';
-import { useEffect, useRef } from 'react';
-import { io } from 'socket.io-client';
+import { useSocket } from '../../../hook/useSocket';
 
 const Comment = ({
   postId,
@@ -28,16 +27,7 @@ const Comment = ({
     },
   });
   const { toast } = useToast();
-
-  const socket = useRef();
-
-  useEffect(() => {
-    socket.current = io('ws://localhost:3000');
-
-    return () => {
-      socket.current.disconnect();
-    };
-  }, []);
+  const { emit } = useSocket();
 
   const onSubmit = async (formData) => {
     const updatedData = {
@@ -64,7 +54,7 @@ const Comment = ({
         setUpdateSuccess(true);
         // Emit notification for new comment
         if (currentUserId !== authorId) {
-          socket.current.emit('newUnreadNotification', {
+          emit('newUnreadNotification', {
             userId: currentUserId,
             authorId,
             isComment: true,
