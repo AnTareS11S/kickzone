@@ -12,11 +12,14 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
+import { useSocket } from '../../hook/useSocket';
 
 const Notification = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isDeleted, setIsDeleted] = useState(false);
+  const { socket, subscribe } = useSocket();
 
   useEffect(() => {
     const getNotifications = async () => {
@@ -27,6 +30,7 @@ const Notification = () => {
         if (!res.ok) throw new Error('Failed to fetch notifications');
         const data = await res.json();
         setNotifications(data.notifications);
+        setIsDeleted(false);
       } catch (error) {
         console.error(error);
       } finally {
@@ -34,7 +38,78 @@ const Notification = () => {
       }
     };
     if (currentUser?._id) getNotifications();
-  }, [currentUser]);
+  }, [currentUser, isDeleted]);
+
+  useEffect(() => {
+    if (socket) {
+      subscribe('getNotification', (notification) => {
+        setNotifications((prev) => {
+          const exists = prev.some(
+            (n) =>
+              n.senderId?._id === notification.userId &&
+              n.postId === notification.postId &&
+              n.type === notification.type
+          );
+
+          if (exists) return prev;
+
+          return [
+            {
+              _id: Date.now(),
+              senderId: {
+                _id: notification.userId,
+                username: notification.username,
+                imageUrl: notification.userImg,
+              },
+              type: notification.type,
+              postId: notification.postId,
+              createdAt: notification.createdAt,
+              isRead: false,
+            },
+            ...prev,
+          ];
+        });
+      });
+
+      subscribe('removeNotification', async (data) => {
+        setNotifications((prev) =>
+          prev.filter(
+            (n) =>
+              !(
+                n.senderId?._id === data.userId &&
+                n.postId === data.postId &&
+                n.type === data.type
+              )
+          )
+        );
+
+        try {
+          const res = await fetch(
+            `/api/notifications/delete/${data.authorId}`,
+            {
+              method: 'DELETE',
+
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                senderId: data.userId,
+                postId: data.postId,
+                type: data.type,
+              }),
+            }
+          );
+
+          if (!res.ok) {
+            throw new Error('Failed to delete notification from database');
+          }
+          setIsDeleted(true);
+        } catch (error) {
+          console.error('Error deleting notification:', error);
+        }
+      });
+    }
+  }, [socket, subscribe, currentUser]);
 
   const handleMarkAsRead = async (notificationId) => {
     try {
@@ -55,28 +130,10 @@ const Notification = () => {
           notif._id === notificationId ? { ...notif, isRead: true } : notif
         )
       );
-
-      const unreadCount = notifications.filter((n) => !n.isRead).length - 1;
-
-      // Wyślij event z aktualną liczbą
-      // socket?.emit('getUnreadNotificationCount', {
-      //   userId: currentUser._id,
-      //   unreadCount: unreadCount,
-      // });
     } catch (error) {
       console.error('Error marking as read:', error);
     }
   };
-
-  // useEffect(() => {
-  //   if (notifications.length > 0) {
-  //     const unreadCount = notifications.filter((n) => !n.isRead).length;
-  //     socket?.emit('getUnreadNotificationCount', {
-  //       userId: currentUser._id,
-  //       unreadCount: unreadCount,
-  //     });
-  //   }
-  // }, [notifications, currentUser._id, socket]);
 
   const handleMarkAllAsRead = async () => {};
 
