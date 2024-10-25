@@ -24,6 +24,8 @@ const PostPage = () => {
           key={post._id}
           id={post._id}
           currentUserId={currentUser?._id || ''}
+          currentUserImg={user?.imageUrl}
+          currentUsername={currentUser?.username}
           parentId={post.parentId}
           content={post.postContent}
           author={post.author}
@@ -39,8 +41,9 @@ const PostPage = () => {
         <Comment
           postId={id}
           currentUserId={currentUser?._id}
-          isLogged={currentUser === null ? false : true}
+          currentUsername={currentUser?.username}
           currentUserImg={user?.imageUrl}
+          isLogged={currentUser === null ? false : true}
           authorId={post.author?._id}
           setUpdateSuccess={setUpdateSuccess}
         />
@@ -51,6 +54,8 @@ const PostPage = () => {
             key={comment._id}
             id={comment._id}
             currentUserId={currentUser?._id || ''}
+            currentUserImg={user?.imageUrl}
+            currentUsername={currentUser?.username}
             parentId={comment.parentId}
             content={comment.postContent}
             author={comment.author}
