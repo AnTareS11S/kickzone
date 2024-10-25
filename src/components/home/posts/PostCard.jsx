@@ -37,6 +37,8 @@ const PostCard = ({
   isComment,
   setDeleteSuccess,
   mainPostAuthorId,
+  currentUserImg,
+  currentUsername,
 }) => {
   const [likes, setLikes] = useState(initialLikes);
   const [liked, setLiked] = useState(false);
@@ -44,11 +46,36 @@ const PostCard = ({
   const [showOptions, setShowOptions] = useState(false);
   const [isLikeProcessing, setIsLikeProcessing] = useState(false);
   const navigate = useNavigate();
-  const { emit } = useSocket();
+  const { socket, emit } = useSocket();
 
   useEffect(() => {
     setLiked(Boolean(currentUserId && initialLikes?.includes(currentUserId)));
   }, [currentUserId, initialLikes]);
+
+  const handleNotifications = useCallback(
+    async (isLiking) => {
+      if (!socket || currentUserId === author?._id) return;
+
+      emit('newUnreadNotification', {
+        userId: currentUserId,
+        authorId: author?._id,
+        postId: id,
+        type: 'like',
+        userImg: currentUserImg,
+        username: currentUsername,
+        action: isLiking ? 'create' : 'delete',
+      });
+    },
+    [
+      socket,
+      currentUserId,
+      author?._id,
+      id,
+      emit,
+      currentUserImg,
+      currentUsername,
+    ]
+  );
 
   const handleLikeToggle = useCallback(async () => {
     if (!currentUserId) {
@@ -61,7 +88,8 @@ const PostCard = ({
     setIsLikeProcessing(true);
 
     try {
-      const endpoint = `/api/post/${liked ? 'unlike' : 'like'}/${id}`;
+      const isLiking = !liked;
+      const endpoint = `/api/post/${isLiking ? 'like' : 'unlike'}/${id}`;
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -71,26 +99,26 @@ const PostCard = ({
       if (res.ok) {
         setLiked((prev) => !prev);
         setLikes((prev) =>
-          liked
-            ? prev.filter((userId) => userId !== currentUserId)
-            : [...prev, currentUserId]
+          isLiking
+            ? [...prev, currentUserId]
+            : prev.filter((userId) => userId !== currentUserId)
         );
 
-        if (currentUserId !== author?._id) {
-          emit('newUnreadNotification', {
-            userId: currentUserId,
-            authorId: author?._id,
-            isLiked: !liked,
-            postId: id,
-          });
-        }
+        await handleNotifications(isLiking);
       }
     } catch (error) {
       console.error('Error toggling like:', error);
     } finally {
       setTimeout(() => setIsLikeProcessing(false), LIKE_THROTTLE_DELAY);
     }
-  }, [currentUserId, id, liked, isLikeProcessing, author?._id, emit, navigate]);
+  }, [
+    currentUserId,
+    id,
+    liked,
+    isLikeProcessing,
+    navigate,
+    handleNotifications,
+  ]);
 
   const formatDate = (date) => {
     return new Date(date).toLocaleString('en-UK', {
