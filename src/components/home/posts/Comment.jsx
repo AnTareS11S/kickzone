@@ -11,6 +11,7 @@ const Comment = ({
   postId,
   currentUserImg,
   currentUserId,
+  currentUsername,
   isLogged,
   authorId,
   setUpdateSuccess,
@@ -57,8 +58,11 @@ const Comment = ({
           emit('newUnreadNotification', {
             userId: currentUserId,
             authorId,
-            isComment: true,
             postId: data._id,
+            userImg: currentUserImg,
+            username: currentUsername,
+            type: 'comment',
+            action: 'create',
           });
         }
       } else {
