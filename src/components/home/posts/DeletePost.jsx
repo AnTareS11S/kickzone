@@ -29,11 +29,11 @@ const DeletePost = ({
       });
       if (res.ok) {
         emit('newUnreadNotification', {
-          postId,
           userId,
-          isComment: true,
           authorId,
-          isDelete: true,
+          postId,
+          type: 'comment',
+          action: 'delete',
         });
 
         toast({
