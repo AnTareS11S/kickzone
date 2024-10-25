@@ -73,6 +73,8 @@ const Home = () => {
                 key={post._id}
                 id={post._id}
                 currentUserId={currentUser?._id || ''}
+                currentUserImg={currentUser?.imageUrl}
+                currentUsername={currentUser?.username}
                 parentId={post.parentId}
                 title={post.title}
                 initialLikes={post.likes}
