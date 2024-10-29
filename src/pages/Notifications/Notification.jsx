@@ -5,7 +5,6 @@ import Spinner from '../../components/Spinner';
 import { Button } from '../../components/ui/button';
 import { FaBell } from 'react-icons/fa';
 import NotificationItem from '../../components/home/notifications/NotificationItem';
-
 import {
   Card,
   CardContent,
@@ -13,25 +12,25 @@ import {
   CardTitle,
 } from '../../components/ui/card';
 import { useSocket } from '../../hook/useSocket';
+import {
+  fetchUnreadCount,
+  fetchNotifications,
+  markAsRead,
+  markAllAsRead,
+  deleteNotification,
+} from '../../service/notificationService';
 
 const Notification = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isDeleted, setIsDeleted] = useState(false);
-  const [isRead, setIsRead] = useState(false);
   const { emit, socket, subscribe } = useSocket();
 
   const getNotifications = useCallback(async () => {
     if (!currentUser?._id) return;
-
     try {
-      const res = await fetch(`/api/notifications/details/${currentUser._id}`);
-      if (!res.ok) throw new Error('Failed to fetch notifications');
-      const data = await res.json();
+      const data = await fetchNotifications(currentUser._id);
       setNotifications(data.notifications);
-      setIsDeleted(false);
-      setIsRead(false);
     } catch (error) {
       console.error(error);
     } finally {
@@ -41,37 +40,26 @@ const Notification = () => {
 
   useEffect(() => {
     getNotifications();
-  }, [getNotifications, isDeleted, isRead]);
+  }, [getNotifications]);
 
   const handleRemoveNotification = useCallback(async (data) => {
     setNotifications((prev) =>
       prev.filter(
         (n) =>
           !(
-            n.senderId?._id === data.userId &&
+            n.senderId?._id === data.senderId &&
             n.postId === data.postId &&
             n.type === data.type
           )
       )
     );
-
     try {
-      const res = await fetch(`/api/notifications/delete/${data.authorId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          senderId: data.userId,
-          postId: data.postId,
-          type: data.type,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to delete notification from database');
-      }
-      setIsDeleted(true);
+      await deleteNotification(
+        data.authorId,
+        data.senderId,
+        data.postId,
+        data.type
+      );
     } catch (error) {
       console.error('Error deleting notification:', error);
     }
@@ -79,7 +67,6 @@ const Notification = () => {
 
   useEffect(() => {
     if (!socket) return;
-
     const getNotificationHandler = async (notification) => {
       const existingNotification = notifications.find(
         (n) =>
@@ -87,7 +74,6 @@ const Notification = () => {
           n.postId === notification.postId &&
           n.type === notification.type
       );
-
       if (existingNotification) {
         setNotifications((prev) =>
           prev.map((n) =>
@@ -96,20 +82,14 @@ const Notification = () => {
         );
         return;
       }
-
       try {
-        const res = await fetch(
-          `/api/notifications/details/${currentUser._id}`
-        );
-        if (!res.ok) throw new Error('Failed to fetch notifications');
-        const data = await res.json();
+        const data = await fetchNotifications(currentUser._id);
         const newNotification = data.notifications.find(
           (n) =>
             n.senderId?._id === notification.senderId &&
             n.postId === notification.postId &&
             n.type === notification.type
         );
-
         if (newNotification) {
           setNotifications((prev) => [
             {
@@ -157,42 +137,14 @@ const Notification = () => {
           notif._id === notificationId ? { ...notif, isRead: true } : notif
         )
       );
-
       const notification = notifications.find((n) => n._id === notificationId);
-
       if (!notification) return;
-
       try {
-        const res = await fetch(
-          `/api/notifications/mark-as-read/${currentUser?._id}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              notificationId,
-            }),
-          }
-        );
-
-        if (!res.ok) {
-          throw new Error('Failed to mark notification as read');
-        }
-
-        const unreadCountRes = await fetch(
-          `/api/notifications/unread-count/${currentUser?._id}`
-        );
-        if (!unreadCountRes.ok) {
-          throw new Error('Failed to fetch unread count');
-        }
-        const unreadCountData = await unreadCountRes.json();
-
+        await markAsRead(currentUser?._id, notificationId);
         emit('updateUnreadNotificationCount', {
           userId: currentUser?._id,
-          count: unreadCountData.unreadCount,
+          count: (await fetchUnreadCount(currentUser?._id)).unreadCount,
         });
-
         emit('newUnreadNotification', {
           userId: currentUser?._id,
           authorId: notification.senderId?._id,
@@ -217,30 +169,12 @@ const Notification = () => {
     setNotifications((prevNotifications) =>
       prevNotifications.map((notif) => ({ ...notif, isRead: true }))
     );
-
     try {
-      const res = await fetch(
-        `/api/notifications/mark-all-as-read/${currentUser._id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: currentUser?._id,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error('Failed to mark all notifications as read');
-      }
-
+      await markAllAsRead(currentUser._id);
       emit('updateUnreadNotificationCount', {
         userId: currentUser?._id,
         count: 0,
       });
-
       notifications.forEach((notification) => {
         if (!notification.isRead) {
           emit('newUnreadNotification', {
@@ -255,7 +189,6 @@ const Notification = () => {
       });
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
-      // W przypadku błędu, przywracamy poprzedni stan
       setNotifications((prevNotifications) =>
         prevNotifications.map((notif) => ({ ...notif, isRead: false }))
       );
