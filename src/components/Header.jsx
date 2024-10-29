@@ -114,9 +114,14 @@ const Header = () => {
         setUnreadMessages(count);
       });
 
+      subscribe('getCount', (count) => {
+        setNotificationCount(count);
+      });
+
       return () => {
         unsubscribe('getUnreadNotificationCount');
         unsubscribe('updateUnreadCount');
+        unsubscribe('getCount');
       };
     }
   }, [socket, subscribe, unsubscribe, isConnected]);
