@@ -27,15 +27,20 @@ const NotificationItem = ({ item, onRead }) => {
           >
             <div className='flex items-center space-x-3'>
               <div className='relative'>
-                <img
-                  src={item.senderId?.imageUrl}
-                  alt='Profile'
-                  className={`w-10 h-10 rounded-full object-cover border-2 transition-all duration-300 ${
-                    item.isRead
-                      ? 'border-gray-200 dark:border-gray-600'
-                      : 'border-blue-100 dark:border-blue-900'
-                  }`}
-                />
+                {item.senderId?.imageUrl && (
+                  <img
+                    src={
+                      item.senderId?.imageUrl ||
+                      'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                    }
+                    alt='Profile'
+                    className={`w-10 h-10 rounded-full object-cover border-2 transition-all duration-300 ${
+                      item.isRead
+                        ? 'border-gray-200 dark:border-gray-600'
+                        : 'border-blue-100 dark:border-blue-900'
+                    }`}
+                  />
+                )}
                 <div
                   className={`absolute -bottom-1 -right-1 p-1 rounded-full ${
                     item.type === 'comment' ? 'bg-blue-500' : ''
