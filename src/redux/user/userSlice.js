@@ -80,6 +80,11 @@ const userSlice = createSlice({
         state.currentUser.isOnboardingCompleted = action.payload;
       }
     },
+    updateProfileFilled(state, action) {
+      if (state.currentUser) {
+        state.currentUser.isProfileFilled = action.payload;
+      }
+    },
     extraReducers: (builder) => {
       builder
         .addCase(fetchUserData.pending, (state) => {
@@ -112,6 +117,7 @@ export const {
   signOutUserSuccess,
   signOutUserFailure,
   updateOnboarding,
+  updateProfileFilled,
 } = userSlice.actions;
 
 export default userSlice.reducer;
