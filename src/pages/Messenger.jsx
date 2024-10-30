@@ -12,12 +12,12 @@ import {
 import Conversation from '../components/home/conversations/Conversation';
 import Message from '../components/home/message/Message';
 import { FiSend } from 'react-icons/fi';
-import { io } from 'socket.io-client';
 import ChatUsers from '../components/home/chatUsers/ChatUsers';
 import Spinner from '../components/Spinner';
 import { Link } from 'react-router-dom';
 import DeleteConversation from '../components/home/conversations/DeleteConversation';
 import { MdOutlineClose } from 'react-icons/md';
+import { useSocket } from '../hook/useSocket';
 
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -32,21 +32,18 @@ const Messenger = () => {
   const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
-
-  const [error, setError] = useState(null);
-  const socket = useRef();
-  const scrollRef = useRef();
+  const { emit, subscribe, isConnected } = useSocket();
+  const scrollRef = useRef(null);
 
   useEffect(() => {
-    socket.current = io('ws://localhost:3000');
-    socket.current.on('getMessage', (data) => {
+    subscribe('getMessage', (data) => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
         createdAt: Date.now(),
       });
     });
-  }, []);
+  }, [subscribe]);
 
   useEffect(() => {
     arrivalMessage &&
@@ -55,8 +52,10 @@ const Messenger = () => {
   }, [arrivalMessage, currentChat]);
 
   useEffect(() => {
-    socket.current.emit('addUser', accountId);
-  }, [accountId]);
+    if (isConnected) {
+      emit('addUser', accountId);
+    }
+  }, [accountId, emit, isConnected]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -70,7 +69,6 @@ const Messenger = () => {
         const data = await res.json();
         setConversations(data);
       } catch (error) {
-        setError('Error fetching conversations. Please try again.');
         console.error('Error fetching conversations:', error);
       }
     };
@@ -170,7 +168,7 @@ const Messenger = () => {
       text: newMessage,
     };
 
-    socket.current.emit('sendMessage', {
+    emit('sendMessage', {
       conversationId: conversation._id,
       senderId: accountId,
       receiverId,
@@ -208,15 +206,19 @@ const Messenger = () => {
     if (selectedUser?._id !== user._id) {
       setSelectedUser(user);
       setMessages([]);
-      setIsMessageLoaded(true);
+      setIsMessageLoaded(false);
 
-      try {
-        const conversation = await getOrCreateConversation(user._id);
-        setCurrentChat(conversation);
-        setActiveConversation(conversation._id);
-      } catch (error) {
-        console.error('Error checking for existing conversation:', error);
-      } finally {
+      const existingConversation = conversations.find((conv) =>
+        conv.members.includes(user._id)
+      );
+
+      if (existingConversation) {
+        setCurrentChat(existingConversation);
+        setActiveConversation(existingConversation._id);
+        setIsMessageLoaded(true);
+      } else {
+        setCurrentChat(null);
+        setActiveConversation(null);
         setIsMessageLoaded(false);
       }
     }
@@ -332,16 +334,12 @@ const Messenger = () => {
               value='search'
               className='flex-grow overflow-y-auto p-4'
             >
-              {error ? (
-                <div className='text-red-500 text-center'>{error}</div>
-              ) : (
-                <ChatUsers
-                  currentId={accountId}
-                  setCurrentChat={setCurrentChat}
-                  onSelectUser={handleSelectUser}
-                  setIsConversationOpen={setIsConversationOpen}
-                />
-              )}
+              <ChatUsers
+                currentId={accountId}
+                setCurrentChat={setCurrentChat}
+                onSelectUser={handleSelectUser}
+                setIsConversationOpen={setIsConversationOpen}
+              />
             </TabsContent>
           </Tabs>
         </div>
@@ -399,20 +397,16 @@ const Messenger = () => {
               {!isMessageLoaded ? (
                 <>
                   <div className='flex-grow overflow-y-auto p-4'>
-                    {error ? (
-                      <div className='text-red-500 text-center'>{error}</div>
-                    ) : (
-                      <>
-                        {messages.map((message) => (
-                          <div ref={scrollRef} key={message._id}>
-                            <Message
-                              message={message}
-                              own={message.sender === accountId}
-                            />
-                          </div>
-                        ))}
-                      </>
-                    )}
+                    <>
+                      {messages.map((message) => (
+                        <div ref={scrollRef} key={message._id}>
+                          <Message
+                            message={message}
+                            own={message.sender === accountId}
+                          />
+                        </div>
+                      ))}
+                    </>
                   </div>
                   <div className='p-4 bg-gray-100'>
                     {!currentUser.isProfileFilled ? (
