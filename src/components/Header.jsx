@@ -44,13 +44,13 @@ const Header = () => {
   const [accountId, setAccountId] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [notificationCount, setNotificationCount] = useState(0);
-  const { socket, emit, subscribe, unsubscribe, isConnected } = useSocket();
+  const { emit, subscribe, unsubscribe, isConnected } = useSocket();
 
   useEffect(() => {
-    if (socket) {
+    if (isConnected) {
       emit('addUser', currentUser?._id);
     }
-  }, [socket, emit, currentUser?._id]);
+  }, [isConnected, emit, currentUser?._id]);
 
   useEffect(() => {
     const getAccountId = async () => {
@@ -105,7 +105,7 @@ const Header = () => {
   }, [accountId]);
 
   useEffect(() => {
-    if (socket && isConnected) {
+    if (isConnected) {
       subscribe('getUnreadNotificationCount', (data) => {
         setNotificationCount(data);
       });
@@ -124,7 +124,7 @@ const Header = () => {
         unsubscribe('getCount');
       };
     }
-  }, [socket, subscribe, unsubscribe, isConnected]);
+  }, [subscribe, unsubscribe, isConnected]);
 
   const handleSignOut = async () => {
     try {
