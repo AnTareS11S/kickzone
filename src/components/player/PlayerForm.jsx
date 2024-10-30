@@ -19,6 +19,8 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '../ui/hover-card';
+import { useDispatch } from 'react-redux';
+import { updateProfileFilled } from '../../redux/user/userSlice';
 
 const PlayerForm = () => {
   const fileRef = useRef(null);
@@ -32,6 +34,7 @@ const PlayerForm = () => {
     loading,
     currentUser,
   } = useFetchPlayerByUserId(isChanged);
+  const dispatch = useDispatch();
   const { toast } = useToast();
 
   const form = useForm({
@@ -127,6 +130,7 @@ const PlayerForm = () => {
       });
 
       if (res.ok) {
+        dispatch(updateProfileFilled(true));
         toast({
           title: 'Success!',
           description: 'Referee profile updated successfully',
