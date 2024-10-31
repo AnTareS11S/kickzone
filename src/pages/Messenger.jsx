@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { Input } from '../components/ui/input';
@@ -29,6 +29,7 @@ const Messenger = () => {
   const [newMessage, setNewMessage] = useState('');
   const [arrivalMessage, setArrivalMessage] = useState(null);
   const [isMessageLoaded, setIsMessageLoaded] = useState(false);
+  const [isMessageSending, setIsMessageSending] = useState(false);
   const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
@@ -61,19 +62,37 @@ const Messenger = () => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const fetchConversations = useCallback(async () => {
+    if (!accountId) return;
+
+    try {
+      const res = await fetch(`/api/conversations/${accountId}`);
+      if (!res.ok) throw new Error('Failed to fetch conversations');
+      const data = await res.json();
+      setConversations(data);
+    } catch (error) {
+      console.error('Error fetching conversations:', error);
+    }
+  }, [accountId]);
+
   useEffect(() => {
-    const fetchConversations = async () => {
-      try {
-        const res = await fetch(`/api/conversations/${accountId}`);
-        if (!res.ok) throw new Error('Failed to fetch conversations');
-        const data = await res.json();
-        setConversations(data);
-      } catch (error) {
-        console.error('Error fetching conversations:', error);
+    if (accountId) {
+      fetchConversations();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [accountId, isConversationOpen]);
+
+  useEffect(() => {
+    const unsubscribe = subscribe('conversationCreated', () => {
+      fetchConversations();
+    });
+
+    return () => {
+      if (unsubscribe) {
+        unsubscribe();
       }
     };
-    fetchConversations();
-  }, [currentUser, accountId, isConversationOpen]);
+  }, [subscribe, fetchConversations]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -151,6 +170,11 @@ const Messenger = () => {
       try {
         conversation = await getOrCreateConversation(selectedUser._id);
         setCurrentChat(conversation);
+        setActiveConversation(conversation._id);
+
+        emit('newConversation', {
+          receiverId: selectedUser._id,
+        });
       } catch (error) {
         console.error('Error checking/creating conversation:', error);
         return;
@@ -175,7 +199,13 @@ const Messenger = () => {
       text: newMessage,
     });
 
+    emit('newUnreadMessage', {
+      userId: receiverId,
+      conversationId: conversation._id,
+    });
+
     try {
+      setIsMessageSending(true);
       const res = await fetch('/api/messages/send-message', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -189,6 +219,8 @@ const Messenger = () => {
       setSelectedUser(null);
     } catch (error) {
       console.error('Error sending message:', error);
+    } finally {
+      setIsMessageSending(false);
     }
   };
 
@@ -398,8 +430,8 @@ const Messenger = () => {
                 <>
                   <div className='flex-grow overflow-y-auto p-4'>
                     <>
-                      {messages.map((message) => (
-                        <div ref={scrollRef} key={message._id}>
+                      {messages.map((message, index) => (
+                        <div ref={scrollRef} key={message._id || index}>
                           <Message
                             message={message}
                             own={message.sender === accountId}
@@ -428,7 +460,7 @@ const Messenger = () => {
                         <Button
                           type='submit'
                           className='bg-primary-500 hover:bg-primary-600 text-white p-3 rounded-lg transition-colors duration-200 flex items-center'
-                          disabled={!newMessage.trim()}
+                          disabled={!newMessage.trim() || isMessageSending}
                         >
                           <FiSend size={18} className='mr-2' />
                           Send
