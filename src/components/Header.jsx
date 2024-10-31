@@ -95,7 +95,7 @@ const Header = () => {
         const res = await fetch(`/api/conversations/unread/${accountId}`);
         if (!res.ok) throw new Error('Failed to fetch unread messages');
         const data = await res.json();
-        setUnreadMessages(data.unreadCount || 0);
+        setUnreadMessages(data || 0);
       } catch (error) {
         console.error('Error fetching unread messages:', error);
       }
