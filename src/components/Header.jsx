@@ -110,7 +110,7 @@ const Header = () => {
         setNotificationCount(data);
       });
 
-      subscribe('updateUnreadCount', (count) => {
+      subscribe('getUnreadMessageCount', (count) => {
         setUnreadMessages(count);
       });
 
@@ -121,6 +121,7 @@ const Header = () => {
       return () => {
         unsubscribe('getUnreadNotificationCount');
         unsubscribe('updateUnreadCount');
+        unsubscribe('getUnreadMessageCount');
         unsubscribe('getCount');
       };
     }
