@@ -33,18 +33,29 @@ const Messenger = () => {
   const [isConversationOpen, setIsConversationOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
+  const [unreadConversations, setUnreadConversations] = useState([]);
   const { emit, subscribe, isConnected } = useSocket();
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    subscribe('getMessage', (data) => {
+    const messageHandler = (data) => {
       setArrivalMessage({
         sender: data.senderId,
         text: data.text,
         createdAt: Date.now(),
       });
-    });
-  }, [subscribe]);
+
+      if (!currentChat || currentChat._id !== data.conversationId) {
+        setUnreadConversations((prev) =>
+          prev.includes(data.conversationId)
+            ? prev
+            : [...prev, data.conversationId]
+        );
+      }
+    };
+
+    subscribe('getMessage', messageHandler);
+  }, [subscribe, currentChat]);
 
   useEffect(() => {
     arrivalMessage &&
@@ -69,7 +80,8 @@ const Messenger = () => {
       const res = await fetch(`/api/conversations/${accountId}`);
       if (!res.ok) throw new Error('Failed to fetch conversations');
       const data = await res.json();
-      setConversations(data);
+      setConversations(data.conversations);
+      setUnreadConversations(data.unreadConversations);
     } catch (error) {
       console.error('Error fetching conversations:', error);
     }
@@ -224,15 +236,50 @@ const Messenger = () => {
     }
   };
 
-  const handleSelectConversation = (conversation) => {
+  const handleSelectConversation = async (conversation) => {
     if (currentChat?._id !== conversation._id) {
       setCurrentChat(conversation);
       setSelectedUser(null);
       setMessages([]);
       setIsMessageLoaded(true);
       setActiveConversation(conversation._id);
+
+      setUnreadConversations((prev) =>
+        prev.filter((id) => id !== conversation._id)
+      );
+
+      try {
+        await fetch(`/api/conversations/mark-as-read/${conversation._id}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: accountId }),
+        });
+
+        emit('messagesRead', {
+          userId: accountId,
+          conversationId: conversation._id,
+        });
+      } catch (error) {
+        console.error('Error marking conversation as read:', error);
+      }
     }
   };
+
+  useEffect(() => {
+    const markAsReadHandler = (data) => {
+      if (data.readerId !== accountId) {
+        setUnreadConversations((prev) =>
+          prev.filter((id) => id !== data.conversationId)
+        );
+      }
+    };
+
+    subscribe('messagesRead', markAsReadHandler);
+
+    return () => {
+      // Cleanup jeśli potrzebny
+    };
+  }, [subscribe, accountId]);
 
   const handleSelectUser = async (user) => {
     if (selectedUser?._id !== user._id) {
@@ -351,12 +398,19 @@ const Messenger = () => {
                 {conversations.map((conversation) => (
                   <div
                     key={conversation._id}
-                    onClick={() => handleSelectConversation(conversation)}
+                    onClick={() => {
+                      handleSelectConversation(conversation);
+                      // Remove this conversation from unread list when selected
+                      setUnreadConversations((prev) =>
+                        prev.filter((id) => id !== conversation._id)
+                      );
+                    }}
                     className='cursor-pointer transition transform hover:scale-105'
                   >
                     <Conversation
                       conversation={conversation}
                       isActive={conversation._id === activeConversation}
+                      isUnread={unreadConversations.includes(conversation._id)}
                     />
                   </div>
                 ))}
