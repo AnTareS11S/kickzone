@@ -395,25 +395,52 @@ const Messenger = () => {
               className='flex-grow overflow-y-auto p-4'
             >
               <>
-                {conversations.map((conversation) => (
-                  <div
-                    key={conversation._id}
-                    onClick={() => {
-                      handleSelectConversation(conversation);
-                      // Remove this conversation from unread list when selected
-                      setUnreadConversations((prev) =>
-                        prev.filter((id) => id !== conversation._id)
-                      );
-                    }}
-                    className='cursor-pointer transition transform hover:scale-105'
-                  >
-                    <Conversation
-                      conversation={conversation}
-                      isActive={conversation._id === activeConversation}
-                      isUnread={unreadConversations.includes(conversation._id)}
-                    />
+                {conversations.length > 0 ? (
+                  <div className='space-y-2 p-2'>
+                    {conversations.map((conversation) => (
+                      <motion.div
+                        key={conversation._id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.2 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => {
+                          handleSelectConversation(conversation);
+                          setUnreadConversations((prev) =>
+                            prev.filter((id) => id !== conversation._id)
+                          );
+                        }}
+                        className='cursor-pointer'
+                      >
+                        <Conversation
+                          conversation={conversation}
+                          isActive={conversation._id === activeConversation}
+                          isUnread={unreadConversations.includes(
+                            conversation._id
+                          )}
+                        />
+                      </motion.div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <div className='flex items-center justify-center h-full w-full p-6'>
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      className='text-center bg-white-100 rounded-lg p-8 max-w-md'
+                    >
+                      <h2 className='text-xl font-semibold text-gray-700 mb-2'>
+                        No Conversations Yet
+                      </h2>
+                      <p className='text-gray-500 mb-4'>
+                        Start a new chat by searching for a user or connecting
+                        with contacts.
+                      </p>
+                    </motion.div>
+                  </div>
+                )}
               </>
             </TabsContent>
             <TabsContent
