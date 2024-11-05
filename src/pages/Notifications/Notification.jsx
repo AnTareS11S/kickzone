@@ -24,7 +24,7 @@ const Notification = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { emit, socket, subscribe } = useSocket();
+  const { emit, socket, subscribe, unsubscribe } = useSocket();
 
   const getNotifications = useCallback(async () => {
     if (!currentUser?._id) return;
@@ -112,19 +112,14 @@ const Notification = () => {
       }
     };
 
-    const unsubscribeGet = subscribe('getNotification', getNotificationHandler);
-    const unsubscribeRemove = subscribe(
-      'removeNotification',
-      handleRemoveNotification
-    );
-
     return () => {
-      unsubscribeGet();
-      unsubscribeRemove();
+      unsubscribe('getNotification', getNotificationHandler);
+      unsubscribe('removeNotification', handleRemoveNotification);
     };
   }, [
     socket,
     subscribe,
+    unsubscribe,
     handleRemoveNotification,
     currentUser?._id,
     notifications,
