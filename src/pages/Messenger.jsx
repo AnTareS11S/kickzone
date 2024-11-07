@@ -18,6 +18,10 @@ import { Link } from 'react-router-dom';
 import DeleteConversation from '../components/home/conversations/DeleteConversation';
 import { MdOutlineClose } from 'react-icons/md';
 import { useSocket } from '../hook/useSocket';
+import {
+  fetchInitialMessagesCount,
+  markConversationAsRead,
+} from '../service/messengerService';
 
 const Messenger = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -34,7 +38,7 @@ const Messenger = () => {
   const [selectedUser, setSelectedUser] = useState(null);
   const [activeConversation, setActiveConversation] = useState(null);
   const [unreadConversations, setUnreadConversations] = useState([]);
-  const { emit, subscribe, isConnected } = useSocket();
+  const { emit, subscribe, isConnected, unsubscribe } = useSocket();
   const scrollRef = useRef(null);
 
   useEffect(() => {
@@ -55,7 +59,11 @@ const Messenger = () => {
     };
 
     subscribe('getMessage', messageHandler);
-  }, [subscribe, currentChat]);
+
+    return () => {
+      unsubscribe('getMessage', messageHandler);
+    };
+  }, [subscribe, currentChat, unsubscribe]);
 
   useEffect(() => {
     arrivalMessage &&
@@ -95,16 +103,14 @@ const Messenger = () => {
   }, [accountId, isConversationOpen]);
 
   useEffect(() => {
-    const unsubscribe = subscribe('conversationCreated', () => {
+    subscribe('conversationCreated', () => {
       fetchConversations();
     });
 
     return () => {
-      if (unsubscribe) {
-        unsubscribe();
-      }
+      unsubscribe('conversationCreated');
     };
-  }, [subscribe, fetchConversations]);
+  }, [subscribe, fetchConversations, unsubscribe]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -211,11 +217,6 @@ const Messenger = () => {
       text: newMessage,
     });
 
-    emit('newUnreadMessage', {
-      userId: receiverId,
-      conversationId: conversation._id,
-    });
-
     try {
       setIsMessageSending(true);
       const res = await fetch('/api/messages/send-message', {
@@ -249,15 +250,16 @@ const Messenger = () => {
       );
 
       try {
-        await fetch(`/api/conversations/mark-as-read/${conversation._id}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: accountId }),
-        });
+        await markConversationAsRead(conversation._id, accountId);
 
         emit('messagesRead', {
-          userId: accountId,
+          readerId: accountId,
           conversationId: conversation._id,
+        });
+
+        emit('updateUnreadMessageCount', {
+          userId: accountId,
+          count: await fetchInitialMessagesCount(accountId),
         });
       } catch (error) {
         console.error('Error marking conversation as read:', error);
@@ -266,20 +268,13 @@ const Messenger = () => {
   };
 
   useEffect(() => {
-    const markAsReadHandler = (data) => {
-      if (data.readerId !== accountId) {
-        setUnreadConversations((prev) =>
-          prev.filter((id) => id !== data.conversationId)
-        );
-      }
-    };
-
-    subscribe('messagesRead', markAsReadHandler);
-
-    return () => {
-      // Cleanup jeśli potrzebny
-    };
-  }, [subscribe, accountId]);
+    if (currentChat && accountId) {
+      emit('messagesRead', {
+        userId: accountId,
+        conversationId: currentChat._id,
+      });
+    }
+  }, [currentChat, accountId, emit]);
 
   const handleSelectUser = async (user) => {
     if (selectedUser?._id !== user._id) {
@@ -536,6 +531,22 @@ const Messenger = () => {
                           placeholder='Type a message...'
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
+                          onFocus={async () => {
+                            await markConversationAsRead(
+                              currentChat._id,
+                              accountId
+                            );
+
+                            emit('messagesRead', {
+                              readerId: accountId,
+                              conversationId: currentChat._id,
+                            });
+
+                            emit('updateUnreadMessageCount', {
+                              userId: accountId,
+                              count: await fetchInitialMessagesCount(accountId),
+                            });
+                          }}
                           className='flex-grow mr-2 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500'
                         />
                         <Button
