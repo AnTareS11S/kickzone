@@ -39,7 +39,7 @@ const CoachTeamView = () => {
   }
 
   return (
-    <div className='p-6 bg-gray-100 space-y-6'>
+    <div className='space-y-6'>
       <BackButton />
       <div>
         <div className='text-heading2-bold'>Team</div>
