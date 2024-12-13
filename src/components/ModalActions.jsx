@@ -15,6 +15,7 @@ import {
   PlusCircledIcon,
   EnvelopeClosedIcon,
 } from '@radix-ui/react-icons';
+import { DialogDescription } from '@radix-ui/react-dialog';
 
 const ModalActions = ({
   label,
@@ -43,20 +44,20 @@ const ModalActions = ({
   const renderTrigger = () => {
     if (edit)
       return (
-        <Pencil1Icon className='w-5 h-5 cursor-pointer  hover:text-primary-500 transition-colors' />
+        <Pencil1Icon className='w-5 h-5 cursor-pointer hover:text-primary-500 transition-colors' />
       );
     if (add)
       return (
-        <PlusCircledIcon className='w-5 h-5 cursor-pointer  hover:text-primary-500 transition-colors' />
+        <PlusCircledIcon className='w-5 h-5 cursor-pointer hover:text-primary-500 transition-colors' />
       );
     if (isMessage)
       return (
-        <EnvelopeClosedIcon className='w-5 h-5 cursor-pointer hover:text-primary-500 transition-colors' />
+        <EnvelopeClosedIcon className='w-5 h-5 cursor-pointe hover:text-primary-500 transition-colors' />
       );
     return (
       <Button
         variant='outline'
-        className='bg-primary-500 text-white hover:bg-primary-600 transition-colors'
+        className='bg-primary-500 mb-3 text-white hover:bg-primary-600 transition-colors'
       >
         {label}
       </Button>
@@ -75,6 +76,7 @@ const ModalActions = ({
             <DialogTitle className='text-body-semibold mb-2'>
               {title}
             </DialogTitle>
+            <DialogDescription></DialogDescription>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-6'>
