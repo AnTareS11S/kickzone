@@ -73,6 +73,7 @@ import ContactManage from './pages/Contact/ContactManage';
 import AdminProfile from './pages/Admin/AdminProfile';
 import Notification from './pages/Notifications/Notification';
 import { SocketProvider } from './contexts/SocketContext';
+import RoleNotificationPage from './pages/RoleNotification/RoleNotificationPage';
 
 const App = () => {
   return (
@@ -113,6 +114,7 @@ const App = () => {
               <Route path='/contact' element={<ContactPage />} />
               <Route path='/about' element={<AboutPage />} />
               <Route path='/explore' element={<ExplorePage />} />
+              <Route path='/admin-alerts' element={<RoleNotificationPage />} />
 
               {/* Referee routes */}
               <Route path='/dashboard/referee' element={<RefereeRoute />}>
