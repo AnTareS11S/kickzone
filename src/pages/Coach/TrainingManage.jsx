@@ -132,6 +132,7 @@ const TrainingManage = () => {
         onEditComponent={EditEntity}
         onDeleteComponent={DeleteEntity}
         formSchema={trainingValidationSchema}
+        teamId={coach?.currentTeam}
         objectId={coach?._id}
         isAction={true}
         isExpandable={false}
