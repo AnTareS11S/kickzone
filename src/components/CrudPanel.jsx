@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import CustomDataTable from './CustomDataTable';
 import ModalActions from './ModalActions';
 import { useToast } from './ui/use-toast';
+import { useSocket } from '../hook/useSocket';
 
 const CrudPanel = ({
   apiPath,
@@ -22,6 +23,7 @@ const CrudPanel = ({
   formSchema,
   isExpandable,
   objectId,
+  teamId,
   isAction,
   ...rest
 }) => {
@@ -30,6 +32,7 @@ const CrudPanel = ({
   const [file, setFile] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
+  const { emit } = useSocket();
 
   const form = useForm({
     resolver: zodResolver(formSchema(false)),
@@ -61,6 +64,12 @@ const CrudPanel = ({
       } else {
         formData.append(key, data[key]);
       }
+    }
+
+    if (apiPath === 'training') {
+      emit('teamTrainingNotification', {
+        teamId: teamId,
+      });
     }
 
     try {
