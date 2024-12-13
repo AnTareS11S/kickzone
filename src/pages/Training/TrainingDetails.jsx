@@ -11,14 +11,9 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
-import { Checkbox } from '../../components/ui/checkbox';
+
 import { Button } from '../../components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from '../../components/ui/form';
+import { Form } from '../../components/ui/form';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import { Separator } from '../../components/ui/separator';
@@ -28,11 +23,19 @@ import { useToast } from '../../components/ui/use-toast';
 import { useFetchTeamPlayers } from '../../components/hooks/useFetchTeamPlayers';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import { useFetchPlayerByUserId } from '../../components/hooks/useFetchPlayerByUserId';
+import {
+  FaCalendar,
+  FaClipboardList,
+  FaClock,
+  FaInfo,
+  FaMapPin,
+  FaUsers,
+} from 'react-icons/fa';
+import FormArea from '../../components/FormArea';
 
-const formSchema = () =>
-  z.object({
-    attendance: z.boolean(),
-  });
+const formSchema = z.object({
+  attendance: z.boolean(),
+});
 
 const playerFormSchema = () =>
   z.object({
@@ -119,92 +122,124 @@ const TrainingDetails = () => {
   if (loading) return <Spinner />;
 
   return (
-    <div className='container mx-auto px-4 py-8'>
-      <BackButton />
-      <Card className='mt-8 bg-gradient-to-r from-purple-500 to-indigo-500 text-white rounded-lg shadow-lg'>
-        <CardHeader className='text-center'>
-          <CardTitle className='text-3xl font-bold'>{training?.name}</CardTitle>
-          <p className='text-gray-200 mt-2'>
-            {new Date(training?.trainingDate).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
-              hour: '2-digit',
-              minute: '2-digit',
-            })}
-            <br />
-            Duration: {training?.duration} minutes
-            <br />
-            Location: {training?.location}
-          </p>
-        </CardHeader>
-        {training?.isActive && currentUser?.role === 'player' && (
-          <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className='mt-6'>
-                <FormField
-                  control={form.control}
-                  name='attendance'
-                  render={({ field }) => (
-                    <FormItem className='flex items-center justify-center gap-2 text-gray-200'>
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          className='text-white'
-                        />
-                      </FormControl>
-                      <label>Mark attendance and submit</label>
-                    </FormItem>
-                  )}
-                />
-                <div className='flex justify-center mt-4'>
-                  <Button
-                    type='submit'
-                    className='bg-white text-purple-500 hover:bg-purple-100'
-                  >
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        )}
-      </Card>
-
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8'>
-        {['trainingType', 'typeDescription', 'notes', 'equipment'].map(
-          (item) =>
-            training?.[item] && (
-              <Card key={item} className='bg-gray-100 rounded-lg shadow-md'>
-                <CardHeader>
-                  <h3 className='text-lg font-semibold text-center'>
-                    {item === 'trainingType'
-                      ? 'Training Type'
-                      : item === 'typeDescription'
-                      ? 'Type Description'
-                      : item === 'notes'
-                      ? 'Coach Notes'
-                      : 'Required Equipment'}
-                  </h3>
-                </CardHeader>
-                <CardContent>
-                  <p className='text-gray-800 text-center'>
-                    {item === 'trainingType'
-                      ? training.trainingType.name
-                      : training[item]}
-                  </p>
-                </CardContent>
-              </Card>
-            )
-        )}
+    <div className='mx-auto px-4 py-8 max-w-8xl'>
+      <div className='flex items-center justify-between mb-8'>
+        <BackButton />
+        <div className='text-sm text-gray-500 flex items-center gap-2'>
+          <FaClock className='w-4 h-4' />
+          {new Date(training?.trainingDate).toLocaleDateString('en-GB', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </div>
       </div>
 
-      <Separator className='my-8' />
+      <div className='grid md:grid-cols-3 gap-6'>
+        <div className='md:col-span-2'>
+          <Card className='bg-gradient-to-br from-primary-500 to-purple-600 text-white rounded-xl shadow-2xl'>
+            <CardHeader className='pb-0'>
+              <div className='flex items-center justify-between'>
+                <CardTitle className='text-3xl font-bold flex items-center gap-3'>
+                  <FaCalendar className='w-8 h-8' />
+                  {training?.name}
+                </CardTitle>
+                {training?.isActive && (
+                  <span className='bg-green-500 text-white px-3 py-1 rounded-full text-xs'>
+                    Active
+                  </span>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className='pt-4'>
+              <div className='grid md:grid-cols-3 gap-4 text-white/90'>
+                <div className='flex items-center gap-2'>
+                  <FaClock className='w-5 h-5' />
+                  <span>{training?.duration} mins</span>
+                </div>
+                <div className='flex items-center gap-2'>
+                  <FaMapPin className='w-5 h-5' />
+                  <span>{training?.location}</span>
+                </div>
+                <div className='flex items-center gap-2'>
+                  <FaInfo className='w-5 h-5' />
+                  <span>{training?.trainingType?.name}</span>
+                </div>
+              </div>
+
+              {training?.isActive && currentUser?.role === 'player' && (
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmit)}
+                    className='mt-6 bg-white/10 p-4 rounded-lg'
+                  >
+                    <div className='flex flex-col items-center justify-center w-full space-y-2 '>
+                      <div className='flex items-center gap-2'>
+                        <FormArea
+                          id='attendance'
+                          type='checkbox'
+                          form={form}
+                          name='attendance'
+                          labelName='Mark Attendance'
+                        />
+                      </div>
+
+                      <Button
+                        type='submit'
+                        className='bg-white text-primary-500 hover:bg-purple-100'
+                      >
+                        Submit Attendance
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className='space-y-6'>
+          {['typeDescription', 'notes', 'equipment'].map(
+            (item) =>
+              training?.[item] && (
+                <Card
+                  key={item}
+                  className='bg-gray-100 rounded-xl shadow-md hover:shadow-lg transition-shadow'
+                >
+                  <CardHeader className='pb-2'>
+                    <h3 className='text-lg font-semibold text-gray-800 flex items-center gap-2'>
+                      {item === 'typeDescription' ? (
+                        <FaClipboardList className='w-5 h-5' />
+                      ) : item === 'notes' ? (
+                        <FaInfo className='w-5 h-5' />
+                      ) : (
+                        <FaUsers className='w-5 h-5' />
+                      )}
+                      {item === 'typeDescription'
+                        ? 'Type Description'
+                        : item === 'notes'
+                        ? 'Coach Notes'
+                        : 'Required Equipment'}
+                    </h3>
+                  </CardHeader>
+                  <CardContent>
+                    <p className='text-gray-600'>{training[item]}</p>
+                  </CardContent>
+                </Card>
+              )
+          )}
+        </div>
+      </div>
 
       {coach && currentUser?.role === 'coach' && training?.participants && (
-        <>
-          <h3 className='text-2xl font-bold text-gray-800 text-center mb-6'>
-            Participants
+        <div className='mt-18'>
+          <Separator className='mb-6' />
+          <h3 className='text-2xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-3'>
+            <FaUsers className='w-7 h-7' />
+            Training Participants
           </h3>
           <CrudPanel
             apiPath='participants'
@@ -228,7 +263,7 @@ const TrainingDetails = () => {
             isExpandable={false}
             isAction={true}
           />
-        </>
+        </div>
       )}
     </div>
   );
