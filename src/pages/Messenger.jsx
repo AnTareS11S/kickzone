@@ -480,6 +480,7 @@ const Messenger = () => {
                     <>
                       <DeleteConversation
                         conversation={currentChat}
+                        userId={accountId}
                         onConversationDeleted={handleConversationDeleted}
                       />
                       <Button
