@@ -24,6 +24,7 @@ const FormArea = ({
   items,
   time,
   setFile,
+  labelName,
   placeholder,
   isPortal,
   onChange,
@@ -44,7 +45,7 @@ const FormArea = ({
             {label}
           </FormLabel>
           <FormControl>
-            <div className='flex flex-row items-center gap-4'>
+            <div className='flex flex-row items-center justify-center gap-4'>
               {icon && <span className='text-gray-400'>{icon}</span>}
               {type === 'file' ? (
                 <FileInput
@@ -85,7 +86,11 @@ const FormArea = ({
                   isEdit={isEdit}
                 />
               ) : type === 'checkbox' ? (
-                <CheckboxInput field={field} name={name} />
+                <CheckboxInput
+                  field={field}
+                  name={name}
+                  labelName={labelName}
+                />
               ) : (
                 <DefaultInput
                   field={field}
@@ -212,13 +217,16 @@ const DateInput = ({
   />
 );
 
-const CheckboxInput = ({ field, name }) => (
-  <Checkbox
-    id={name}
-    checked={field.value}
-    onCheckedChange={field.onChange}
-    className='w-6 h-6'
-  />
+const CheckboxInput = ({ field, name, labelName }) => (
+  <div className='flex items-center gap-2'>
+    <Checkbox
+      id={name}
+      checked={field.value}
+      onCheckedChange={field.onChange}
+      className='w-5 h-5'
+    />
+    <label className='text-sm text-white'>{labelName}</label>
+  </div>
 );
 
 const DefaultInput = ({
