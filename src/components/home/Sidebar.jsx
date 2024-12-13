@@ -9,6 +9,8 @@ import {
   FaSearch,
   FaUsers,
 } from 'react-icons/fa';
+import { useSocket } from '../../hook/useSocket';
+import { motion } from 'framer-motion';
 
 const sidebarLinks = [
   { icon: <FaHome className='w-6 h-6' />, route: '/', label: 'Home' },
@@ -46,17 +48,54 @@ const sidebarLinks = [
 ];
 
 // eslint-disable-next-line react/display-name
-const SidebarLink = memo(({ link, isActive }) => (
+const SidebarLink = memo(({ link, isActive, isTrainingNotif }) => (
   <Link
     to={link.route}
-    className={`flex items-center p-2 rounded-lg transition-all duration-300 ${
-      isActive
-        ? 'bg-primary-500 text-white'
-        : 'text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700'
-    }`}
+    className={`group relative flex items-center
+        px-1 py-2.5 rounded-xl
+        transition-all duration-300 ${
+          isActive
+            ? 'bg-primary-500 text-white shadow-lg'
+            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-700'
+        }`}
   >
-    <span className='mr-3'>{link.icon}</span>
-    <span className='hidden md:block'>{link.label}</span>
+    <div
+      className={`
+        mr-3
+        ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}
+      `}
+    >
+      {link.icon}
+    </div>
+
+    <span
+      className={`
+        text-sm font-medium
+        hidden md:block
+        transition-all duration-300
+        ${isActive ? 'text-white' : 'text-gray-700 group-hover:text-gray-900'}
+      `}
+    >
+      {link.label}
+    </span>
+
+    {isTrainingNotif && (
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 300 }}
+        className='
+            absolute top-2 right-1
+            w-7 h-7
+            bg-gray-600
+            rounded-full
+            flex items-center justify-center
+            animate-pulse
+          '
+      >
+        <span className='text-[10px] text-white font-bold'>New</span>
+      </motion.div>
+    )}
   </Link>
 ));
 
@@ -65,6 +104,20 @@ const Sidebar = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [player, setPlayer] = useState({});
   const currentYear = new Date().getFullYear();
+  const [trainingNotifications, setTrainingNotifications] = useState(0);
+  const { subscribe, emit } = useSocket();
+
+  useEffect(() => {
+    if (!player?.currentTeam || !currentUser?._id) return;
+    emit('getTeamTrainingNotifications', {
+      teamId: player?.currentTeam,
+      userId: currentUser?._id,
+    });
+
+    subscribe('unreadTeamTrainingNotification', (data) => {
+      setTrainingNotifications(data);
+    });
+  }, [subscribe, emit, player?.currentTeam, currentUser?._id]);
 
   useEffect(() => {
     const getPlayer = async () => {
@@ -114,6 +167,9 @@ const Sidebar = () => {
         key={link.label}
         link={link}
         isActive={pathname === link.route}
+        isTrainingNotif={
+          link.route === '/training' && trainingNotifications > 0
+        }
       />
     ));
 
