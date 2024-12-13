@@ -7,7 +7,9 @@ export const trainingValidationSchema = () =>
     }),
     trainingDate: z.coerce.date().refine(
       (val) => {
-        return val.toLocaleDateString() >= new Date().toLocaleDateString();
+        const date = new Date(val);
+        const today = new Date();
+        return date.getTime() >= today.getTime();
       },
       {
         message: 'Training date must be in the future or today',
