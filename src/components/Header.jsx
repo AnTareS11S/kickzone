@@ -27,6 +27,7 @@ import {
   FaUser,
   FaCog,
   FaSignOutAlt,
+  FaExclamationCircle,
 } from 'react-icons/fa';
 import {
   MdPrivacyTip,
@@ -44,6 +45,7 @@ const Header = () => {
   const [accountId, setAccountId] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [notificationCount, setNotificationCount] = useState(0);
+  const [adminNotificationExists, setAdminNotificationExists] = useState(false);
   const { emit, subscribe, unsubscribe, isConnected } = useSocket();
 
   useEffect(() => {
@@ -105,6 +107,25 @@ const Header = () => {
   }, [accountId]);
 
   useEffect(() => {
+    const checkAdminNotification = async () => {
+      try {
+        if (!currentUser?._id) return;
+
+        const res = await fetch(
+          `/api/user/has-admin-notification/${currentUser?._id}`
+        );
+        if (!res.ok) throw new Error('Failed to fetch admin notifications');
+        const data = await res.json();
+        setAdminNotificationExists(data.exists);
+      } catch (error) {
+        console.error('Error checking admin notifications: ', error);
+      }
+    };
+
+    checkAdminNotification();
+  }, [currentUser]);
+
+  useEffect(() => {
     if (isConnected) {
       subscribe('getUnreadNotificationCount', (data) => {
         setNotificationCount(data);
@@ -114,7 +135,7 @@ const Header = () => {
         setUnreadMessages(count);
       });
 
-      subscribe('getUnreadCountt', (count) => {
+      subscribe('getUnreadCount', (count) => {
         setUnreadMessages(count);
       });
 
@@ -125,7 +146,7 @@ const Header = () => {
       return () => {
         unsubscribe('getUnreadNotificationCount');
         unsubscribe('getUnreadMessageCount');
-        unsubscribe('getUnreadCountt');
+        unsubscribe('getUnreadCount');
         unsubscribe('getCount');
       };
     }
@@ -181,6 +202,7 @@ const Header = () => {
       >
         About
       </Link>
+
       {currentUser && !mobile && (
         <>
           <Link
@@ -205,6 +227,14 @@ const Header = () => {
               </span>
             )}
           </Link>
+          {adminNotificationExists && (
+            <Link
+              to='/admin-alerts'
+              className='text-gray-600 hover:text-primary-500 transition-colors relative'
+            >
+              <FaExclamationCircle className='w-5 h-5 text-red-500' />
+            </Link>
+          )}
         </>
       )}
     </>
