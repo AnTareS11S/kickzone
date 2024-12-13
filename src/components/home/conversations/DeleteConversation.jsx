@@ -13,7 +13,11 @@ import { useToast } from '../../ui/use-toast';
 import { FiTrash2 } from 'react-icons/fi';
 import { Button } from '../../ui/button';
 
-const DeleteConversation = ({ conversation, onConversationDeleted }) => {
+const DeleteConversation = ({
+  conversation,
+  userId,
+  onConversationDeleted,
+}) => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const { toast } = useToast();
@@ -27,6 +31,10 @@ const DeleteConversation = ({ conversation, onConversationDeleted }) => {
     try {
       const res = await fetch(`/api/conversations/delete/${conversation._id}`, {
         method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId }),
       });
       if (!res.ok) throw new Error('Failed to delete conversation');
       toast({
