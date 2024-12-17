@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { startTransition, useEffect, useRef, useState } from 'react';
 import { io } from 'socket.io-client';
 
 let socketInstance = null;
@@ -21,12 +21,16 @@ export const useSocket = () => {
 
     const onConnect = () => {
       console.log('Connected to server');
-      setIsConnected(true);
+      startTransition(() => {
+        setIsConnected(true);
+      });
     };
 
     const onDisconnect = () => {
       console.log('Disconnected from server');
-      setIsConnected(false);
+      startTransition(() => {
+        setIsConnected(false);
+      });
     };
 
     socketRef.current.on('connect', onConnect);
