@@ -15,7 +15,7 @@ import { Button } from '../components/ui/button';
 import { TrashIcon } from '@radix-ui/react-icons';
 import { motion } from 'framer-motion';
 
-const MotionTrashIcon = motion(TrashIcon);
+const MotionTrashIcon = motion.create(TrashIcon);
 
 const ModalDialog = ({ title, description, handleClick, type, isDeleting }) => {
   const [isHovered, setIsHovered] = useState(false);
