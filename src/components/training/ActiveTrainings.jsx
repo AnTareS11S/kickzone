@@ -8,8 +8,27 @@ import {
   FaPlayCircle,
   FaStar,
 } from 'react-icons/fa';
+import { useSocket } from '../../hook/useSocket';
 
-const ActiveTrainings = ({ trainings, isArchived = false, currentUser }) => {
+const ActiveTrainings = ({
+  trainings,
+  isArchived = false,
+  currentUser,
+  currentTeamId,
+  playerId,
+}) => {
+  const { emit } = useSocket();
+
+  const handleMarkAsRead = (trainingId) => {
+    if (currentUser?.role === 'player') {
+      emit('markTeamTrainingNotificationRead', {
+        teamId: currentTeamId,
+        userId: playerId,
+        trainingId,
+      });
+    }
+  };
+
   const renderTrainingStatus = () => {
     const statusVariants = {
       active: 'bg-green-100 text-green-800',
@@ -81,6 +100,7 @@ const ActiveTrainings = ({ trainings, isArchived = false, currentUser }) => {
                 to={`/training/${training._id}`}
                 key={training._id}
                 className='block hover:bg-gray-50 transition-colors duration-200 relative'
+                onClick={() => handleMarkAsRead(training._id)}
               >
                 {currentUser?.role === 'player' && training.isNew && (
                   <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10'>
