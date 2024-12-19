@@ -43,7 +43,7 @@ const TrainingPage = () => {
       const processTrainings = (trainingsList) => {
         return trainingsList.map((training) => ({
           ...training,
-          isNew: !training.isRead?.includes(player._id),
+          isNew: !training.isRead?.includes(player._id) && training.isActive,
         }));
       };
 
@@ -136,6 +136,8 @@ const TrainingPage = () => {
             <ActiveTrainings
               trainings={processedTrainings.activeTrainings}
               currentUser={currentUser}
+              currentTeamId={team?._id}
+              playerId={player?._id}
             />
           </TabsContent>
           <TabsContent value='completed' className='animate-fade-in'>
