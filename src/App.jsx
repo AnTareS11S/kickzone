@@ -56,8 +56,6 @@ import ProtectedRoute from './pages/ProtectedRoute';
 import RefereeManage from './pages/Referee/RefereeManage';
 import SeasonManage from './pages/Season/SeasonManage';
 import TeamDetails from './components/home/team/TeamDetails';
-import LineupManage from './pages/Coach/LineupManage';
-import FormationManage from './pages/Coach/FormationManage';
 import Messenger from './pages/Messenger';
 import TermsManage from './pages/Terms/TermsManage';
 import TermsPage from './pages/Terms/TermsPage';
@@ -222,14 +220,6 @@ const App = () => {
                 <Route
                   path='/dashboard/coach/training-type'
                   element={<TrainingTypeManage />}
-                />
-                <Route
-                  path='/dashboard/coach/formation'
-                  element={<FormationManage />}
-                />
-                <Route
-                  path='/dashboard/coach/lineup'
-                  element={<LineupManage />}
                 />
               </Route>
             </Route>
