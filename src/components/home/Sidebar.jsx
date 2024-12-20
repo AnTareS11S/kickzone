@@ -104,20 +104,31 @@ const Sidebar = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [player, setPlayer] = useState({});
   const currentYear = new Date().getFullYear();
-  const [trainingNotifications, setTrainingNotifications] = useState(0);
-  const { subscribe, emit } = useSocket();
+  const [trainingNotifications, setTrainingNotifications] = useState({
+    unreadCount: 0,
+  });
+  const { subscribe, emit, isConnected, unsubscribe } = useSocket();
 
   useEffect(() => {
-    if (!player?.currentTeam || !currentUser?._id) return;
-    emit('getTeamTrainingNotifications', {
-      teamId: player?.currentTeam,
-      userId: currentUser?._id,
+    if (!currentUser?._id || !isConnected || currentUser?.role !== 'player')
+      return;
+
+    subscribe('teamTrainingNotificationStatus', (data) => {
+      setTrainingNotifications({
+        unreadCount: data.unreadCount,
+      });
     });
 
     subscribe('unreadTeamTrainingNotification', (data) => {
-      setTrainingNotifications(data);
+      setTrainingNotifications({
+        unreadCount: data.unreadCount,
+      });
     });
-  }, [subscribe, emit, player?.currentTeam, currentUser?._id]);
+    return () => {
+      unsubscribe('teamTrainingNotificationStatus');
+      unsubscribe('unreadTeamTrainingNotification');
+    };
+  }, [subscribe, emit, player, currentUser, isConnected, unsubscribe]);
 
   useEffect(() => {
     const getPlayer = async () => {
@@ -137,6 +148,33 @@ const Sidebar = () => {
 
     getPlayer();
   }, [currentUser?._id, currentUser?.role]);
+
+  useEffect(() => {
+    const getTrainingNotifications = async () => {
+      if (
+        !currentUser?._id ||
+        currentUser?.role !== 'player' ||
+        !player?.currentTeam
+      )
+        return;
+      try {
+        const res = await fetch(
+          `/api/player/trainingNotifications/${player?.currentTeam}/${player?._id}`
+        );
+        if (!res.ok) {
+          throw new Error('Failed to fetch data!');
+        }
+        const data = await res.json();
+        setTrainingNotifications({
+          unreadCount: data.unreadCount,
+        });
+      } catch (error) {
+        console.error('Error fetching training notifications:', error);
+      }
+    };
+
+    getTrainingNotifications();
+  }, [player, currentUser]);
 
   const isAdminOrCoachOrReferee = ['admin', 'coach', 'referee'].includes(
     currentUser?.role
@@ -168,7 +206,7 @@ const Sidebar = () => {
         link={link}
         isActive={pathname === link.route}
         isTrainingNotif={
-          link.route === '/training' && trainingNotifications > 0
+          link.route === '/training' && trainingNotifications.unreadCount > 0
         }
       />
     ));
