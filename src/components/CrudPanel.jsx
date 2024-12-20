@@ -67,7 +67,6 @@ const CrudPanel = ({
     }
 
     if (apiPath === 'training') {
-      console.log('initializeTrainingNotifications');
       emit('initializeTeamTrainingNotifications', {
         teamId: teamId,
       });
