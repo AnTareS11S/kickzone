@@ -19,31 +19,3 @@ export const positionFormSchema = () =>
         message: 'Position shortcut must not be longer than 5 characters.',
       }),
   });
-
-export const formationFormSchema = () =>
-  z.object({
-    name: z
-      .string()
-      .min(2, {
-        message: 'Formation name must be at least 2 characters.',
-      })
-      .max(30, {
-        message: 'Formation name must not be longer than 30 characters.',
-      }),
-    description: z
-      .string()
-      .min(2, {
-        message: 'Formation description must be at least 2 characters.',
-      })
-      .max(100, {
-        message:
-          'Formation description must not be longer than 100 characters.',
-      }),
-    positions: z.array(
-      z.object({
-        name: z.string(),
-        x: z.number(),
-        y: z.number(),
-      })
-    ),
-  });
