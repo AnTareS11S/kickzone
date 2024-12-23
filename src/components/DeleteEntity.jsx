@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useOnSuccessUpdate } from './hooks/useOnSuccessUpdate';
 import ModalDialog from './ModalDialog';
 import { useToast } from './ui/use-toast';
+import { useSocket } from '../hook/useSocket';
 
 const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const { toast } = useToast();
+  const { emit } = useSocket();
 
   useOnSuccessUpdate(updateSuccess, () => {
     onEntityDelete();
@@ -25,6 +27,12 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
           title: 'Success!',
           description: `${row?.name} deleted successfully`,
         });
+
+        if (apiEndpoint === 'training') {
+          emit('removeTeamTraining', {
+            teamId: row.teamId,
+          });
+        }
       } else {
         toast({
           title: 'Error!',
