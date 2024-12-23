@@ -124,9 +124,17 @@ const Sidebar = () => {
         unreadCount: data.unreadCount,
       });
     });
+
+    subscribe('teamTrainingNotificationStatusAfterDeletion', (data) => {
+      setTrainingNotifications({
+        unreadCount: data.unreadCount,
+      });
+    });
+
     return () => {
       unsubscribe('teamTrainingNotificationStatus');
       unsubscribe('unreadTeamTrainingNotification');
+      unsubscribe('teamTrainingNotificationStatusAfterDeletion');
     };
   }, [subscribe, emit, player, currentUser, isConnected, unsubscribe]);
 
