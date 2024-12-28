@@ -46,7 +46,6 @@ const CoachDetails = () => {
             `/api/coach/coach-stats/${coachId}/${coach.currentTeamId}`
           );
           const data = await res.json();
-          console.log(data);
           setStats(data);
         }
       } catch (error) {
