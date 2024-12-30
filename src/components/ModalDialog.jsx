@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { TbLoader2 } from 'react-icons/tb';
 import {
   AlertDialog,
@@ -18,8 +17,6 @@ import { motion } from 'framer-motion';
 const MotionTrashIcon = motion.create(TrashIcon);
 
 const ModalDialog = ({ title, description, handleClick, type, isDeleting }) => {
-  const [isHovered, setIsHovered] = useState(false);
-
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
@@ -30,9 +27,9 @@ const ModalDialog = ({ title, description, handleClick, type, isDeleting }) => {
           >
             <span className='relative z-10 flex items-center gap-2'>
               {isDeleting ? (
-                <TbLoader2 className='w-4 h-4 animate-spin' />
+                <TbLoader2 className='w-5 h-5 animate-spin' />
               ) : (
-                <TrashIcon className='w-4 h-4' />
+                <TrashIcon className='w-5 h-5' />
               )}
               {title}
             </span>
@@ -42,20 +39,9 @@ const ModalDialog = ({ title, description, handleClick, type, isDeleting }) => {
           <div className='relative inline-block'>
             <MotionTrashIcon
               className='w-5 h-5 cursor-pointer text-red-600 hover:text-red-700 transition-colors duration-200'
-              onHoverStart={() => setIsHovered(true)}
-              onHoverEnd={() => setIsHovered(false)}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
             />
-            {isHovered && (
-              <motion.div
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className='absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap'
-              >
-                Delete
-              </motion.div>
-            )}
           </div>
         )}
       </AlertDialogTrigger>
@@ -95,7 +81,6 @@ const ModalDialog = ({ title, description, handleClick, type, isDeleting }) => {
                 </>
               ) : (
                 <>
-                  <TrashIcon className='h-4 w-4' />
                   <span>Delete</span>
                 </>
               )}
