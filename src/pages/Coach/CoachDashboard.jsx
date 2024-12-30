@@ -24,6 +24,10 @@ const CoachDashboard = () => {
             title='Training Type'
             linkTo='/dashboard/coach/training-type'
           />
+          <AdminCard
+            title='Team Equipment'
+            linkTo='/dashboard/coach/team-equipment'
+          />
         </div>
       ) : (
         <div className='text-gray-800 text-lg text-center'>
