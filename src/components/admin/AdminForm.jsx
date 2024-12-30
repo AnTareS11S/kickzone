@@ -36,16 +36,11 @@ const AdminForm = ({ currentUser }) => {
   useEffect(() => {
     if (adminData) {
       form.reset({
-        name: adminData?.name || '',
-        surname: adminData?.surname || '',
-        nationality: adminData?.nationality || '',
-        city: adminData?.city || '',
-        bio: adminData?.bio || '',
-        birthDate: adminData?.birthDate || '',
-        photo: adminData?.imageUrl || '',
+        ...adminData,
       });
     }
-  }, [adminData, form, isChanged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adminData, isChanged]);
 
   const originalDate = form.getValues('birthDate');
   const formattedDate = new Date(originalDate);

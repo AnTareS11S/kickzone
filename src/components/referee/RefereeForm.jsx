@@ -36,16 +36,11 @@ const RefereeForm = ({ currentUser }) => {
   useEffect(() => {
     if (refereeData) {
       form.reset({
-        name: refereeData?.name || '',
-        surname: refereeData?.surname || '',
-        nationality: refereeData?.nationality || '',
-        city: refereeData?.city || '',
-        bio: refereeData?.bio || '',
-        birthDate: refereeData?.birthDate || '',
-        photo: refereeData?.imageUrl || '',
+        ...refereeData,
       });
     }
-  }, [refereeData, form, isChanged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [refereeData, isChanged]);
 
   const originalDate = form.getValues('birthDate');
   const formattedDate = new Date(originalDate);

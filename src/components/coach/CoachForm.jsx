@@ -36,16 +36,11 @@ const CoachForm = ({ currentUser }) => {
   useEffect(() => {
     if (coachData) {
       form.reset({
-        name: coachData?.name || '',
-        surname: coachData?.surname || '',
-        nationality: coachData?.nationality || '',
-        city: coachData?.city || '',
-        bio: coachData?.bio || '',
-        birthDate: coachData?.birthDate || '',
-        photo: coachData?.imageUrl || '',
+        ...coachData,
       });
     }
-  }, [coachData, form, isChanged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [coachData, isChanged]);
 
   const originalDate = form.getValues('birthDate');
   const formattedDate = new Date(originalDate);

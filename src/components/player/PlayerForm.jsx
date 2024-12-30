@@ -75,21 +75,11 @@ const PlayerForm = () => {
   useEffect(() => {
     if (playerData) {
       form.reset({
-        name: playerData?.name || '',
-        surname: playerData?.surname || '',
-        wantedTeam: playerData?.wantedTeam || '',
-        photo: playerData?.imageUrl || '',
-        bio: playerData?.bio || '',
-        height: playerData?.height || '',
-        weight: playerData?.weight || '',
-        age: playerData?.age || '',
-        number: playerData?.number || '',
-        footed: playerData?.footed || '',
-        nationality: playerData?.nationality || '',
-        position: playerData?.position || '',
+        ...playerData,
       });
     }
-  }, [playerData, form, isChanged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playerData, isChanged]);
 
   const onSubmit = async (formData) => {
     const countryId = countries.find((country) =>

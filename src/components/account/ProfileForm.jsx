@@ -64,7 +64,8 @@ const ProfileForm = () => {
         wantedRole: user?.role || '',
       });
     }
-  }, [user, form, isChanged]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, isChanged]);
 
   const onSubmit = async (formData) => {
     const data = new FormData();
