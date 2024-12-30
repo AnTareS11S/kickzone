@@ -5,5 +5,6 @@ export const useOnSuccessUpdate = (updateSuccess, onSuccess) => {
     if (updateSuccess) {
       onSuccess();
     }
-  }, [updateSuccess, onSuccess]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [updateSuccess]);
 };
