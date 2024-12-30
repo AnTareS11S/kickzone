@@ -90,7 +90,6 @@ const FormArea = ({
                 <TextareaInput
                   field={field}
                   name={name}
-                  form={form}
                   placeholder={placeholder}
                   {...rest}
                 />
@@ -128,7 +127,6 @@ const FormArea = ({
                   isDisabled={isDisabled}
                   placeholder={placeholder}
                   styles={styles}
-                  form={form}
                   {...rest}
                 />
               )}
@@ -182,7 +180,7 @@ const FileInput = ({
   </div>
 );
 
-const TextareaInput = ({ field, name, placeholder, form, ...rest }) => (
+const TextareaInput = ({ field, name, placeholder, ...rest }) => (
   <Textarea
     {...field}
     id={name}
@@ -199,7 +197,6 @@ const TextareaInput = ({ field, name, placeholder, form, ...rest }) => (
       name === 'postContent' && 'h-64',
       name === 'message' && 'h-32'
     )}
-    {...form.register(name)}
     {...rest}
   />
 );
@@ -265,12 +262,12 @@ const DefaultInput = ({
   isDisabled,
   placeholder,
   styles,
-  form,
   ...rest
 }) => (
   <Input
     {...field}
     id={name}
+    value={field.value || ''}
     type={type}
     className={classNames(
       'w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 transition duration-300',
@@ -278,7 +275,6 @@ const DefaultInput = ({
     )}
     disabled={isDisabled}
     placeholder={placeholder}
-    {...form.register(name)}
     {...rest}
   />
 );
