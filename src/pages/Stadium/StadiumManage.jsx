@@ -1,10 +1,8 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
 import { useFetchCountries } from '../../components/hooks/useFetchCountries';
-
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { stadiumFormSchema } from '../../lib/validation/StadiumValidation';
 
 const StadiumManage = () => {
@@ -68,12 +66,7 @@ const StadiumManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Stadiums</div>
-        <p className='text-sm text-muted-foreground'>Manage stadiums.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Stadiums' description='Manage stadiums' />
       <CrudPanel
         apiPath='stadium'
         columns={columns}

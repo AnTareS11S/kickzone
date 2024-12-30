@@ -1,8 +1,7 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { sponsorFormSchema } from '../../lib/validation/SponsorValidation';
 
 const SponsorManage = () => {
@@ -58,12 +57,7 @@ const SponsorManage = () => {
   ];
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Sponsors</div>
-        <p className='text-sm text-muted-foreground'>Manage sponsors.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Sponsors' description='Manage sponsors' />
       <CrudPanel
         apiPath='sponsor'
         columns={columns}

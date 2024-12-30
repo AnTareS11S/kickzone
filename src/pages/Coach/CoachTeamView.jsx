@@ -1,9 +1,8 @@
 import SquadManagement from '../../components/coach/SquadManagement';
-import { Separator } from '../../components/ui/separator';
 import Spinner from '../../components/Spinner';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
-import BackButton from '../../components/BackButton';
 import { useEffect, useState } from 'react';
+import PageHeader from '../../components/PageHeader';
 
 const CoachTeamView = () => {
   const { coach } = useFetchCoachByUserId();
@@ -40,13 +39,8 @@ const CoachTeamView = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Team</div>
-        <p className='text-sm text-muted-foreground'>Manage your team squad.</p>
-      </div>
+      <PageHeader title='Team' description='Manage your team squad' />
 
-      <Separator className='mb-6' />
       {coach?.currentTeam ? (
         <>
           <div className='flex items-center justify-between mb-4'>

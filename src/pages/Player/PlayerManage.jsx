@@ -1,7 +1,6 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { playerFormSchema } from '../../lib/validation/PlayerValidation';
 
 const columns = [
@@ -40,12 +39,7 @@ const columns = [
 const PlayerManage = () => {
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Players</div>
-        <p className='text-sm text-muted-foreground'>Manage players.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Players' description='Manage players' />
       <CrudPanel
         apiPath='player'
         columns={columns}

@@ -1,9 +1,8 @@
-import { Separator } from '../../components/ui/separator';
 import CrudPanel from '../../components/CrudPanel';
 import EditEntity from '../../components/EditEntity';
 import DeleteEntity from '../../components/DeleteEntity';
 import { seasonFormSchema } from '../../lib/validation/SeasonValidation';
-import BackButton from '../../components/BackButton';
+import PageHeader from '../../components/PageHeader';
 
 const columns = [
   {
@@ -55,13 +54,7 @@ const SeasonManage = () => {
   ];
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Seasons</div>
-        <p className='text-sm text-muted-foreground'>Manage seasons.</p>
-      </div>
-
-      <Separator />
+      <PageHeader title='Seasons' description='Manage seasons' />
       <CrudPanel
         apiPath='season'
         columns={columns}

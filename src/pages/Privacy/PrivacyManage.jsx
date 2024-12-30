@@ -1,10 +1,8 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-
-import { Separator } from '../../components/ui/separator';
 import { z } from 'zod';
+import PageHeader from '../../components/PageHeader';
 
 const privacySchema = () =>
   z.object({
@@ -55,12 +53,7 @@ const PrivacyManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Privacy Policy</div>
-        <p className='text-sm text-muted-foreground'>Manage privacy policy</p>
-      </div>
-      <Separator />
+      <PageHeader title='Privacy Policy' description='Manage privacy policy ' />
       <CrudPanel
         apiPath='privacy'
         columns={columns}

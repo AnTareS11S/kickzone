@@ -1,9 +1,8 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { trainingTypeValidationSchema } from '../../lib/validation/TrainingValidation';
 
 const columns = [
@@ -38,13 +37,7 @@ const TrainingTypeManage = () => {
   ];
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Training types</div>
-        <p className='text-sm text-muted-foreground'>Manage training types.</p>
-      </div>
-
-      <Separator />
+      <PageHeader title='Training types' description='Manage training types' />
       <CrudPanel
         apiPath='training-type'
         columns={columns}

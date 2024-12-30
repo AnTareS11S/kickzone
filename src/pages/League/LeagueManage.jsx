@@ -1,12 +1,11 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
+import PageHeader from '../../components/PageHeader';
 import AddTeam from '../../components/admin/leagues/AddTeam';
 import RemoveTeamFromLeague from '../../components/admin/leagues/RemoveTeamFromLeague';
 import { useFetchCountries } from '../../components/hooks/useFetchCountries';
 import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
-import { Separator } from '../../components/ui/separator';
 import { leagueFormSchema } from '../../lib/validation/LeagueValidation';
 
 const LeagueManage = () => {
@@ -76,12 +75,7 @@ const LeagueManage = () => {
   ];
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Leagues</div>
-        <p className='text-sm text-muted-foreground'>Manage leagues.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Leagues' description='Manage leagues' />
       <CrudPanel
         apiPath='league'
         columns={columns}

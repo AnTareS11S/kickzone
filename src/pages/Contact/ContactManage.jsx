@@ -1,8 +1,7 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { z } from 'zod';
 
 const contactSchema = () =>
@@ -80,14 +79,7 @@ const ContactManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Contact</div>
-        <p className='text-sm text-muted-foreground'>
-          Manage contact information.
-        </p>
-      </div>
-      <Separator />
+      <PageHeader title='Contact' description='Manage contact information' />
       <CrudPanel
         apiPath='contact'
         columns={columns}

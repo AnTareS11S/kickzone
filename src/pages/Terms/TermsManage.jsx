@@ -1,9 +1,7 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { z } from 'zod';
 
 const termsSchema = () =>
@@ -55,12 +53,7 @@ const TermsManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Terms</div>
-        <p className='text-sm text-muted-foreground'>Manage terms</p>
-      </div>
-      <Separator />
+      <PageHeader title='Terms' description='Manage terms' />
       <CrudPanel
         apiPath='terms'
         columns={columns}

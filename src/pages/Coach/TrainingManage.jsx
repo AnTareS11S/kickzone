@@ -1,11 +1,10 @@
-import { Separator } from '../../components/ui/separator';
 import CrudPanel from '../../components/CrudPanel';
 import EditEntity from '../../components/EditEntity';
 import DeleteEntity from '../../components/DeleteEntity';
 import { trainingValidationSchema } from '../../lib/validation/TrainingValidation';
 import { useEffect, useState } from 'react';
 import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
-import BackButton from '../../components/BackButton';
+import PageHeader from '../../components/PageHeader';
 
 const columns = [
   {
@@ -117,13 +116,7 @@ const TrainingManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Trainings</div>
-        <p className='text-sm text-muted-foreground'>Manage trainings.</p>
-      </div>
-
-      <Separator />
+      <PageHeader title='Trainings' description='Manage trainings' />
       <CrudPanel
         apiPath='training'
         columns={columns}

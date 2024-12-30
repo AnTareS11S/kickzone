@@ -1,4 +1,3 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
@@ -6,7 +5,7 @@ import { useFetchCoaches } from '../../components/hooks/useFetchCoaches';
 import { useFetchCountries } from '../../components/hooks/useFetchCountries';
 import { useFetchSponsors } from '../../components/hooks/useFetchSponsors';
 import { useFetchStadiums } from '../../components/hooks/useFetchStadiums';
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { teamFormSchema } from '../../lib/validation/TeamValidation';
 
 const TeamManage = () => {
@@ -104,12 +103,7 @@ const TeamManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Teams</div>
-        <p className='text-sm text-muted-foreground'>Manage teams.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Teams' description='Manage teams' />
       <CrudPanel
         apiPath='team'
         columns={columns}

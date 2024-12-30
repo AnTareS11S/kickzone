@@ -1,7 +1,6 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
 
 const columns = [
@@ -30,12 +29,7 @@ const columns = [
 const RefereeManage = () => {
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Referees</div>
-        <p className='text-sm text-muted-foreground'>Manage referees.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Referees' description='Manage referees' />
       <CrudPanel
         apiPath='referee'
         columns={columns}

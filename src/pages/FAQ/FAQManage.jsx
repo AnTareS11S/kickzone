@@ -1,9 +1,8 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { Separator } from '../../components/ui/separator';
 import { z } from 'zod';
+import PageHeader from '../../components/PageHeader';
 
 const faqSchema = () =>
   z.object({
@@ -54,12 +53,7 @@ const FAQManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>FAQ</div>
-        <p className='text-sm text-muted-foreground'>Manage FAQ.</p>
-      </div>
-      <Separator />
+      <PageHeader title='FAQ' description='Manage FAQ' />
       <CrudPanel
         apiPath='faq'
         columns={columns}

@@ -1,8 +1,7 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { countryFormSchema } from '../../lib/validation/CountryValidation';
 
 const CountryManage = () => {
@@ -30,12 +29,7 @@ const CountryManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Countries</div>
-        <p className='text-sm text-muted-foreground'>Manage countries.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Countries' description='Manage countries ' />
       <CrudPanel
         apiPath='country'
         columns={columns}

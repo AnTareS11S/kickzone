@@ -1,8 +1,7 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
+import PageHeader from '../../components/PageHeader';
 import SetRole from '../../components/admin/users/SetRole';
-import { Separator } from '../../components/ui/separator';
 import { roleFormSchema } from '../../lib/validation/UsersValidation';
 
 const columns = [
@@ -39,12 +38,7 @@ const columns = [
 const UserManage = () => {
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>Users</div>
-        <p className='text-sm text-muted-foreground'>Manage users.</p>
-      </div>
-      <Separator />
+      <PageHeader title='Users' description='Manage users' />
       <CrudPanel
         apiPath='user'
         columns={columns}

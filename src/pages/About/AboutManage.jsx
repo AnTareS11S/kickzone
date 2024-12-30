@@ -1,9 +1,7 @@
-import BackButton from '../../components/BackButton';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-
-import { Separator } from '../../components/ui/separator';
+import PageHeader from '../../components/PageHeader';
 import { z } from 'zod';
 
 const aboutSchema = (isEdit) =>
@@ -68,12 +66,7 @@ const AboutUsManage = () => {
 
   return (
     <div className='space-y-6'>
-      <BackButton />
-      <div>
-        <div className='text-heading2-bold'>About Us</div>
-        <p className='text-sm text-muted-foreground'>Manage about us</p>
-      </div>
-      <Separator />
+      <PageHeader title='About Us' description='Manage about us' />
       <CrudPanel
         apiPath='about'
         columns={columns}
