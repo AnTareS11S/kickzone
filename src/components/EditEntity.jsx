@@ -2,8 +2,8 @@ import { useState } from 'react';
 import ModalActions from './ModalActions';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useOnSuccessUpdate } from './hooks/useOnSuccessUpdate';
 import { useToast } from './ui/use-toast';
+import { TbLoader2 } from 'react-icons/tb';
 
 const EditEntity = ({
   row,
@@ -13,7 +13,7 @@ const EditEntity = ({
   fields,
   defaultValues,
 }) => {
-  const [updatedSuccess, setUpdatedSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [file, setFile] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
@@ -24,12 +24,8 @@ const EditEntity = ({
     mode: 'onChange',
   });
 
-  useOnSuccessUpdate(updatedSuccess, () => {
-    onEntityUpdated();
-    setUpdatedSuccess(false);
-  });
-
   const onSubmit = async (data) => {
+    setIsLoading(true);
     const formData = new FormData();
 
     for (const key in data) {
@@ -47,7 +43,6 @@ const EditEntity = ({
         )
       ) {
         let url = `/api/${apiEndpoint}/check-${apiEndpoint}-name?name=${data.name}&id=${row._id}`;
-
         if (apiEndpoint === 'league') {
           url += `&season=${data.season}`;
         }
@@ -68,7 +63,7 @@ const EditEntity = ({
             }`,
             variant: 'destructive',
           });
-          setUpdatedSuccess(false);
+          setIsLoading(false);
           return;
         }
       }
@@ -83,7 +78,7 @@ const EditEntity = ({
           title: 'Success!',
           description: `${row?.name} updated successfully`,
         });
-        setUpdatedSuccess(true);
+        onEntityUpdated();
         setIsModalOpen(false);
       } else {
         toast({
@@ -94,6 +89,13 @@ const EditEntity = ({
       }
     } catch (error) {
       console.log(error);
+      toast({
+        title: 'Error!',
+        description: 'An unexpected error occurred',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -103,7 +105,6 @@ const EditEntity = ({
         const matchingItem = field.items.find(
           (item) => item.split(':')[1] === row[field.name]
         );
-
         field.defaultValue = matchingItem
           ? matchingItem.split(':')[0]
           : `Select ${field.label}`;
@@ -134,6 +135,8 @@ const EditEntity = ({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onOpen={() => setIsModalOpen(true)}
+        isLoading={isLoading}
+        loadingIcon={<TbLoader2 className='w-4 h-4 animate-spin' />}
       />
     </div>
   );

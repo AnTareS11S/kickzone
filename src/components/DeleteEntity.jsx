@@ -6,6 +6,7 @@ import { useSocket } from '../hook/useSocket';
 
 const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
   const { emit } = useSocket();
 
@@ -15,6 +16,7 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
   });
 
   const handleDeleteEntity = async () => {
+    setIsDeleting(true);
     try {
       const res = await fetch(
         `/api/admin/${apiEndpoint?.split('/')[0]}/delete/${row._id}`,
@@ -39,10 +41,13 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
           description: `Failed to delete ${row?.name}`,
           variant: 'destructive',
         });
+        setIsDeleting(false);
       }
       setUpdateSuccess(true);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -53,6 +58,7 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
           apiEndpoint?.split('/')[0]
         }?`}
         handleClick={handleDeleteEntity}
+        isDeleting={isDeleting}
       />
     </div>
   );
