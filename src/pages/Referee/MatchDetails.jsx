@@ -1,6 +1,4 @@
 import { useParams } from 'react-router-dom';
-import BackButton from '../../components/BackButton';
-import { Separator } from '../../components/ui/separator';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Card, CardContent } from '../../components/ui/card';
@@ -15,6 +13,7 @@ import {
 } from '../../components/ui/dropdown-menu';
 import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 import Spinner from '../../components/Spinner';
+import PageHeader from '../../components/PageHeader';
 
 const MatchDetails = () => {
   const leagueId = useParams().id;
@@ -119,17 +118,12 @@ const MatchDetails = () => {
 
   return (
     <div className='container mx-auto py-8 px-4 md:px-6 lg:px-8'>
-      <BackButton />
-      <div className='mb-6'>
-        <h1 className='text-2xl font-bold mb-2'>Match Details</h1>
-        <div className='text-gray-600 flex flex-row justify-between'>
-          <p>Download match details here before the match starts.</p>
-          <p>
-            {league} / {season?.name}
-          </p>
-        </div>
-      </div>
-      <Separator />
+      <PageHeader
+        title='Match Details'
+        description='Download match details here before the match starts'
+        sideText={`${league} / ${season?.name}`}
+      />
+
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {matches?.map((match) => (
           <Card key={match?._id} className='bg-white rounded-lg shadow-md'>

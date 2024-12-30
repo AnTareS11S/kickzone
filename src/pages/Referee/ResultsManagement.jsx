@@ -1,5 +1,4 @@
 import { useFetchCompletedMatches } from '../../components/hooks/useFetchCompletedMatches';
-import { Separator } from '../../components/ui/separator';
 import {
   Tabs,
   TabsContent,
@@ -8,11 +7,11 @@ import {
 } from '../../components/ui/tabs';
 import NotFilledMatches from './NotFilledMatches';
 import FilledMatches from './FilledMatches';
-import BackButton from '../../components/BackButton';
 import { useParams } from 'react-router-dom';
 import { useFetchFilledResultMatches } from '../../components/hooks/useFetchFilledResultMatches';
 import Spinner from '../../components/Spinner';
 import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
+import PageHeader from '../../components/PageHeader';
 
 const ResultsManagement = () => {
   const leagueId = useParams().id;
@@ -27,18 +26,11 @@ const ResultsManagement = () => {
 
   return (
     <div className='container mx-auto px-4 py-8 md:px-6 lg:px-8'>
-      <BackButton />
-      <div className='mb-6'>
-        <h1 className='text-3xl font-bold mb-2'>Match Results</h1>
-        <div className='text-gray-600 flex flex-row justify-between'>
-          <p>Manage match results here.</p>
-          <p>
-            {league} / {season?.name}
-          </p>
-        </div>
-      </div>
-
-      <Separator />
+      <PageHeader
+        title='Match Results'
+        description='Manage match results here'
+        sideText={`${league} / ${season?.name}`}
+      />
 
       <Tabs
         defaultValue='notFilled'

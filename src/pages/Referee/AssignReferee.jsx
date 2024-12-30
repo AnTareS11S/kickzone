@@ -9,13 +9,11 @@ import {
   CarouselPrevious,
 } from '../../components/ui/carousel';
 import { Button } from '../../components/ui/button';
-import BackButton from '../../components/BackButton';
-import { Separator } from '../../components/ui/separator';
 import AssignRefereeModal from '../../components/referee/AssignRefereeModal';
 import { useFetchRefeeres } from '../../components/hooks/useFetchReferees';
-
 import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 import Spinner from '../../components/Spinner';
+import PageHeader from '../../components/PageHeader';
 
 const AssignReferee = () => {
   const leagueId = useParams().id;
@@ -55,23 +53,12 @@ const AssignReferee = () => {
   }
 
   return (
-    <div className='bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white py-8 px-4 md:px-6 lg:px-8'>
-      <BackButton />
-
-      <div className='flex justify-between items-center mb-6'>
-        <div>
-          <h1 className='text-3xl font-bold mb-2'>Assign Referee</h1>
-          <p className='text-gray-600 dark:text-gray-400'>
-            Assign referees to matches here.
-          </p>
-        </div>
-        <p>
-          {league} / {season?.name}
-        </p>
-      </div>
-
-      <Separator />
-
+    <div className=' text-gray-800 dark:text-white py-8 px-4 md:px-6 lg:px-8'>
+      <PageHeader
+        title='Assign Referee'
+        description='Assign referees to matches here'
+        sideText={`${league} / ${season?.name}`}
+      />
       <div className='flex justify-between mb-6'>
         <Button
           type='button'
@@ -81,7 +68,6 @@ const AssignReferee = () => {
           Download Schedule
         </Button>
       </div>
-
       {rounds?.length > 0 && (
         <Carousel>
           <div className='w-full flex flex-col items-center'>

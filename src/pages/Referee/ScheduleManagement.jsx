@@ -6,11 +6,9 @@ import { useForm } from 'react-hook-form';
 import { Button } from '../../components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { Separator } from '../../components/ui/separator';
 import { useToast } from '../../components/ui/use-toast';
 import ScheduleModal from '../../components/referee/ScheduleModal';
 import { useFetchTeamsByLeagueId } from '../../components/hooks/useFetchTeamsByLeagueId';
-import BackButton from '../../components/BackButton';
 import {
   Carousel,
   CarouselContent,
@@ -21,6 +19,7 @@ import {
 import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 import ModalDialog from '../../components/ModalDialog';
 import Spinner from '../../components/Spinner';
+import PageHeader from '../../components/PageHeader';
 
 const schema = () =>
   z.object({
@@ -151,19 +150,11 @@ const ScheduleManagement = () => {
 
   return (
     <div className='container mx-auto py-8 px-4 md:px-6 lg:px-8'>
-      <BackButton />
-
-      <div className='mb-6'>
-        <h1 className='text-2xl font-bold mb-2'>Schedule Management</h1>
-        <div className='text-gray-600 flex flex-row justify-between'>
-          <p>To edit schedule, download it first.</p>
-          <p>
-            {league} / {season?.name}
-          </p>
-        </div>
-      </div>
-
-      <Separator />
+      <PageHeader
+        title='Schedule Management'
+        description='To edit schedule, download it first'
+        sideText={`${league} / ${season?.name}`}
+      />
 
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
         <Form {...form}>
