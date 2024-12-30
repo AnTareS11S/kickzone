@@ -72,6 +72,7 @@ import AdminProfile from './pages/Admin/AdminProfile';
 import Notification from './pages/Notifications/Notification';
 import { SocketProvider } from './contexts/SocketContext';
 import RoleNotificationPage from './pages/RoleNotification/RoleNotificationPage';
+import TeamEquipment from './pages/Coach/TeamEquipment';
 
 const App = () => {
   return (
@@ -220,6 +221,10 @@ const App = () => {
                 <Route
                   path='/dashboard/coach/training-type'
                   element={<TrainingTypeManage />}
+                />
+                <Route
+                  path='/dashboard/coach/team-equipment'
+                  element={<TeamEquipment />}
                 />
               </Route>
             </Route>
