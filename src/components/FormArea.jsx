@@ -267,13 +267,12 @@ const DefaultInput = ({
   <Input
     {...field}
     id={name}
-    value={field.value || ''}
     type={type}
     className={classNames(
       'w-full rounded-md border-gray-300 focus:border-primary-500 focus:ring-primary-500 transition duration-300',
       styles
     )}
-    disabled={isDisabled}
+    disabled={isDisabled || false}
     placeholder={placeholder}
     {...rest}
   />
