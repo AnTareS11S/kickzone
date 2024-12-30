@@ -34,7 +34,8 @@ const Onboarding = () => {
         bio: currentUser?.bio,
       });
     }
-  }, [currentUser, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentUser]);
 
   const onSubmit = async (formData) => {
     try {
