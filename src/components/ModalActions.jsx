@@ -32,6 +32,8 @@ const ModalActions = ({
   isOpen,
   onClose,
   onOpen,
+  isLoading,
+  loadingIcon,
 }) => {
   const fileRef = useRef(null);
 
@@ -39,7 +41,8 @@ const ModalActions = ({
     if (data) {
       form.reset({ ...data });
     }
-  }, [data, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const renderTrigger = () => {
     if (edit)
@@ -93,20 +96,28 @@ const ModalActions = ({
                 {fields.map((field) => (
                   <FormArea
                     key={field.id}
-                    {...field}
                     form={form}
                     isEdit={edit}
                     fileRef={field.type === 'file' ? fileRef : null}
                     setFile={field.type === 'file' ? setFile : null}
+                    {...field}
                   />
                 ))}
               </div>
               <DialogFooter>
                 <Button
                   type='submit'
+                  disabled={isLoading}
                   className='w-full sm:w-auto bg-primary-500 text-white hover:bg-primary-600 transition-colors'
                 >
-                  {title}
+                  {isLoading ? (
+                    <div className='flex items-center gap-2'>
+                      {loadingIcon}
+                      <span>Processing...</span>
+                    </div>
+                  ) : (
+                    title
+                  )}
                 </Button>
               </DialogFooter>
             </form>
