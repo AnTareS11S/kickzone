@@ -38,7 +38,8 @@ const ModalActions = ({
     if (data) {
       form.reset({ ...data });
     }
-  }, [data, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
 
   const renderTrigger = () => {
     const commonClasses = 'hover:scale-105 transition-all duration-200';
