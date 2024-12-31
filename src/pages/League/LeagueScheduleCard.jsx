@@ -50,7 +50,7 @@ const LeagueScheduleCard = () => {
 
   return (
     <div className='p-4'>
-      <div className='text-heading2-bold mb-4'>Dashboard</div>
+      <div className='text-heading4-medium mb-4'>Dashboard</div>
       <p className='text-sm text-muted-foreground mb-4'>
         Choose a league you want to manage
       </p>
