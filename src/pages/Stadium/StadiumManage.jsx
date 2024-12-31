@@ -77,7 +77,7 @@ const StadiumManage = () => {
         formSchema={stadiumFormSchema}
         defaultValues={{
           name: '',
-          capacity: '',
+          capacity: '0',
           country: '',
           city: '',
           location: '',

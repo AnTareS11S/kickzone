@@ -133,7 +133,7 @@ const TrainingManage = () => {
           name: '',
           trainingType: '',
           trainingDate: '',
-          duration: '',
+          duration: '0',
           description: '',
           location: '',
           notes: '',
