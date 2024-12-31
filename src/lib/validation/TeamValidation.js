@@ -36,3 +36,28 @@ export const teamFormSchema = (isEdit) =>
     bio: z.string().trim(),
     stadium: z.string().nullable(),
   });
+
+export const teamEquipmentValidationSchema = () =>
+  z.object({
+    name: z
+      .string()
+      .trim()
+      .min(2, {
+        message: 'Name must be at least 2 characters',
+      })
+      .max(30, {
+        message: 'Name must not be longer than 30 characters',
+      }),
+    quantity: z.any().refine(
+      (value) => {
+        const parsedValue =
+          typeof value === 'string' ? parseInt(value, 10) : value;
+        return !isNaN(parsedValue) && parsedValue > 0;
+      },
+      {
+        message: 'Quantity must be a positive integer',
+      }
+    ),
+    condition: z.string().nullable(),
+    status: z.string().nullable(),
+  });
