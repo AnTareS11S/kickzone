@@ -4,7 +4,7 @@ import ModalDialog from './ModalDialog';
 import { useToast } from './ui/use-toast';
 import { useSocket } from '../hook/useSocket';
 
-const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
+const DeleteEntity = ({ row, onEntityDelete, apiEndpoint, title }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const { toast } = useToast();
@@ -54,9 +54,7 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint }) => {
   return (
     <div className='flex items-center space-x-4'>
       <ModalDialog
-        description={`Are you sure you want to delete this ${
-          apiEndpoint?.split('/')[0]
-        }?`}
+        description={`Are you sure you want to delete this ${title}?`}
         handleClick={handleDeleteEntity}
         isDeleting={isDeleting}
       />
