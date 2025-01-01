@@ -11,6 +11,7 @@ const EditEntity = ({
   apiEndpoint,
   formSchema,
   fields,
+  title,
   defaultValues,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -102,9 +103,10 @@ const EditEntity = ({
   const updateFieldDefaults = (fields, row) => {
     return fields.map((field) => {
       if (field.type === 'select') {
-        const matchingItem = field.items.find(
-          (item) => item.split(':')[1] === row[field.name]
-        );
+        const matchingItem =
+          field.items.find((item) => item.split(':')[1] === row[field.name]) ||
+          field.items.find((item) => item.split(':')[0] === row[field.name]);
+
         field.defaultValue = matchingItem
           ? matchingItem.split(':')[0]
           : `Select ${field.label}`;
@@ -123,11 +125,7 @@ const EditEntity = ({
         onSubmit={onSubmit}
         label='Edit'
         edit={true}
-        title={`Edit ${
-          apiEndpoint.toString().charAt(0).toUpperCase() +
-          apiEndpoint.toString().slice(1)
-        }`}
-        desc={`Edit a ${apiEndpoint}`}
+        title={`Edit ${title}`}
         data={row}
         fields={updatedFields}
         form={form}
