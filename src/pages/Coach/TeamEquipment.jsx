@@ -4,6 +4,7 @@ import CrudPanel from '../../components/CrudPanel';
 import EditEntity from '../../components/EditEntity';
 import DeleteEntity from '../../components/DeleteEntity';
 import { teamEquipmentValidationSchema } from '../../lib/validation/TeamValidation';
+import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 
 const columns = [
   {
@@ -28,7 +29,7 @@ const columns = [
   },
   {
     name: 'Last Checked',
-    selector: (row) => row.lastChecked,
+    selector: (row) => row.updatedAt.split('T')[0],
     sortable: true,
   },
   {
@@ -43,17 +44,19 @@ const columns = [
 const getStatusColor = (status) => {
   switch (status) {
     case 'Available':
-      return 'bg-green-100 text-green-800';
+      return 'bg-green-100 text-green-800 hover:bg-green-200';
     case 'In Use':
-      return 'bg-blue-100 text-blue-800';
+      return 'bg-blue-100 text-blue-800 hover:bg-blue-200';
     case 'Needs Replacement':
-      return 'bg-red-100 text-red-800';
+      return 'bg-red-100 text-red-800 hover:bg-red-200';
     default:
-      return 'bg-gray-100 text-gray-800';
+      return 'bg-gray-100 text-gray-800 hover:bg-gray-200';
   }
 };
 
 const TeamEquipment = () => {
+  const { coach } = useFetchCoachByUserId();
+
   const fields = [
     {
       id: 'name',
@@ -72,18 +75,18 @@ const TeamEquipment = () => {
       label: 'Condition',
       type: 'select',
       name: 'condition',
-      items: ['Good:1', 'Fair:2', 'Poor:3'],
+      items: ['Good', 'Fair', 'Poor'],
       placeholder: 'Select a Condition',
-      idFlag: true,
+      idFlag: false,
     },
     {
       id: 'status',
       label: 'Status',
       type: 'select',
       name: 'status',
-      items: ['Available:1', 'In Use:2', 'Needs Replacement:3'],
+      items: ['Available', 'In Use', 'Needs Replacement'],
       placeholder: 'Select a Status',
-      idFlag: true,
+      idFlag: false,
     },
   ];
 
@@ -94,6 +97,7 @@ const TeamEquipment = () => {
         apiPath='team-equipment'
         columns={columns}
         fields={fields}
+        objectId={coach?.currentTeam}
         title='Team Equipment'
         onEditComponent={EditEntity}
         onDeleteComponent={DeleteEntity}
