@@ -16,6 +16,7 @@ const PostForm = () => {
   const fileRef = useRef(null);
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
+  const [loading, setLoading] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ const PostForm = () => {
     data.append('postPhoto', file);
     data.append('author', currentUser._id);
 
+    setLoading(true);
     try {
       const res = await fetch('/api/post/add', {
         method: 'POST',
@@ -58,6 +60,8 @@ const PostForm = () => {
       }
     } catch (error) {
       console.error('Error creating post:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -136,8 +140,9 @@ const PostForm = () => {
                 <Button
                   type='submit'
                   className='bg-primary-500 hover:bg-primary-600 text-white py-3 px-6 rounded-lg shadow-md transition-all duration-300 transform hover:scale-105'
+                  disabled={loading}
                 >
-                  Publish Post
+                  {loading ? 'Publishing...' : 'Publish Post'}
                 </Button>
               </div>
             </CardContent>

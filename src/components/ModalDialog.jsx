@@ -26,11 +26,7 @@ const ModalDialog = ({ title, description, handleClick, type, isDeleting }) => {
             className='relative overflow-hidden group bg-red-600 text-white hover:bg-red-700 hover:text-white rounded-md transition-all duration-200 ease-in-out'
           >
             <span className='relative z-10 flex items-center gap-2'>
-              {isDeleting ? (
-                <TbLoader2 className='w-5 h-5 animate-spin' />
-              ) : (
-                <TrashIcon className='w-5 h-5' />
-              )}
+              {isDeleting ?? <TbLoader2 className='w-5 h-5 animate-spin' />}
               {title}
             </span>
             <div className='absolute inset-0 bg-red-700 transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-200 ease-out' />
