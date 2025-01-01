@@ -160,6 +160,7 @@ const CrudPanel = ({
                       row={row}
                       onEntityUpdated={handleEntityUpdated}
                       apiEndpoint={apiPath}
+                      title={title}
                       formSchema={formSchema}
                       fields={fields}
                       defaultValues={defaultValues}
@@ -195,6 +196,7 @@ const CrudPanel = ({
                       row={row}
                       onEntityDelete={handleEntityUpdated}
                       apiEndpoint={apiPath}
+                      title={title}
                     />
                   )}
                 </div>
