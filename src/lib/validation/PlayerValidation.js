@@ -51,7 +51,6 @@ export const playerFormSchema = (isEdit) =>
       message: 'Footed is required',
     }),
     wantedTeam: z.string().optional(),
-    currentTeam: z.string().optional(),
     age: z.any().refine(
       (value) => {
         const parsedValue =
