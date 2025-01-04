@@ -12,6 +12,7 @@ const SelectData = ({
   placeholder,
   items,
   onChange,
+  isDisabled,
   defaultValue,
   idFlag,
   isEdit,
@@ -19,7 +20,10 @@ const SelectData = ({
   return (
     <Select onValueChange={onChange}>
       <FormControl>
-        <SelectTrigger className='w-full h-[36px] shadow-sm resize-none ring-2 ring-white hover:ring-primary-500 transition duration-300'>
+        <SelectTrigger
+          disabled={isDisabled}
+          className='w-full h-[36px] shadow-sm resize-none ring-2 ring-white hover:ring-primary-500 transition duration-300'
+        >
           <SelectValue
             className='w-full'
             placeholder={isEdit ? defaultValue : placeholder}

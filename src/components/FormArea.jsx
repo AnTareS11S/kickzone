@@ -98,6 +98,7 @@ const FormArea = ({
                   field={field}
                   name={name}
                   items={items}
+                  isDisabled={isDisabled}
                   defaultValue={defaultValue}
                   placeholder={placeholder}
                   idFlag={idFlag}
@@ -207,6 +208,7 @@ const SelectInput = ({
   items,
   defaultValue,
   placeholder,
+  isDisabled,
   idFlag,
   isEdit,
 }) => (
@@ -215,6 +217,7 @@ const SelectInput = ({
     items={items}
     defaultValue={defaultValue}
     placeholder={placeholder}
+    isDisabled={isDisabled}
     idFlag={idFlag}
     onChange={field.onChange}
     isEdit={isEdit}
