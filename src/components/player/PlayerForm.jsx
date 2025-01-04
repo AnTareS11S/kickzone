@@ -196,12 +196,12 @@ const PlayerForm = () => {
               <div className='relative'>
                 <FormArea
                   id='currentTeam'
+                  label='Current Team'
+                  name='currentTeam'
                   type='select'
                   form={form}
                   isDisabled={true}
                   placeholder={playerData?.currentTeam?.name || 'No team'}
-                  label='Current Team'
-                  name='currentTeam'
                   className='bg-gray-100 cursor-not-allowed'
                 />
                 <div className='absolute top-0 right-0 flex items-center justify-center w-6 h-6 bg-gray-200 rounded-full cursor-pointer group'>
