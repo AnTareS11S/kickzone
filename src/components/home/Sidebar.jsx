@@ -45,6 +45,11 @@ const sidebarLinks = [
     route: '/dashboard/coach',
     label: 'Dashboard',
   },
+  {
+    icon: <FaChartBar className='w-6 h-6' />,
+    route: '/dashboard/player',
+    label: 'Dashboard',
+  },
 ];
 
 // eslint-disable-next-line react/display-name
@@ -162,12 +167,12 @@ const Sidebar = () => {
       if (
         !currentUser?._id ||
         currentUser?.role !== 'player' ||
-        !player?.currentTeam
+        !player?.currentTeam?._id
       )
         return;
       try {
         const res = await fetch(
-          `/api/player/trainingNotifications/${player?.currentTeam}/${player?._id}`
+          `/api/player/trainingNotifications/${player?.currentTeam?._id}/${player?._id}`
         );
         if (!res.ok) {
           throw new Error('Failed to fetch data!');
