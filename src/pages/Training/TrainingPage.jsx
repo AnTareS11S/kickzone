@@ -28,7 +28,9 @@ const TrainingPage = () => {
     loading: playerLoading,
   } = useFetchPlayerByUserId();
   const { coach, loading: coachLoading } = useFetchCoachByUserId();
-  const { team } = useFetchTeamById(player?.currentTeam || coach?.currentTeam);
+  const { team } = useFetchTeamById(
+    player?.currentTeam?._id || coach?.currentTeam
+  );
   const { trainings, loading: trainingLoading } = useFetchTrainingsByCoachId(
     coach?._id || team?.coach?._id
   );
