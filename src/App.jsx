@@ -73,6 +73,9 @@ import Notification from './pages/Notifications/Notification';
 import { SocketProvider } from './contexts/SocketContext';
 import RoleNotificationPage from './pages/RoleNotification/RoleNotificationPage';
 import TeamEquipment from './pages/Coach/TeamEquipment';
+import PlayerDashboard from './pages/Player/PlayerDashboard';
+import PlayerSchedule from './pages/Player/PlayerSchedule';
+import PlayerStatistics from './pages/Player/PlayerStatistics';
 
 const App = () => {
   return (
@@ -225,6 +228,19 @@ const App = () => {
                 <Route
                   path='/dashboard/coach/team-equipment'
                   element={<TeamEquipment />}
+                />
+              </Route>
+
+              {/*Player routes */}
+              <Route path='/dashboard/player' element={<PlayerRoute />}>
+                <Route path='/dashboard/player' element={<PlayerDashboard />} />
+                <Route
+                  path='/dashboard/player/schedule'
+                  element={<PlayerSchedule />}
+                />
+                <Route
+                  path='/dashboard/player/stats'
+                  element={<PlayerStatistics />}
                 />
               </Route>
             </Route>
