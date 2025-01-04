@@ -14,7 +14,9 @@ const PlayerSchedule = () => {
     const getMatches = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/team/matches/${player?.currentTeam}`);
+        const res = await fetch(
+          `/api/team/matches/${player?.currentTeam?._id}`
+        );
         const data = await res.json();
         setMatches(data?.matches);
       } catch (error) {
