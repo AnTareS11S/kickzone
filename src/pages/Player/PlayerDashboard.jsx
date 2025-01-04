@@ -40,7 +40,7 @@ const PlayerDashboard = () => {
               Please fill in your profile to access the dashboard.
             </p>
             <Link
-              to='/user/coach/profile'
+              to='/user/player/profile'
               className='inline-flex items-center justify-center px-4 py-2 bg-primary-500 hover:bg-purple-500 text-white rounded-md transition-colors duration-300'
             >
               <span>Complete Profile</span>
