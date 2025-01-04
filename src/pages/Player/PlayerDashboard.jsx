@@ -29,10 +29,6 @@ const PlayerDashboard = () => {
               title='Team Forum'
               linkTo='/dashboard/player/team-forum'
             />
-            <AdminCard
-              title='Team Equipment'
-              linkTo='/dashboard/coach/team-equipment'
-            />
           </div>
         ) : (
           <div className='text-gray-800 text-lg text-center'>
