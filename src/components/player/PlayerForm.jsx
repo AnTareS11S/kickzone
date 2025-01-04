@@ -68,10 +68,6 @@ const PlayerForm = () => {
     team.split(':')[1].includes(playerData?.wantedTeam)
   );
 
-  const currentTeamName = teams?.find((team) =>
-    team.split(':')[1].includes(playerData?.currentTeam)
-  );
-
   useEffect(() => {
     if (playerData) {
       form.reset({
@@ -200,10 +196,10 @@ const PlayerForm = () => {
               <div className='relative'>
                 <FormArea
                   id='currentTeam'
-                  type='text'
+                  type='select'
                   form={form}
                   isDisabled={true}
-                  placeholder={currentTeamName?.split(':')[0] || 'No team'}
+                  placeholder={playerData?.currentTeam?.name || 'No team'}
                   label='Current Team'
                   name='currentTeam'
                   className='bg-gray-100 cursor-not-allowed'
