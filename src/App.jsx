@@ -76,6 +76,7 @@ import TeamEquipment from './pages/Coach/TeamEquipment';
 import PlayerDashboard from './pages/Player/PlayerDashboard';
 import PlayerSchedule from './pages/Player/PlayerSchedule';
 import PlayerStatistics from './pages/Player/PlayerStatistics';
+import TeamForum from './pages/Team/TeamForum';
 
 const App = () => {
   return (
@@ -241,6 +242,10 @@ const App = () => {
                 <Route
                   path='/dashboard/player/stats'
                   element={<PlayerStatistics />}
+                />
+                <Route
+                  path='/dashboard/player/team-forum'
+                  element={<TeamForum />}
                 />
               </Route>
             </Route>
