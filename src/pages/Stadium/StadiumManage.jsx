@@ -1,12 +1,12 @@
+import { GetCountries } from '../../api/getCountries';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { useFetchCountries } from '../../components/hooks/useFetchCountries';
 import PageHeader from '../../components/PageHeader';
 import { stadiumFormSchema } from '../../lib/validation/StadiumValidation';
 
 const StadiumManage = () => {
-  const countries = useFetchCountries();
+  const countries = GetCountries();
 
   const columns = [
     {

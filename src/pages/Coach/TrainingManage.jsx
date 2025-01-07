@@ -3,8 +3,8 @@ import EditEntity from '../../components/EditEntity';
 import DeleteEntity from '../../components/DeleteEntity';
 import { trainingValidationSchema } from '../../lib/validation/TrainingValidation';
 import { useEffect, useState } from 'react';
-import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import PageHeader from '../../components/PageHeader';
+import { GetCoachByUserId } from '../../api/getCoachByUserId';
 
 const columns = [
   {
@@ -36,7 +36,7 @@ const columns = [
 
 const TrainingManage = () => {
   const [types, setTypes] = useState([]);
-  const { coach } = useFetchCoachByUserId();
+  const { coach } = GetCoachByUserId();
 
   useEffect(() => {
     const getTypes = async () => {

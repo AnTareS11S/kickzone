@@ -8,7 +8,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useToast } from '../../components/ui/use-toast';
 import ScheduleModal from '../../components/referee/ScheduleModal';
-import { useFetchTeamsByLeagueId } from '../../components/hooks/useFetchTeamsByLeagueId';
 import {
   Carousel,
   CarouselContent,
@@ -16,10 +15,11 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '../../components/ui/carousel';
-import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 import ModalDialog from '../../components/ModalDialog';
 import Spinner from '../../components/Spinner';
 import PageHeader from '../../components/PageHeader';
+import { GetSeasonByLeagueId } from '../../api/getSeasonByLeagueId';
+import { GetTeamsByLeagueId } from '../../api/getTeamsByLeagueId';
 
 const schema = () =>
   z.object({
@@ -39,9 +39,9 @@ const ScheduleManagement = () => {
   const leagueId = useParams().id;
   const [rounds, setRounds] = useState([]);
   const [showGeneratedSchedule, setShowGeneratedSchedule] = useState(false);
-  const { season, league } = useFetchSeasonByLeagueId(leagueId);
+  const { season, league } = GetSeasonByLeagueId(leagueId);
   const { toast } = useToast();
-  const { selectTeams, loading } = useFetchTeamsByLeagueId(leagueId);
+  const { selectTeams, loading } = GetTeamsByLeagueId(leagueId);
 
   useEffect(() => {
     if (!showGeneratedSchedule) {

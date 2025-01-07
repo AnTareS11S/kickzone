@@ -1,18 +1,18 @@
+import { GetCoaches } from '../../api/getCoaches';
+import { GetCountries } from '../../api/getCountries';
+import { GetSponsors } from '../../api/getSponsors';
+import { GetStadiums } from '../../api/getStadiums';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { useFetchCoaches } from '../../components/hooks/useFetchCoaches';
-import { useFetchCountries } from '../../components/hooks/useFetchCountries';
-import { useFetchSponsors } from '../../components/hooks/useFetchSponsors';
-import { useFetchStadiums } from '../../components/hooks/useFetchStadiums';
 import PageHeader from '../../components/PageHeader';
 import { teamFormSchema } from '../../lib/validation/TeamValidation';
 
 const TeamManage = () => {
-  const countries = useFetchCountries();
-  const coaches = useFetchCoaches();
-  const stadiums = useFetchStadiums();
-  const sponsors = useFetchSponsors();
+  const countries = GetCountries();
+  const coaches = GetCoaches();
+  const stadiums = GetStadiums();
+  const sponsors = GetSponsors();
 
   const columns = [
     {

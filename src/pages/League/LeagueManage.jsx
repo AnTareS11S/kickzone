@@ -1,16 +1,16 @@
+import { GetCountries } from '../../api/getCountries';
+import { GetSeasons } from '../../api/getSeasons';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
 import PageHeader from '../../components/PageHeader';
 import AddTeam from '../../components/admin/leagues/AddTeam';
 import RemoveTeamFromLeague from '../../components/admin/leagues/RemoveTeamFromLeague';
-import { useFetchCountries } from '../../components/hooks/useFetchCountries';
-import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
 import { leagueFormSchema } from '../../lib/validation/LeagueValidation';
 
 const LeagueManage = () => {
-  const countries = useFetchCountries();
-  const seasons = useFetchSeasons();
+  const countries = GetCountries();
+  const seasons = GetSeasons();
 
   const columns = [
     {

@@ -1,7 +1,7 @@
+import { GetCoachByUserId } from '../../api/getCoachByUserId';
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import EditEntity from '../../components/EditEntity';
-import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import PageHeader from '../../components/PageHeader';
 import { trainingTypeValidationSchema } from '../../lib/validation/TrainingValidation';
 
@@ -19,7 +19,7 @@ const columns = [
 ];
 
 const TrainingTypeManage = () => {
-  const { coach } = useFetchCoachByUserId();
+  const { coach } = GetCoachByUserId();
 
   const fields = [
     {

@@ -1,4 +1,3 @@
-import { useFetchCompletedMatches } from '../../components/hooks/useFetchCompletedMatches';
 import {
   Tabs,
   TabsContent,
@@ -8,17 +7,17 @@ import {
 import NotFilledMatches from './NotFilledMatches';
 import FilledMatches from './FilledMatches';
 import { useParams } from 'react-router-dom';
-import { useFetchFilledResultMatches } from '../../components/hooks/useFetchFilledResultMatches';
 import Spinner from '../../components/Spinner';
-import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 import PageHeader from '../../components/PageHeader';
+import { GetCompletedMatches } from '../../api/getCompletedMatches';
+import { GetFilledResultMatches } from '../../api/getFilledResultMatches';
+import { GetSeasonByLeagueId } from '../../api/getSeasonByLeagueId';
 
 const ResultsManagement = () => {
   const leagueId = useParams().id;
-  const { matches: notFilledMatches, loading } =
-    useFetchCompletedMatches(leagueId);
-  const { matches: filledMatches } = useFetchFilledResultMatches(leagueId);
-  const { season, league } = useFetchSeasonByLeagueId(leagueId);
+  const { matches: notFilledMatches, loading } = GetCompletedMatches(leagueId);
+  const { matches: filledMatches } = GetFilledResultMatches(leagueId);
+  const { season, league } = GetSeasonByLeagueId(leagueId);
 
   if (loading) {
     return <Spinner />;
