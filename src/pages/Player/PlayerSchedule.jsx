@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useFetchPlayerByUserId } from '../../components/hooks/useFetchPlayerByUserId';
 import Spinner from '../../components/Spinner';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
 import { FaCalendar, FaClock } from 'react-icons/fa';
 import PageHeader from '../../components/PageHeader';
+import { GetPlayerByUserId } from '../../api/getPlayerByUserId';
 
 const PlayerSchedule = () => {
-  const { player } = useFetchPlayerByUserId();
+  const { player } = GetPlayerByUserId();
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
 

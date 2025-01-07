@@ -1,5 +1,3 @@
-import { useFetchPlayerByUserId } from '../../components/hooks/useFetchPlayerByUserId';
-import { useFetchPlayerStatsById } from '../../components/hooks/useFetchPlayerStatsById';
 import {
   Card,
   CardContent,
@@ -15,6 +13,8 @@ import {
 } from 'react-icons/fa';
 import PageHeader from '../../components/PageHeader';
 import Spinner from '../../components/Spinner';
+import { GetPlayerByUserId } from '../../api/getPlayerByUserId';
+import { GetPlayerStatsById } from '../../api/getPlayerStatsById';
 
 const StatCard = ({ icon: Icon, label, value }) => (
   <Card className='overflow-hidden'>
@@ -35,8 +35,8 @@ const StatCard = ({ icon: Icon, label, value }) => (
 );
 
 const PlayerStatistics = () => {
-  const { player, loading } = useFetchPlayerByUserId();
-  const { playerStats } = useFetchPlayerStatsById(player?._id);
+  const { player, loading } = GetPlayerByUserId();
+  const { playerStats } = GetPlayerStatsById(player?._id);
 
   const currentStats = playerStats?.[0] || null;
 
