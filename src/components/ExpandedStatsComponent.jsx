@@ -6,13 +6,13 @@ import { playerStatsFormSchema } from '../lib/validation/ResultValidation';
 import FormArea from './FormArea';
 import { useToast } from './ui/use-toast';
 import { useParams } from 'react-router-dom';
-import { useFetchSeasonByMatchId } from './hooks/useFetchSeasonByMatchId';
 import { useEffect, useState } from 'react';
 import Spinner from './Spinner';
+import { GetSeasonByMatchId } from '../api/getSeasonByMatchId';
 
 const ExpandedStatsComponent = ({ data }) => {
   const matchId = useParams().id;
-  const seasonId = useFetchSeasonByMatchId(matchId);
+  const seasonId = GetSeasonByMatchId(matchId);
   const { toast } = useToast();
   const [isReset, setIsReset] = useState(false);
   const [loading, setLoading] = useState(false);
