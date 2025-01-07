@@ -77,6 +77,7 @@ import PlayerDashboard from './pages/Player/PlayerDashboard';
 import PlayerSchedule from './pages/Player/PlayerSchedule';
 import PlayerStatistics from './pages/Player/PlayerStatistics';
 import TeamForum from './pages/Team/TeamForum';
+import ForumCategory from './pages/ForumCategory/ForumCategory';
 
 const App = () => {
   return (
@@ -209,6 +210,10 @@ const App = () => {
                   element={<ContactManage />}
                 />
                 <Route path='/dashboard/admin/faq' element={<FAQManage />} />
+                <Route
+                  path='/dashboard/admin/forum-category'
+                  element={<ForumCategory />}
+                />
               </Route>
 
               {/* Coach routes */}
@@ -229,6 +234,10 @@ const App = () => {
                 <Route
                   path='/dashboard/coach/team-equipment'
                   element={<TeamEquipment />}
+                />
+                <Route
+                  path='/dashboard/coach/team-forum'
+                  element={<TeamForum />}
                 />
               </Route>
 
