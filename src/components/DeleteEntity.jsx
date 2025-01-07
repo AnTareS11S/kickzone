@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useOnSuccessUpdate } from './hooks/useOnSuccessUpdate';
+
 import ModalDialog from './ModalDialog';
 import { useToast } from './ui/use-toast';
 import { useSocket } from '../hook/useSocket';
+import { useOnSuccessUpdate } from '../hook/useOnSuccessUpdate';
 
 const DeleteEntity = ({ row, onEntityDelete, apiEndpoint, title }) => {
   const [updateSuccess, setUpdateSuccess] = useState(false);
