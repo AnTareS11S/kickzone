@@ -15,6 +15,7 @@ import {
 } from '../../components/ui/avatar';
 import { PinTopIcon } from '@radix-ui/react-icons';
 import { BiMessageSquare } from 'react-icons/bi';
+import PageHeader from '../../components/PageHeader';
 
 const TeamForum = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -60,17 +61,14 @@ const TeamForum = () => {
   ];
 
   return (
-    <div className='max-w-7xl mx-auto p-6'>
+    <div className='max-w-8xl mx-auto p-6'>
       {/* Header */}
-      <div className='flex justify-between items-center mb-8'>
-        <div>
-          <h1 className='text-3xl font-bold text-gray-900'>Team Forum</h1>
-          <p className='text-gray-500 mt-2'>
-            Connect, discuss, and stay updated with your team
-          </p>
-        </div>
-        <Button className='bg-blue-600 hover:bg-blue-700'>New Thread</Button>
-      </div>
+      <PageHeader
+        title='Team Forum'
+        description='Connect, discuss, and stay updated with your team'
+      />
+
+      <Button className='bg-blue-600 hover:bg-blue-700'>New Thread</Button>
 
       {/* Search */}
       <div className='mb-6'>
