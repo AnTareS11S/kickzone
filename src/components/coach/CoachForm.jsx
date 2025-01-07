@@ -5,18 +5,18 @@ import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
-import { useFetchCountries } from '../hooks/useFetchCountries';
 import Spinner from '../../components/Spinner';
-import { useFetchCoachByUserId } from '../hooks/useFetchCoachByUserId';
 import { useToast } from '../ui/use-toast';
 import { Card } from '../ui/card';
+import { GetCoachByUserId } from '../../api/getCoachByUserId';
+import { GetCountries } from '../../api/getCountries';
 
 const CoachForm = ({ currentUser }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState();
-  const countries = useFetchCountries();
+  const countries = GetCountries();
   const [isChanged, setIsChanged] = useState(false);
-  const { coach: coachData, loading } = useFetchCoachByUserId(isChanged);
+  const { coach: coachData, loading } = GetCoachByUserId(isChanged);
   const { toast } = useToast();
 
   const form = useForm({

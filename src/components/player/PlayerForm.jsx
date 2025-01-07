@@ -6,12 +6,8 @@ import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 import { playerFormSchema } from '../../lib/validation/PlayerValidation';
 import { Separator } from '../ui/separator';
-import { useFetchPositions } from '../hooks/useFetchPositions';
-import { useFetchCountries } from '../hooks/useFetchCountries';
-import { useFetchTeams } from '../hooks/useFetchTeams';
 import Spinner from '../Spinner';
 import { useToast } from '../ui/use-toast';
-import { useFetchPlayerByUserId } from '../hooks/useFetchPlayerByUserId';
 import { Card } from '../ui/card';
 import { FaQuestionCircle } from 'react-icons/fa';
 import {
@@ -21,19 +17,23 @@ import {
 } from '../ui/hover-card';
 import { useDispatch } from 'react-redux';
 import { updateProfileFilled } from '../../redux/user/userSlice';
+import { GetCountries } from '../../api/getCountries';
+import { GetPlayerByUserId } from '../../api/getPlayerByUserId';
+import { GetPositions } from '../../api/getPositions';
+import { GetTeams } from '../../api/getTeams';
 
 const PlayerForm = () => {
   const fileRef = useRef(null);
   const [file, setFile] = useState();
   const [isChanged, setIsChanged] = useState(false);
-  const positions = useFetchPositions();
-  const countries = useFetchCountries();
-  const teams = useFetchTeams();
+  const positions = GetPositions();
+  const countries = GetCountries();
+  const teams = GetTeams();
   const {
     player: playerData,
     loading,
     currentUser,
-  } = useFetchPlayerByUserId(isChanged);
+  } = GetPlayerByUserId(isChanged);
   const dispatch = useDispatch();
   const { toast } = useToast();
 

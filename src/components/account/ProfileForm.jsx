@@ -7,7 +7,6 @@ import { useEffect, useRef, useState } from 'react';
 import FormArea from '../FormArea';
 import { useToast } from '../ui/use-toast';
 import Spinner from '../Spinner';
-import { useFetchUserById } from '../hooks/useFetchUserById';
 import {
   FaUserAlt,
   FaEnvelope,
@@ -22,6 +21,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '../ui/hover-card';
+import { GetUserById } from '../../api/getUserById';
 
 const profileFormSchema = z.object({
   username: z
@@ -40,7 +40,7 @@ const ProfileForm = () => {
   const fileRef = useRef(null);
   const [file, setFile] = useState();
   const [isChanged, setIsChanged] = useState(false);
-  const { user, loading } = useFetchUserById(isChanged);
+  const { user, loading } = GetUserById(isChanged);
   const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(profileFormSchema),

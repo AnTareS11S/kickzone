@@ -5,18 +5,18 @@ import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
-import { useFetchCountries } from '../hooks/useFetchCountries';
 import { useToast } from '../ui/use-toast';
-import { useFetchRefereeByUserId } from '../hooks/useFetchReferee';
 import Spinner from '../Spinner';
 import { Card } from '../ui/card';
+import { GetCountries } from '../../api/getCountries';
+import { GetRefereeByUserId } from '../../api/getRefereeByUserId';
 
 const RefereeForm = ({ currentUser }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState();
-  const countries = useFetchCountries();
+  const countries = GetCountries();
   const [isChanged, setIsChanged] = useState(false);
-  const { referee: refereeData, loading } = useFetchRefereeByUserId(isChanged);
+  const { referee: refereeData, loading } = GetRefereeByUserId(isChanged);
   const { toast } = useToast();
 
   const form = useForm({

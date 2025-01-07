@@ -5,18 +5,18 @@ import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import { useEffect, useRef, useState } from 'react';
 import { usersFormSchema } from '../../lib/validation/UsersValidation';
-import { useFetchCountries } from '../hooks/useFetchCountries';
 import Spinner from '../../components/Spinner';
 import { useToast } from '../ui/use-toast';
 import { Card } from '../ui/card';
-import { useFetchAdminByUserId } from '../hooks/useFetchAdminByUserId';
+import { GetAdminByUserId } from '../../api/getAdminByUserId';
+import { GetCountries } from '../../api/getCountries';
 
 const AdminForm = ({ currentUser }) => {
   const fileRef = useRef(null);
   const [file, setFile] = useState();
-  const countries = useFetchCountries();
+  const countries = GetCountries();
   const [isChanged, setIsChanged] = useState(false);
-  const { admin: adminData, loading } = useFetchAdminByUserId(isChanged);
+  const { admin: adminData, loading } = GetAdminByUserId(isChanged);
   const { toast } = useToast();
 
   const form = useForm({
