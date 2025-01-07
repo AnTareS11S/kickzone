@@ -3,17 +3,17 @@ import { Card, CardContent, CardHeader } from '../../components/ui/card';
 import { Separator } from '../../components/ui/separator';
 import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
-import { useFetchRefereeById } from '../../components/hooks/useFetchRefereeById';
-import { useFetchRefereeStatsById } from '../../components/hooks/useFetchRefereeStatsById';
 import { FaBirthdayCake, FaFlag, FaCity, FaCalendar } from 'react-icons/fa';
 import { MdSportsSoccer } from 'react-icons/md';
 import { TbRectangleVerticalFilled as RefereeCard } from 'react-icons/tb';
+import { GetRefereeById } from '../../api/getRefereeById';
+import { GetRefereeStatsById } from '../../api/getRefereeStatsById';
 
 const RefereeDetails = () => {
   const refereeId = useParams().id;
-  const { referee, loading } = useFetchRefereeById(refereeId);
+  const { referee, loading } = GetRefereeById(refereeId);
   const { refereeStats, loading: statsLoading } =
-    useFetchRefereeStatsById(refereeId);
+    GetRefereeStatsById(refereeId);
 
   if (loading || statsLoading) {
     return <Spinner />;

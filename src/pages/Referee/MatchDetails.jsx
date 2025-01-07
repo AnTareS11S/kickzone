@@ -11,16 +11,16 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
-import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 import Spinner from '../../components/Spinner';
 import PageHeader from '../../components/PageHeader';
+import { GetSeasonByLeagueId } from '../../api/getSeasonByLeagueId';
 
 const MatchDetails = () => {
   const leagueId = useParams().id;
   const { currentUser } = useSelector((state) => state.user);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { season, league } = useFetchSeasonByLeagueId(leagueId);
+  const { season, league } = GetSeasonByLeagueId(leagueId);
 
   useEffect(() => {
     const getRefereeMatches = async () => {

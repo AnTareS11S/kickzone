@@ -7,7 +7,6 @@ import {
 } from '../../components/ui/card';
 import Spinner from '../../components/Spinner';
 import { useParams } from 'react-router-dom';
-import { useFetchCoachById } from '../../components/hooks/useFetchCoachById';
 import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
 import {
@@ -20,6 +19,7 @@ import {
 } from 'react-icons/fa';
 import { IoMdClose } from 'react-icons/io';
 import { useState, useEffect } from 'react';
+import { GetCoachById } from '../../api/getCoachById';
 
 const StatCard = ({ title, value, icon: Icon }) => (
   <div className='bg-white rounded-lg p-4 shadow-md flex items-center space-x-4'>
@@ -35,7 +35,7 @@ const StatCard = ({ title, value, icon: Icon }) => (
 
 const CoachDetails = () => {
   const coachId = useParams().id;
-  const { coach, loading } = useFetchCoachById(coachId);
+  const { coach, loading } = GetCoachById(coachId);
   const [stats, setStats] = useState(null);
 
   useEffect(() => {

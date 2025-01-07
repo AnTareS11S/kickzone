@@ -9,7 +9,6 @@ import SquadTable from './SquadTable';
 import TeamMatches from './TeamMatches';
 import { Button } from '../../ui/button';
 import TeamResult from './TeamResult';
-import { useFetchTeamById } from '../../hooks/useFetchTeamById';
 import BackButton from '../../BackButton';
 import { Separator } from '../../ui/separator';
 import { useToast } from '../../ui/use-toast';
@@ -20,6 +19,7 @@ import {
 } from 'react-icons/md';
 import { FaPeopleGroup } from 'react-icons/fa6';
 import TeamStats from './TeamStats';
+import { GetTeamById } from '../../../api/getTeamById';
 
 const profileTabs = [
   { value: 'results', label: 'Results', icon: <MdOutlineScoreboard /> },
@@ -32,7 +32,7 @@ const TeamDetails = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { id: teamId } = useParams();
   const [isChanged, setIsChanged] = useState(false);
-  const { team, loading } = useFetchTeamById(teamId, isChanged);
+  const { team, loading } = GetTeamById(teamId, isChanged);
   const [isFan, setIsFan] = useState(false);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('results');

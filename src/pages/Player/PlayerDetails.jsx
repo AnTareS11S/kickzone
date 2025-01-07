@@ -12,9 +12,7 @@ import {
 } from '../../components/ui/card';
 import BackButton from '../../components/BackButton';
 import { Separator } from '../../components/ui/separator';
-import { useFetchPlayerById } from '../../components/hooks/useFetchPlayerById';
 import CustomDataTable from '../../components/CustomDataTable';
-import { useFetchPlayerStatsById } from '../../components/hooks/useFetchPlayerStatsById';
 import {
   FaFlag,
   FaRulerVertical,
@@ -24,13 +22,15 @@ import {
 } from 'react-icons/fa';
 import { useToast } from '../../components/ui/use-toast';
 import { Button } from '../../components/ui/button';
+import { GetPlayerById } from '../../api/getPlayerById';
+import { GetPlayerStatsById } from '../../api/getPlayerStatsById';
 
 const PlayerDetails = () => {
   const playerId = useParams().id;
   const { currentUser } = useSelector((state) => state.user);
   const [isChanged, setIsChanged] = useState(false);
-  const { player, loading } = useFetchPlayerById(playerId, isChanged);
-  const { playerStats } = useFetchPlayerStatsById(playerId);
+  const { player, loading } = GetPlayerById(playerId, isChanged);
+  const { playerStats } = GetPlayerStatsById(playerId);
   const [isFan, setIsFan] = useState(false);
   const { toast } = useToast();
 

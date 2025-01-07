@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-
 import Spinner from '../../components/Spinner';
 import {
   Card,
@@ -11,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from '../../components/ui/card';
-
 import { Button } from '../../components/ui/button';
 import { Form } from '../../components/ui/form';
 import CrudPanel from '../../components/CrudPanel';
@@ -19,10 +17,6 @@ import DeleteEntity from '../../components/DeleteEntity';
 import { Separator } from '../../components/ui/separator';
 import BackButton from '../../components/BackButton';
 import { useToast } from '../../components/ui/use-toast';
-
-import { useFetchTeamPlayers } from '../../components/hooks/useFetchTeamPlayers';
-import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
-import { useFetchPlayerByUserId } from '../../components/hooks/useFetchPlayerByUserId';
 import {
   FaCalendar,
   FaClipboardList,
@@ -32,6 +26,9 @@ import {
   FaUsers,
 } from 'react-icons/fa';
 import FormArea from '../../components/FormArea';
+import { GetCoachByUserId } from '../../api/getCoachByUserId';
+import { GetPlayerByUserId } from '../../api/getPlayerByUserId';
+import { GetTeamPlayers } from '../../api/getTeamPlayers';
 
 const formSchema = z.object({
   attendance: z.boolean(),
@@ -54,9 +51,9 @@ const columns = [
 const TrainingDetails = () => {
   const [training, setTraining] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { player, currentUser } = useFetchPlayerByUserId();
-  const { coach } = useFetchCoachByUserId();
-  const { playersToSelect: players } = useFetchTeamPlayers(coach?.currentTeam);
+  const { player, currentUser } = GetPlayerByUserId();
+  const { coach } = GetCoachByUserId();
+  const { playersToSelect: players } = GetTeamPlayers(coach?.currentTeam);
   const { id: trainingId } = useParams();
   const { toast } = useToast();
 
