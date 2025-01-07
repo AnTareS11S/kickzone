@@ -39,6 +39,10 @@ const AdminDashboard = () => {
           <AdminCard title='Privacy' linkTo='/dashboard/admin/privacy' />
           <AdminCard title='Contact' linkTo='/dashboard/admin/contact' />
           <AdminCard title='FAQ' linkTo='/dashboard/admin/faq' />
+          <AdminCard
+            title='Forum Categories'
+            linkTo='/dashboard/admin/forum-category'
+          />
         </div>
       ) : (
         <div className='text-gray-800 text-lg text-center'>
