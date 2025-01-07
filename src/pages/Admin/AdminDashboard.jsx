@@ -1,12 +1,12 @@
 import { Link } from 'react-router-dom';
 import AdminCard from '../../components/admin/AdminCard';
-import { useFetchUserById } from '../../components/hooks/useFetchUserById';
 import Spinner from '../../components/Spinner';
 import { Separator } from '../../components/ui/separator';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
+import { GetUserById } from '../../api/getUserById';
 
 const AdminDashboard = () => {
-  const { user, loading } = useFetchUserById();
+  const { user, loading } = GetUserById();
 
   if (loading) {
     return <Spinner />;

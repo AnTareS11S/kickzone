@@ -2,11 +2,11 @@ import AdminCard from '../../components/admin/AdminCard';
 import { Separator } from '../../components/ui/separator';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
 import { Link } from 'react-router-dom';
-import { useFetchUserById } from '../../components/hooks/useFetchUserById';
 import Spinner from '../../components/Spinner';
+import { GetUserById } from '../../api/getUserById';
 
 const PlayerDashboard = () => {
-  const { user, loading } = useFetchUserById();
+  const { user, loading } = GetUserById();
 
   if (loading) {
     return <Spinner />;

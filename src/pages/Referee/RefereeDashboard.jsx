@@ -2,14 +2,14 @@ import AdminCard from '../../components/admin/AdminCard';
 import { Separator } from '../../components/ui/separator';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
-import { useFetchUserById } from '../../components/hooks/useFetchUserById';
 import Spinner from '../../components/Spinner';
-import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
+import { GetSeasonByLeagueId } from '../../api/getSeasonByLeagueId';
+import { GetUserById } from '../../api/getUserById';
 
 const RefereeDashboard = () => {
   const leagueId = useParams().id;
-  const { user, loading } = useFetchUserById();
-  const { season, league } = useFetchSeasonByLeagueId(leagueId);
+  const { user, loading } = GetUserById();
+  const { season, league } = GetSeasonByLeagueId(leagueId);
 
   if (loading) {
     return <Spinner />;
