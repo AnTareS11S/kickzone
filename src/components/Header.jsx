@@ -17,7 +17,6 @@ import {
   signOutUserStart,
   signOutUserSuccess,
 } from '../redux/user/userSlice';
-import { useFetchUserById } from './hooks/useFetchUserById';
 import { useToast } from './ui/use-toast';
 import {
   FaBell,
@@ -35,9 +34,10 @@ import {
   MdOutlineConnectWithoutContact,
 } from 'react-icons/md';
 import { useSocket } from '../hook/useSocket';
+import { GetUserById } from '../api/getUserById';
 
 const Header = () => {
-  const { user, currentUser } = useFetchUserById();
+  const { user, currentUser } = GetUserById();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { toast } = useToast();
