@@ -1,11 +1,11 @@
 import SquadManagement from '../../components/coach/SquadManagement';
 import Spinner from '../../components/Spinner';
-import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
 import { useEffect, useState } from 'react';
 import PageHeader from '../../components/PageHeader';
+import { GetCoachByUserId } from '../../api/getCoachByUserId';
 
 const CoachTeamView = () => {
-  const { coach } = useFetchCoachByUserId();
+  const { coach } = GetCoachByUserId();
   const [team, setTeam] = useState([]);
   const [loading, setLoading] = useState(true);
 
