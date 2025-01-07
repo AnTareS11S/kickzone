@@ -1,8 +1,4 @@
 import { FaTrophy } from 'react-icons/fa';
-import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
-import { useFetchPlayerByUserId } from '../../components/hooks/useFetchPlayerByUserId';
-import { useFetchTeamById } from '../../components/hooks/useFetchTeamById';
-import { useFetchTrainingsByCoachId } from '../../components/hooks/useFetchTrainingsByCoachId';
 import Spinner from '../../components/Spinner';
 import ActiveTrainings from '../../components/training/ActiveTrainings';
 import {
@@ -20,18 +16,16 @@ import {
 import { RiTeamFill } from 'react-icons/ri';
 import { BiSolidZap } from 'react-icons/bi';
 import { useEffect, useState } from 'react';
+import { GetCoachByUserId } from '../../api/getCoachByUserId';
+import { GetPlayerByUserId } from '../../api/getPlayerByUserId';
+import { GetTeamById } from '../../api/getTeamById';
+import { GetTrainingsByCoachId } from '../../api/getTrainingsByCoachId';
 
 const TrainingPage = () => {
-  const {
-    player,
-    currentUser,
-    loading: playerLoading,
-  } = useFetchPlayerByUserId();
-  const { coach, loading: coachLoading } = useFetchCoachByUserId();
-  const { team } = useFetchTeamById(
-    player?.currentTeam?._id || coach?.currentTeam
-  );
-  const { trainings, loading: trainingLoading } = useFetchTrainingsByCoachId(
+  const { player, currentUser, loading: playerLoading } = GetPlayerByUserId();
+  const { coach, loading: coachLoading } = GetCoachByUserId();
+  const { team } = GetTeamById(player?.currentTeam?._id || coach?.currentTeam);
+  const { trainings, loading: trainingLoading } = GetTrainingsByCoachId(
     coach?._id || team?.coach?._id
   );
   const [processedTrainings, setProcessedTrainings] = useState({

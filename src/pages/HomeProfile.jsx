@@ -7,7 +7,6 @@ import {
 import { Card, CardContent, CardHeader } from '../components/ui/card';
 import BackButton from '../components/BackButton';
 import { Separator } from '../components/ui/separator';
-import { useFetchUserById } from '../components/hooks/useFetchUserById';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import {
@@ -17,6 +16,7 @@ import {
   FaRegFileAlt,
 } from 'react-icons/fa';
 import Spinner from '../components/Spinner';
+import { GetUserById } from '../api/getUserById';
 
 const profileTabs = [
   { value: 'posts', label: 'Posts', icon: FaRegFileAlt },
@@ -25,7 +25,7 @@ const profileTabs = [
 
 const HomeProfile = () => {
   const userId = useParams().id;
-  const { user: currentUser, loading } = useFetchUserById(null, userId);
+  const { user: currentUser, loading } = GetUserById(null, userId);
   const [comments, setComments] = useState([]);
 
   useEffect(() => {
