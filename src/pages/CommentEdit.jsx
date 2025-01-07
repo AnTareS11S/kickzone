@@ -1,6 +1,5 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { Card } from '../components/ui/card';
-import { useFetchPostById } from '../components/hooks/useFetchPostById';
 import { useToast } from '../components/ui/use-toast';
 import { useForm } from 'react-hook-form';
 import { CommentValidation } from '../lib/validation/PostValidation';
@@ -10,10 +9,11 @@ import { Form } from '../components/ui/form';
 import FormArea from '../components/FormArea';
 import { Button } from '../components/ui/button';
 import Spinner from '../components/Spinner';
+import { GetPostById } from '../api/getPostById';
 
 const CommentEdit = () => {
   const commentId = useParams().id;
-  const { post, loading } = useFetchPostById(commentId);
+  const { post, loading } = GetPostById(commentId);
   const navigate = useNavigate();
   const { toast } = useToast();
 

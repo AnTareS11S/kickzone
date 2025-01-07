@@ -1,5 +1,4 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useFetchPostById } from '../components/hooks/useFetchPostById';
 import Spinner from '../components/Spinner';
 import { Button } from '../components/ui/button';
 import { Card, CardContent, CardFooter } from '../components/ui/card';
@@ -10,10 +9,11 @@ import { useEffect, useRef, useState } from 'react';
 import FormArea from '../components/FormArea';
 import { Form } from '../components/ui/form';
 import { useToast } from '../components/ui/use-toast';
+import { GetPostById } from '../api/getPostById';
 
 const PostEdit = () => {
   const postId = useParams().id;
-  const { post, loading } = useFetchPostById(postId);
+  const { post, loading } = GetPostById(postId);
   const fileRef = useRef(null);
   const [file, setFile] = useState();
   const [previewUrl, setPreviewUrl] = useState('');

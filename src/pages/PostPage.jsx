@@ -2,16 +2,16 @@ import PostCard from '../components/home/posts/PostCard';
 import { useParams } from 'react-router-dom';
 import { useState } from 'react';
 import Comment from '../components/home/posts/Comment';
-import { useFetchUserById } from '../components/hooks/useFetchUserById';
 import Spinner from '../components/Spinner';
-import { useFetchPostById } from '../components/hooks/useFetchPostById';
+import { GetPostById } from '../api/getPostById';
+import { GetUserById } from '../api/getUserById';
 
 const PostPage = () => {
   const { id } = useParams();
-  const { user, currentUser } = useFetchUserById();
+  const { user, currentUser } = GetUserById();
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [deleteSuccess, setDeleteSuccess] = useState(false);
-  const { post, loading } = useFetchPostById(id, updateSuccess, deleteSuccess);
+  const { post, loading } = GetPostById(id, updateSuccess, deleteSuccess);
 
   if (loading) {
     return <Spinner />;
