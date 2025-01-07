@@ -1,11 +1,11 @@
 import { Card } from '../../ui/card';
 import CustomDataTable from '../../CustomDataTable';
 import { Link } from 'react-router-dom';
-import { useFetchTeamStatsByLeagueId } from '../../hooks/useFetchTeamStatsByLeagueId';
 import { Button } from '../../ui/button';
+import { GetTeamStatsByLeagueId } from '../../../api/getTeamStatsByLeagueId';
 
 const TableComponent = ({ leagueId }) => {
-  const { teamStats } = useFetchTeamStatsByLeagueId(leagueId);
+  const { teamStats } = GetTeamStatsByLeagueId(leagueId);
 
   const handleDownloadXLSX = async () => {
     const res = await fetch(`/api/team/download-xlsx/${leagueId}`);
