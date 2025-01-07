@@ -10,9 +10,9 @@ import BackButton from '../../components/BackButton';
 import FormArea from '../../components/FormArea';
 import CrudPanel from '../../components/CrudPanel';
 import Spinner from '../../components/Spinner';
-import { useFetchMatchById } from '../../components/hooks/useFetchMatchById';
-import { useFetchMatchResultById } from '../../components/hooks/useFetchMatchResultById';
 import { resultFormSchema } from '../../lib/validation/ResultValidation';
+import { GetMatchById } from '../../api/getMatchById';
+import { GetMatchResultById } from '../../api/getMatchResultById';
 
 const columns = [
   { name: 'No.', selector: (row, index) => index + 1, grow: 0 },
@@ -30,8 +30,8 @@ const columns = [
 
 const AddResult = () => {
   const { id: matchId } = useParams();
-  const { match, loading } = useFetchMatchById(matchId);
-  const { result } = useFetchMatchResultById(matchId);
+  const { match, loading } = GetMatchById(matchId);
+  const { result } = GetMatchResultById(matchId);
   const { toast } = useToast();
 
   const form = useForm({

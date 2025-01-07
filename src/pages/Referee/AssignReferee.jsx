@@ -10,17 +10,17 @@ import {
 } from '../../components/ui/carousel';
 import { Button } from '../../components/ui/button';
 import AssignRefereeModal from '../../components/referee/AssignRefereeModal';
-import { useFetchRefeeres } from '../../components/hooks/useFetchReferees';
-import { useFetchSeasonByLeagueId } from '../../components/hooks/useFetchSeasonByLeagueId';
 import Spinner from '../../components/Spinner';
 import PageHeader from '../../components/PageHeader';
+import { GetRefeeres } from '../../api/getReferees';
+import { GetSeasonByLeagueId } from '../../api/getSeasonByLeagueId';
 
 const AssignReferee = () => {
   const leagueId = useParams().id;
   const { toast } = useToast();
   const [rounds, setRounds] = useState([]);
-  const { season, league, loading } = useFetchSeasonByLeagueId(leagueId);
-  const referees = useFetchRefeeres();
+  const { season, league, loading } = GetSeasonByLeagueId(leagueId);
+  const referees = GetRefeeres();
 
   const handleGetRounds = async () => {
     try {
