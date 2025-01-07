@@ -9,7 +9,6 @@ import {
 } from 'react-icons/fa';
 import { PiSoccerBallFill } from 'react-icons/pi';
 import Spinner from '../../Spinner';
-import { useFetchSeasons } from '../../hooks/useFetchSeasons';
 import {
   Select,
   SelectContent,
@@ -17,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../ui/select';
+import { GetSeasons } from '../../../api/getSeasons';
 
 const fetchData = async (url, setter, setLoading) => {
   try {
@@ -46,7 +46,7 @@ const TeamStats = () => {
     draws: null,
     losses: null,
   });
-  const seasons = useFetchSeasons();
+  const seasons = GetSeasons();
   const [selectedSeason, setSelectedSeason] = useState('');
   const [loading, setLoading] = useState(true);
 

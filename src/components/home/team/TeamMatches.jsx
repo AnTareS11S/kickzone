@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Spinner from '../../Spinner';
-import { useFetchSeasons } from '../../hooks/useFetchSeasons';
 import {
   Select,
   SelectContent,
@@ -10,12 +9,13 @@ import {
   SelectValue,
 } from '../../ui/select';
 import { FaRegCalendarAlt } from 'react-icons/fa';
+import { GetSeasons } from '../../../api/getSeasons';
 
 const TeamMatches = () => {
   const [matches, setMatches] = useState([]);
   const [filteredMatches, setFilteredMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const seasons = useFetchSeasons();
+  const seasons = GetSeasons();
   const [selectedSeason, setSelectedSeason] = useState('');
   const teamId = useParams().id;
 

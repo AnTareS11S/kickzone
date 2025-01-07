@@ -10,14 +10,14 @@ import {
 } from '../../ui/select';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import { useEffect, useState } from 'react';
-import { useFetchSeasons } from '../../hooks/useFetchSeasons';
+import { GetSeasons } from '../../../api/getSeasons';
 
 const TeamResult = () => {
   const teamId = useParams().id;
   const [results, setResults] = useState([]);
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const seasons = useFetchSeasons();
+  const seasons = GetSeasons();
   const [selectedSeason, setSelectedSeason] = useState('');
 
   useEffect(() => {

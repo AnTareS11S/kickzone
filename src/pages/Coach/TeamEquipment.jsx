@@ -4,7 +4,7 @@ import CrudPanel from '../../components/CrudPanel';
 import EditEntity from '../../components/EditEntity';
 import DeleteEntity from '../../components/DeleteEntity';
 import { teamEquipmentValidationSchema } from '../../lib/validation/TeamValidation';
-import { useFetchCoachByUserId } from '../../components/hooks/useFetchCoachByUserId';
+import { GetCoachByUserId } from '../../api/getCoachByUserId';
 
 const columns = [
   {
@@ -55,7 +55,7 @@ const getStatusColor = (status) => {
 };
 
 const TeamEquipment = () => {
-  const { coach } = useFetchCoachByUserId();
+  const { coach } = GetCoachByUserId();
 
   const fields = [
     {
