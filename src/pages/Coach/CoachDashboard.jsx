@@ -24,6 +24,10 @@ const CoachDashboard = () => {
         {user?.isProfileFilled ? (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 '>
             <AdminCard title='Team' linkTo='/dashboard/coach/team' />
+            <AdminCard
+              title='Team Forum'
+              linkTo='/dashboard/coach/team-forum'
+            />
             <AdminCard title='Training' linkTo='/dashboard/coach/training' />
             <AdminCard
               title='Training Type'
