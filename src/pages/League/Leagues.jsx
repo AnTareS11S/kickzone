@@ -10,13 +10,13 @@ import {
   SelectValue,
 } from '../../components/ui/select';
 import { FaRegCalendarAlt, FaTrophy } from 'react-icons/fa';
-import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
 import { motion } from 'framer-motion';
+import { GetSeasons } from '../../api/getSeasons';
 
 const Leagues = () => {
   const [leagues, setLeagues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const seasons = useFetchSeasons();
+  const seasons = GetSeasons();
   const [selectedSeason, setSelectedSeason] = useState('');
 
   useEffect(() => {

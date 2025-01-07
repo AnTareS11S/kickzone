@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { Card, CardHeader, CardTitle } from '../../components/ui/card';
 import { useEffect, useState } from 'react';
 import { Separator } from '../../components/ui/separator';
-import { useFetchSeasons } from '../../components/hooks/useFetchSeasons';
 import {
   Select,
   SelectContent,
@@ -12,12 +11,13 @@ import {
 } from '../../components/ui/select';
 import { FaRegCalendarAlt } from 'react-icons/fa';
 import Spinner from '../../components/Spinner';
+import { GetSeasons } from '../../api/getSeasons';
 
 const LeagueScheduleCard = () => {
   const [leagues, setLeagues] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const seasons = useFetchSeasons();
+  const seasons = GetSeasons();
   const [selectedSeason, setSelectedSeason] = useState('');
 
   useEffect(() => {

@@ -11,12 +11,12 @@ import { Separator } from '../../components/ui/separator';
 import Spinner from '../../components/Spinner';
 import BackButton from '../../components/BackButton';
 import { useParams } from 'react-router-dom';
-import { useFetchTeamsByLeagueId } from '../../components/hooks/useFetchTeamsByLeagueId';
 import PlayerStats from '../../components/player/PlayerStats';
+import { GetTeamsByLeagueId } from '../../api/getTeamsByLeagueId';
 
 const LeaguePage = () => {
   const leagueId = useParams().id;
-  const { teams, loading, leagueName } = useFetchTeamsByLeagueId(leagueId);
+  const { teams, loading, leagueName } = GetTeamsByLeagueId(leagueId);
 
   if (loading) {
     return <Spinner />;
