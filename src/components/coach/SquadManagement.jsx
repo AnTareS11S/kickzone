@@ -1,8 +1,8 @@
 import CrudPanel from '../CrudPanel';
 import DeleteEntity from '../DeleteEntity';
 import * as z from 'zod';
-import { useFetchTeamPlayersByWantedTeam } from '../hooks/useFetchTeamPlayersByWantedTeam';
 import Spinner from '../Spinner';
+import { GetTeamPlayersByWantedTeam } from '../../api/getTeamPlayersByWantedTeam';
 
 const columns = [
   {
@@ -40,7 +40,7 @@ const playerAddFormSchema = () =>
   });
 
 const SquadManagement = ({ data }) => {
-  const { players, loading } = useFetchTeamPlayersByWantedTeam(data?._id);
+  const { players, loading } = GetTeamPlayersByWantedTeam(data?._id);
 
   const fields = [
     {

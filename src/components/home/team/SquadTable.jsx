@@ -9,12 +9,12 @@ import {
 } from '../../ui/table';
 import { useNavigate, useParams } from 'react-router-dom';
 import Spinner from '../../Spinner';
-import { useFetchTeamPlayers } from '../../hooks/useFetchTeamPlayers';
+import { GetTeamPlayers } from '../../../api/getTeamPlayers';
 
 const SquadTable = () => {
   const { id: teamId } = useParams();
   const navigate = useNavigate();
-  const { players: playersData, loading } = useFetchTeamPlayers(teamId);
+  const { players: playersData, loading } = GetTeamPlayers(teamId);
 
   const playerPositions = {
     Goalkeepers: ['Goalkeeper'],
