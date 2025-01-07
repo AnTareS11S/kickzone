@@ -1,8 +1,8 @@
 import { useForm } from 'react-hook-form';
 import ModalActions from '../../ModalActions';
 import { useToast } from '../../ui/use-toast';
-import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
 import { useState } from 'react';
+import { useOnSuccessUpdate } from '../../../hook/useOnSuccessUpdate';
 
 const SetRole = ({ row, onEntityUpdated }) => {
   const { toast } = useToast();

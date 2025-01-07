@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import ModalActions from '../../ModalActions';
 import { useForm } from 'react-hook-form';
-import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
+import { useOnSuccessUpdate } from '../../../hook/useOnSuccessUpdate';
 
 const AddTeam = ({ row, onEntityUpdated }) => {
   const [teams, setTeams] = useState([]);

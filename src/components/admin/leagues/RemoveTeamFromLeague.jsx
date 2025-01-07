@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import TableModal from '../../TableModal';
-import { useOnSuccessUpdate } from '../../hooks/useOnSuccessUpdate';
+import { useOnSuccessUpdate } from '../../../hook/useOnSuccessUpdate';
 
 const RemoveTeamFromLeague = ({ row, teams, onEntityUpdated }) => {
   const [team, setTeam] = useState([]);
