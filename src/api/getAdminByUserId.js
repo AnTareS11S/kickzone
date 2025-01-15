@@ -10,7 +10,7 @@ export const GetAdminByUserId = (isChanged) => {
   useEffect(() => {
     const fetchAdminById = async () => {
       try {
-        if (!currentUser?._id || currentUser?.role !== 'admin') return;
+        if (!currentUser?._id || currentUser?.role !== 'Admin') return;
         const res = await fetch(`/api/admin/get/${currentUser?._id}`);
         if (res.ok) {
           const data = await res.json();

@@ -10,7 +10,7 @@ export const GetPlayerByUserId = (isChanged) => {
   useEffect(() => {
     const fetchPlayerById = async () => {
       try {
-        if (!currentUser?._id || currentUser?.role !== 'player') {
+        if (!currentUser?._id || currentUser?.role !== 'Player') {
           return;
         }
         const res = await fetch(`/api/player/get/${currentUser?._id}`);

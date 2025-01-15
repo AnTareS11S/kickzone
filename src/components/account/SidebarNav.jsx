@@ -12,22 +12,22 @@ const sidebarNavItems = [
   {
     title: 'Player Profile',
     href: '/user/player/profile',
-    role: 'player',
+    role: 'Player',
   },
   {
     title: 'Referee Profile',
     href: '/user/referee/profile',
-    role: 'referee',
+    role: 'Referee',
   },
   {
     title: 'Coach Profile',
     href: '/user/coach/profile',
-    role: 'coach',
+    role: 'Coach',
   },
   {
     title: 'Admin Profile',
     href: '/user/admin/profile',
-    role: 'admin',
+    role: 'Admin',
   },
   {
     title: 'Settings',

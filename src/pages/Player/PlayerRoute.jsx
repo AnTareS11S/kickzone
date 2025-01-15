@@ -3,8 +3,8 @@ import { Outlet, Navigate } from 'react-router-dom';
 
 const PlayerRoute = () => {
   const { currentUser } = useSelector((state) => state.user);
-  return (currentUser && currentUser?.role === 'player') ||
-    currentUser?.role === 'user' ? (
+  return (currentUser && currentUser?.role === 'Player') ||
+    currentUser?.role === 'User' ? (
     <Outlet />
   ) : (
     <Navigate to='/' />

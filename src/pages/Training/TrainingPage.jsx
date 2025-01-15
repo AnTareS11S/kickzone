@@ -35,7 +35,7 @@ const TrainingPage = () => {
   const isLoading = playerLoading || coachLoading || !team || trainingLoading;
 
   useEffect(() => {
-    if (trainings && currentUser?.role === 'player' && player?._id) {
+    if (trainings && currentUser?.role === 'Player' && player?._id) {
       const processTrainings = (trainingsList) => {
         return trainingsList.map((training) => ({
           ...training,

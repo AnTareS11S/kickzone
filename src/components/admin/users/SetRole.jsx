@@ -20,7 +20,7 @@ const SetRole = ({ row, onEntityUpdated }) => {
     setUpdatedSuccess(false);
   });
 
-  const roles = ['user:1', 'admin:2', 'coach:3', 'referee:4', 'player:5'];
+  const roles = ['User:1', 'Admin:2', 'Coach:3', 'Referee:4', 'Player:5'];
 
   const onSubmit = async (formData) => {
     try {

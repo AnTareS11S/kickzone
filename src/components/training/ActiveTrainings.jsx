@@ -20,7 +20,7 @@ const ActiveTrainings = ({
   const { emit } = useSocket();
 
   const handleMarkAsRead = (trainingId) => {
-    if (currentUser?.role === 'player') {
+    if (currentUser?.role === 'Player') {
       emit('markTeamTrainingNotificationRead', {
         teamId: currentTeamId,
         userId: playerId,
@@ -102,7 +102,7 @@ const ActiveTrainings = ({
                 className='block hover:bg-gray-50 transition-colors duration-200 relative'
                 onClick={() => handleMarkAsRead(training._id)}
               >
-                {currentUser?.role === 'player' && training.isNew && (
+                {currentUser?.role === 'Player' && training.isNew && (
                   <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10'>
                     <Badge className='bg-gray-600 text-white px-3 py-1 rounded-full animate-pulse flex items-center space-x-1'>
                       <FaStar className='w-4 h-4 mr-1' />

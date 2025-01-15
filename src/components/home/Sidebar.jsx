@@ -115,7 +115,7 @@ const Sidebar = () => {
   const { subscribe, emit, isConnected, unsubscribe } = useSocket();
 
   useEffect(() => {
-    if (!currentUser?._id || !isConnected || currentUser?.role !== 'player')
+    if (!currentUser?._id || !isConnected || currentUser?.role !== 'Player')
       return;
 
     subscribe('teamTrainingNotificationStatus', (data) => {
@@ -145,7 +145,7 @@ const Sidebar = () => {
 
   useEffect(() => {
     const getPlayer = async () => {
-      if (!currentUser?._id || currentUser?.role !== 'player') return;
+      if (!currentUser?._id || currentUser?.role !== 'Player') return;
 
       try {
         const res = await fetch(`/api/player/get/${currentUser._id}`);
@@ -166,7 +166,7 @@ const Sidebar = () => {
     const getTrainingNotifications = async () => {
       if (
         !currentUser?._id ||
-        currentUser?.role !== 'player' ||
+        currentUser?.role !== 'Player' ||
         !player?.currentTeam?._id
       )
         return;
@@ -189,16 +189,16 @@ const Sidebar = () => {
     getTrainingNotifications();
   }, [player, currentUser]);
 
-  const isAdminOrCoachOrReferee = ['admin', 'coach', 'referee'].includes(
+  const isAdminOrCoachOrReferee = ['Admin', 'Coach', 'Referee'].includes(
     currentUser?.role
   );
   const isCoachWithTeam =
-    currentUser?.role === 'coach' || player?.currentTeam !== undefined;
+    currentUser?.role === 'Coach' || player?.currentTeam !== undefined;
 
   const canShowCreatePostLink =
     isAdminOrCoachOrReferee ||
-    (currentUser?.role === 'coach' && isCoachWithTeam);
-  const canShowTrainingLink = currentUser?.role === 'coach' || isCoachWithTeam;
+    (currentUser?.role === 'Coach' && isCoachWithTeam);
+  const canShowTrainingLink = currentUser?.role === 'Coach' || isCoachWithTeam;
 
   const visibleLinks = useMemo(() => {
     return sidebarLinks.filter((link) => {

@@ -10,7 +10,7 @@ export const GetCoachByUserId = (isChanged) => {
   useEffect(() => {
     const fetchCoachById = async () => {
       try {
-        if (!currentUser?._id || currentUser?.role !== 'coach') return;
+        if (!currentUser?._id || currentUser?.role !== 'Coach') return;
         const res = await fetch(`/api/coach/get/${currentUser?._id}`);
         if (res.ok) {
           const data = await res.json();

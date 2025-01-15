@@ -10,7 +10,7 @@ export const GetRefereeByUserId = (isChanged) => {
   useEffect(() => {
     const fetchRefereeById = async () => {
       try {
-        if (!currentUser?._id || currentUser?.role !== 'referee') {
+        if (!currentUser?._id || currentUser?.role !== 'Referee') {
           return;
         }
         const res = await fetch(`/api/referee/get/${currentUser?._id}`);

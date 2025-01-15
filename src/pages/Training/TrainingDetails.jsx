@@ -167,7 +167,7 @@ const TrainingDetails = () => {
                 </div>
               </div>
 
-              {training?.isActive && currentUser?.role === 'player' && (
+              {training?.isActive && currentUser?.role === 'Player' && (
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmit)}
@@ -231,7 +231,7 @@ const TrainingDetails = () => {
         </div>
       </div>
 
-      {coach && currentUser?.role === 'coach' && training?.participants && (
+      {coach && currentUser?.role === 'Coach' && training?.participants && (
         <div className='mt-18'>
           <Separator className='mb-6' />
           <h3 className='text-2xl font-bold text-gray-800 text-center mb-6 flex items-center justify-center gap-3'>
