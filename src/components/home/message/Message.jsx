@@ -1,4 +1,4 @@
-import moment from 'moment';
+import { getTimeAgo } from '../../../lib/utils';
 
 const Message = ({ message, own }) => {
   return (
@@ -11,7 +11,7 @@ const Message = ({ message, own }) => {
         {message?.text}
       </span>
       <div className='text-small-regular text-gray-500 ml-1'>
-        {moment(message?.createdAt).fromNow()}
+        {getTimeAgo(message?.createdAt)}
       </div>
     </div>
   );
