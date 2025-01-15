@@ -61,7 +61,7 @@ const ForumCategory = () => {
         description='Manage Team Forum Categories'
       />
       <CrudPanel
-        apiPath='team-forum'
+        apiPath='team-forum-categories'
         columns={columns}
         fields={fields}
         title='Forum Category'
