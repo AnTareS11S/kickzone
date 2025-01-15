@@ -31,6 +31,7 @@ const CrudPanel = ({
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [file, setFile] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { emit } = useSocket();
 
@@ -112,6 +113,7 @@ const CrudPanel = ({
           description: `${title} added successfully`,
         });
         setUpdateSuccess(true);
+        setIsLoading(true);
         form.reset();
         setIsModalOpen(false);
       } else {
@@ -140,6 +142,7 @@ const CrudPanel = ({
           title={`Add ${title}`}
           form={form}
           fields={fields}
+          isLoading={isLoading}
           setFile={setFile}
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
