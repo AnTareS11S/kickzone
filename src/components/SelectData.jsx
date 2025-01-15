@@ -35,8 +35,8 @@ const SelectData = ({
           <SelectGroup className={items.length > 4 ? 'h-48' : ''}>
             {items.map((item) => (
               <SelectItem
-                key={item.split(':')[1]}
-                value={idFlag ? item.split(':')[1] : item.split(':')[0]}
+                key={item?.split(':')[1]}
+                value={idFlag ? item?.split(':')[1] : item?.split(':')[0]}
               >
                 {item.split(':')[0]}
               </SelectItem>
