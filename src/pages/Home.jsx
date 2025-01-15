@@ -2,6 +2,13 @@ import { useEffect, useMemo, useState } from 'react';
 import PostCard from '../components/home/posts/PostCard';
 import { useSelector } from 'react-redux';
 import Spinner from '../components/Spinner';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../components/ui/select';
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -42,8 +49,8 @@ const Home = () => {
     return sorted;
   }, [posts, sortOption]);
 
-  const handleSort = (e) => {
-    setSortOption(e.target.value);
+  const handleSort = (value) => {
+    setSortOption(value);
   };
 
   if (loading) {
@@ -52,16 +59,18 @@ const Home = () => {
 
   return (
     <>
-      <div className='flex justify-between items-center mb-4'>
-        <select
-          className='ml-auto px-4 py-1 border border-gray-300 rounded-lg bg-white shadow-sm hover:border-gray-400 focus:ring focus:ring-primary-500 focus:border-primary-500 transition ease-in-out duration-150 appearance-none'
-          value={sortOption}
-          onChange={handleSort}
-        >
-          <option value='default'>Default</option>
-          <option value='popular'>Most Popular</option>
-          <option value='oldest'>Oldest</option>
-        </select>
+      <div className='flex items-center gap-2 justify-between mb-2'>
+        <div />
+        <Select value={sortOption} onValueChange={handleSort}>
+          <SelectTrigger className='w-[180px]'>
+            <SelectValue placeholder='Filters' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value='default'>Default</SelectItem>
+            <SelectItem value='popular'>Most Popular</SelectItem>
+            <SelectItem value='oldest'>Oldest First</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
       <section className='mt-9 flex flex-col gap-10'>
         {sortedPosts.length === 0 ? (
