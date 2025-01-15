@@ -207,7 +207,13 @@ const Sidebar = () => {
       if (link.route === '/training') return canShowTrainingLink;
       if (link.route === '/leagues') return true;
       if (link.route.startsWith('/dashboard/'))
-        return link.route === `/dashboard/${currentUser?.role}`;
+        return (
+          link.route ===
+          `/dashboard/${
+            currentUser?.role?.charAt(0).toLowerCase() +
+            currentUser?.role?.slice(1)
+          }`
+        );
       return ['/'].includes(link.route);
     });
   }, [currentUser?.role, canShowCreatePostLink, canShowTrainingLink]);
