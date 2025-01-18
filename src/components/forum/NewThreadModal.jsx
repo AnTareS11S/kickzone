@@ -15,7 +15,7 @@ import { forumFormSchema } from '../../lib/validation/ForumValidation';
 import FormArea from '../FormArea';
 import { TbLoader2 } from 'react-icons/tb';
 
-const NewThreadModal = ({ author }) => {
+const NewThreadModal = ({ author, isChanged }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { categoriesToSelect } = GetTeamForumCategories();
@@ -46,6 +46,7 @@ const NewThreadModal = ({ author }) => {
         throw new Error('Cannot create new thread');
       }
       setIsLoading(true);
+      isChanged((prev) => !prev);
       form.reset();
     } catch (error) {
       console.log(error);
