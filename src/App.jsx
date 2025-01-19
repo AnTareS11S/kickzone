@@ -1,20 +1,20 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import Signin from './pages/Signin';
-import Signup from './pages/Signup';
-import SettingsLayout from './pages/SettingsLayout';
-import Profile from './pages/Profile';
-import Settings from './pages/Settings';
-import AdminRoute from './pages/AdminRoute';
+import Home from './pages/Home/Home';
+import Signin from './pages/Auth/Signin';
+import Signup from './pages/Auth/Signup';
+import SettingsLayout from './pages/Settings/SettingsLayout';
+import Profile from './pages/Profile/Profile';
+import Settings from './pages/Settings/Settings';
+import AdminRoute from './pages/Admin/AdminRoute';
 import UserManage from './pages/User/UserManage';
 import RefereeProfile from './pages/Referee/RefereeProfile';
 import RefereeRoute from './pages/Referee/RefereeRoute';
 import CoachProfile from './pages/Coach/CoachProfile';
 import TeamManage from './pages/Team/TeamManage';
 import LeagueManage from './pages/League/LeagueManage';
-import Layout from './pages/Layout';
-import PostPage from './pages/PostPage';
-import HomeProfile from './pages/HomeProfile';
+import Layout from './pages/Home/Layout';
+import PostPage from './pages/Posts/PostPage';
+import HomeProfile from './pages/Profile/HomeProfile';
 import Leagues from './pages/League/Leagues';
 import LeaguePage from './pages/League/LeaguePage';
 import PlayerManage from './pages/Player/PlayerManage';
@@ -36,27 +36,27 @@ import RefereeDashboard from './pages/Referee/RefereeDashboard';
 import ScheduleManagement from './pages/Referee/ScheduleManagement';
 import LeagueScheduleCard from './pages/League/LeagueScheduleCard';
 import AdminDashboard from './pages/Admin/AdminDashboard';
-import CoachRoute from './pages/CoachRoute';
+import CoachRoute from './pages/Coach/CoachRoute';
 import CoachDashboard from './pages/Coach/CoachDashboard';
 import { Toaster } from './components/ui/toaster';
 import ResultsManagement from './pages/Referee/ResultsManagement';
 import AddResult from './pages/Referee/AddResult';
-import Search from './pages/Search';
+import Search from './pages/Home/Search';
 import ResultDetails from './pages/Referee/ResultDetails';
-import PostEdit from './pages/PostEdit';
-import CommentEdit from './pages/CommentEdit';
+import PostEdit from './pages/Posts/PostEdit';
+import CommentEdit from './pages/Posts/CommentEdit';
 import PostForm from './components/home/posts/PostForm';
 import RefereeDetails from './pages/Referee/RefereeDetails';
 import AssignReferee from './pages/Referee/AssignReferee';
-import PageNotFound from './pages/PageNotFound';
+import PageNotFound from './pages/PageNotFound/PageNotFound';
 import SponsorManage from './pages/Sponsor/SponsorMange';
 import MatchDetails from './pages/Referee/MatchDetails';
-import Onboarding from './pages/Onboarding';
-import ProtectedRoute from './pages/ProtectedRoute';
+import Onboarding from './pages/Onboarding/Onboarding';
+import ProtectedRoute from './pages/Onboarding/ProtectedRoute';
 import RefereeManage from './pages/Referee/RefereeManage';
 import SeasonManage from './pages/Season/SeasonManage';
 import TeamDetails from './components/home/team/TeamDetails';
-import Messenger from './pages/Messenger';
+import Messenger from './pages/Messenger/Messenger';
 import TermsManage from './pages/Terms/TermsManage';
 import TermsPage from './pages/Terms/TermsPage';
 import ContactPage from './pages/Contact/ContactPage';
@@ -78,6 +78,7 @@ import PlayerSchedule from './pages/Player/PlayerSchedule';
 import PlayerStatistics from './pages/Player/PlayerStatistics';
 import TeamForum from './pages/Team/TeamForum';
 import ForumCategory from './pages/ForumCategory/ForumCategory';
+import ThreadDetails from './pages/Forum/ThreadDetails';
 
 const App = () => {
   return (
@@ -235,9 +236,10 @@ const App = () => {
                   path='/dashboard/coach/team-equipment'
                   element={<TeamEquipment />}
                 />
+                <Route path='/dashboard/coach/forum' element={<TeamForum />} />
                 <Route
-                  path='/dashboard/coach/team-forum'
-                  element={<TeamForum />}
+                  path='/dashboard/coach/forum/:id'
+                  element={<ThreadDetails />}
                 />
               </Route>
 
@@ -252,9 +254,10 @@ const App = () => {
                   path='/dashboard/player/stats'
                   element={<PlayerStatistics />}
                 />
+                <Route path='/dashboard/player/forum' element={<TeamForum />} />
                 <Route
-                  path='/dashboard/player/team-forum'
-                  element={<TeamForum />}
+                  path='/dashboard/player/forum/:id'
+                  element={<ThreadDetails />}
                 />
               </Route>
             </Route>
