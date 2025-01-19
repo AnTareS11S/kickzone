@@ -25,10 +25,7 @@ const PlayerDashboard = () => {
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 '>
             <AdminCard title='Schedule' linkTo='/dashboard/player/schedule' />
             <AdminCard title='Statistics' linkTo='/dashboard/player/stats' />
-            <AdminCard
-              title='Team Forum'
-              linkTo='/dashboard/player/team-forum'
-            />
+            <AdminCard title='Team Forum' linkTo='/dashboard/player/forum' />
           </div>
         ) : (
           <div className='text-gray-800 text-lg text-center'>
