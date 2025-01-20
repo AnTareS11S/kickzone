@@ -104,11 +104,11 @@ const EditEntity = ({
     return fields.map((field) => {
       if (field.type === 'select') {
         const matchingItem =
-          field.items.find((item) => item.split(':')[1] === row[field.name]) ||
-          field.items.find((item) => item.split(':')[0] === row[field.name]);
+          field.items.find((item) => item.id === row[field.name]) ||
+          field.items.find((item) => item.name === row[field.name]);
 
         field.defaultValue = matchingItem
-          ? matchingItem.split(':')[0]
+          ? matchingItem.name
           : `Select ${field.label}`;
       } else if (field.type === 'date') {
         field.initialDate = row[field.name] ? new Date(row[field.name]) : null;
