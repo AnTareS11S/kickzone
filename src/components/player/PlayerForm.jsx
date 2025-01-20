@@ -57,15 +57,15 @@ const PlayerForm = () => {
   });
 
   const positionName = positions?.find((position) =>
-    position.split(':')[1].includes(playerData?.position)
+    position.id.includes(playerData?.position)
   );
 
   const countryName = countries?.find((country) =>
-    country.split(':')[1].includes(playerData?.nationality)
+    country.id.includes(playerData?.nationality)
   );
 
   const teamName = teams?.find((team) =>
-    team.split(':')[1].includes(playerData?.wantedTeam)
+    team.id.includes(playerData?.wantedTeam)
   );
 
   useEffect(() => {
@@ -79,16 +79,14 @@ const PlayerForm = () => {
 
   const onSubmit = async (formData) => {
     const countryId = countries.find((country) =>
-      country.split(':')[1].includes(formData?.nationality)
+      country.id.includes(formData?.nationality)
     );
 
     const positionId = positions.find((position) =>
-      position.split(':')[1].includes(formData?.position)
+      position.id.includes(formData?.position)
     );
 
-    const teamId = teams.find((team) =>
-      team.split(':')[1].includes(formData?.wantedTeam)
-    );
+    const teamId = teams.find((team) => team.id.includes(formData?.wantedTeam));
 
     const data = new FormData();
 
@@ -101,12 +99,9 @@ const PlayerForm = () => {
     data.append('age', formData.age);
     data.append('number', formData.number);
     data.append('footed', formData.footed);
-    data.append(
-      'nationality',
-      countryId?.split(':')[1] || formData.nationality
-    );
-    data.append('position', positionId?.split(':')[1] || formData.position);
-    data.append('wantedTeam', teamId?.split(':')[1] || formData.wantedTeam);
+    data.append('nationality', countryId?.id || formData.nationality);
+    data.append('position', positionId?.id || formData.position);
+    data.append('wantedTeam', teamId?.id || formData.wantedTeam);
     data.append('user', currentUser?._id);
 
     try {
@@ -224,7 +219,7 @@ const PlayerForm = () => {
                   form={form}
                   items={teams}
                   label='Team where you play/you want to play'
-                  placeholder={teamName?.split(':')[0] || 'Select Team'}
+                  placeholder={teamName?.name || 'Select Team'}
                   name='wantedTeam'
                   className='w-full'
                   idFlag={true}
@@ -251,7 +246,7 @@ const PlayerForm = () => {
               form={form}
               items={countries}
               label='Nationality'
-              placeholder={countryName?.split(':')[0] || 'Select Nationality'}
+              placeholder={countryName?.name || 'Select Nationality'}
               name='nationality'
               className='w-full'
               idFlag={true}
@@ -292,7 +287,7 @@ const PlayerForm = () => {
               form={form}
               name='position'
               items={positions}
-              placeholder={positionName?.split(':')[0] || 'Select Position'}
+              placeholder={positionName?.name || 'Select Position'}
               idFlag={true}
               className='col-span-1'
             />

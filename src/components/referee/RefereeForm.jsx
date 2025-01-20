@@ -46,12 +46,12 @@ const RefereeForm = ({ currentUser }) => {
   const formattedDate = new Date(originalDate);
 
   const countryName = countries?.find((country) =>
-    country.split(':')[1].includes(refereeData?.nationality)
+    country.id.includes(refereeData?.nationality)
   );
 
   const onSubmit = async (formData) => {
     const countryId = countries.find((country) =>
-      country.split(':')[0].includes(formData?.nationality)
+      country.name.includes(formData?.nationality)
     );
 
     const data = new FormData();
@@ -62,10 +62,7 @@ const RefereeForm = ({ currentUser }) => {
     data.append('bio', formData.bio);
     data.append('city', formData.city);
     data.append('birthDate', formattedDate);
-    data.append(
-      'nationality',
-      countryId?.split(':')[1] || formData.nationality
-    );
+    data.append('nationality', countryId?.id || formData.nationality);
     data.append('user', currentUser?._id);
 
     try {
@@ -136,7 +133,7 @@ const RefereeForm = ({ currentUser }) => {
               form={form}
               items={countries}
               label='Nationality'
-              placeholder={countryName?.split(':')[0] || 'Select nationality'}
+              placeholder={countryName?.name || 'Select nationality'}
               name='nationality'
             />
           </div>
