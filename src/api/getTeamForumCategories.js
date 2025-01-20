@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const GetTeamForumCategories = () => {
+export const GetTeamForumCategories = (isChanged) => {
   const [categories, setCategories] = useState([]);
   const [categoriesToSelect, setCategoriesToSelect] = useState([
     {
@@ -35,7 +35,7 @@ export const GetTeamForumCategories = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [isChanged]);
 
   return { categories, categoriesToSelect, loading, error };
 };
