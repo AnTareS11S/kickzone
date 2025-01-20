@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react';
 
 export const GetTeamsByLeagueId = (id) => {
   const [teams, setTeams] = useState([]);
-  const [selectTeams, setSelectTeams] = useState([]);
+  const [selectTeams, setSelectTeams] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
   const [leagueName, setLeagueName] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -21,7 +26,9 @@ export const GetTeamsByLeagueId = (id) => {
         setLeagueName(data[0]?.league?.name);
 
         if (Array.isArray(data)) {
-          setSelectTeams(data.map((team) => team.name + ':' + team._id));
+          setSelectTeams(
+            data?.map((team) => ({ id: team._id, name: team.name }))
+          );
           setTeams(data);
         } else {
           console.error('Error: data is not an array');
