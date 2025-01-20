@@ -1,7 +1,6 @@
 import FormArea from '../FormArea';
 import {
   Dialog,
-  DialogClose,
   DialogDescription,
   DialogHeader,
   DialogTitle,
@@ -15,7 +14,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useToast } from '../ui/use-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 const schema = z
   .object({
@@ -46,8 +45,9 @@ const schema = z
     }
   );
 
-const AssignRefereeModal = ({ match, referees }) => {
+const AssignRefereeModal = ({ match, referees, isSet }) => {
   const { toast } = useToast();
+  const [open, setOpen] = useState(false);
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -60,15 +60,9 @@ const AssignRefereeModal = ({ match, referees }) => {
 
   useEffect(() => {
     if (match?.mainReferee) {
-      form.setValue('mainReferee', match?.mainReferee.split(':')[1]);
-      form.setValue(
-        'firstAssistantReferee',
-        match?.firstAssistantReferee?.split(':')[1]
-      );
-      form.setValue(
-        'secondAssistantReferee',
-        match?.secondAssistantReferee.split(':')[1]
-      );
+      form.setValue('mainReferee', match?.mainReferee.id);
+      form.setValue('firstAssistantReferee', match?.firstAssistantReferee?.id);
+      form.setValue('secondAssistantReferee', match?.secondAssistantReferee.id);
     }
   }, [match, form]);
 
@@ -89,6 +83,8 @@ const AssignRefereeModal = ({ match, referees }) => {
           title: 'Success!',
           description: 'Referees assigned successfully',
         });
+        setOpen(false);
+        isSet(true);
       } else {
         toast({
           title: 'Error!',
@@ -102,7 +98,7 @@ const AssignRefereeModal = ({ match, referees }) => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant='secondary' className='w-32'>
           Assign Referee
@@ -127,7 +123,7 @@ const AssignRefereeModal = ({ match, referees }) => {
                   name='mainReferee'
                   items={referees}
                   placeholder={
-                    match?.mainReferee?.split(':')[0] || 'Select Main Referee'
+                    match?.mainReferee?.name || 'Select Main Referee'
                   }
                   idFlag={true}
                 />
@@ -140,7 +136,7 @@ const AssignRefereeModal = ({ match, referees }) => {
                   form={form}
                   name='firstAssistantReferee'
                   placeholder={
-                    match?.firstAssistantReferee?.split(':')[0] ||
+                    match?.firstAssistantReferee?.name ||
                     'Select First Assistant'
                   }
                   items={referees}
@@ -155,7 +151,7 @@ const AssignRefereeModal = ({ match, referees }) => {
                   form={form}
                   name='secondAssistantReferee'
                   placeholder={
-                    match?.secondAssistantReferee?.split(':')[0] ||
+                    match?.secondAssistantReferee?.name ||
                     'Select Second Assistant'
                   }
                   items={referees}
@@ -166,27 +162,12 @@ const AssignRefereeModal = ({ match, referees }) => {
 
             <div className='flex justify-end mt-4'>
               <DialogFooter>
-                {!form.formState.isValid && (
-                  <Dialog asChild>
-                    <Button
-                      type='submit'
-                      className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
-                    >
-                      Save
-                    </Button>
-                  </Dialog>
-                )}
-
-                {form.formState.isValid && form.formState.errors !== 0 && (
-                  <DialogClose asChild>
-                    <Button
-                      type='submit'
-                      className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
-                    >
-                      Save
-                    </Button>
-                  </DialogClose>
-                )}
+                <Button
+                  type='submit'
+                  className='bg-primary-500 text-white hover:bg-purple-500 hover:text-white'
+                >
+                  Save
+                </Button>
               </DialogFooter>
             </div>
           </form>
