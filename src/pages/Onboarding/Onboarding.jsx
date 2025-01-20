@@ -111,7 +111,11 @@ const Onboarding = () => {
                   label='Role'
                   type='select'
                   form={form}
-                  items={['Player:1', 'Coach:2', 'Referee:3']}
+                  items={[
+                    { id: 1, name: 'Player' },
+                    { id: 2, name: 'Coach' },
+                    { id: 3, name: 'Referee' },
+                  ]}
                   name='wantedRole'
                   placeholder='Select your role'
                 />
