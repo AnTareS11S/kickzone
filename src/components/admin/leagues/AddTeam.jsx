@@ -2,15 +2,27 @@ import { useEffect, useState } from 'react';
 import ModalActions from '../../ModalActions';
 import { useForm } from 'react-hook-form';
 import { useOnSuccessUpdate } from '../../../hook/useOnSuccessUpdate';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+
+const teamSchema = z.object({
+  names: z.string().min(1, { message: 'Please select a team' }),
+});
 
 const AddTeam = ({ row, onEntityUpdated }) => {
-  const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
   const [updateSuccess, setUpdateSuccess] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const form = useForm({
+    resolver: zodResolver(teamSchema),
     defaultValues: {
-      name: '',
+      names: '',
     },
     mode: 'onChange',
   });
@@ -21,8 +33,9 @@ const AddTeam = ({ row, onEntityUpdated }) => {
   });
 
   const getTeamId = (teamName) => {
-    const selectedTeam = teams.find((team) => team.startsWith(teamName));
-    return selectedTeam ? selectedTeam.split(':')[1] : '';
+    console.log('teamName: ', teamName);
+    const selectedTeam = teams.find((team) => team.name.startsWith(teamName));
+    return selectedTeam ? selectedTeam.id : '';
   };
 
   useEffect(() => {
@@ -31,7 +44,7 @@ const AddTeam = ({ row, onEntityUpdated }) => {
         const res = await fetch(`/api/admin/teams/no-league`);
         const data = await res.json();
 
-        setTeams(data?.map((team) => team.name + ':' + team._id));
+        setTeams(data?.map((team) => ({ id: team._id, name: team.name })));
       } catch (error) {
         console.log(error);
         return [];
@@ -48,10 +61,12 @@ const AddTeam = ({ row, onEntityUpdated }) => {
       name: 'names',
       items: teams,
       placeholder: 'Select a team',
+      idFlag: 'true',
     },
   ];
 
   const onSubmit = async (formData) => {
+    console.log('formData: ', formData);
     const teamId = getTeamId(formData.names);
 
     try {
