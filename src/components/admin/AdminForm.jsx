@@ -66,7 +66,7 @@ const AdminForm = ({ currentUser }) => {
     data.append('birthDate', formattedDate);
 
     try {
-      const res = await fetch('/api/admin/create', {
+      const res = await fetch('/api/admin/add', {
         method: 'POST',
         body: data,
       });
