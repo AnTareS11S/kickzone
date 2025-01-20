@@ -11,17 +11,7 @@ export const playerFormSchema = (isEdit) =>
     nationality: z.string().min(1, {
       message: 'Nationality is required',
     }),
-    height: z.any().refine(
-      (value) => {
-        const parsedValue =
-          typeof value === 'string' ? parseInt(value, 10) : value;
-
-        return !isNaN(parsedValue) && parsedValue > 0;
-      },
-      {
-        message: 'Height must be a positive integer',
-      }
-    ),
+    height: z.coerce.number().gte(130, 'Height must be greater than 130'),
     weight: z.any().refine(
       (value) => {
         const parsedValue =

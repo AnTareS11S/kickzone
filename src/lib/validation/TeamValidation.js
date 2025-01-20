@@ -10,16 +10,9 @@ export const teamFormSchema = (isEdit) =>
       .max(30, {
         message: 'Name must not be longer than 30 characters',
       }),
-    yearFounded: z.any().refine(
-      (value) => {
-        const parsedValue =
-          typeof value === 'string' ? parseInt(value, 10) : value;
-        return !isNaN(parsedValue) && parsedValue > 0;
-      },
-      {
-        message: 'Year founded must be a positive integer',
-      }
-    ),
+    yearFounded: z.coerce
+      .number()
+      .gte(0, 'Year Founded must be a positive number'),
     coach: z.string().nullable(),
     city: z.string().trim().min(1, {
       message: 'City is required',
@@ -48,16 +41,7 @@ export const teamEquipmentValidationSchema = () =>
       .max(30, {
         message: 'Name must not be longer than 30 characters',
       }),
-    quantity: z.any().refine(
-      (value) => {
-        const parsedValue =
-          typeof value === 'string' ? parseInt(value, 10) : value;
-        return !isNaN(parsedValue) && parsedValue > 0;
-      },
-      {
-        message: 'Quantity must be a positive integer',
-      }
-    ),
+    quantity: z.coerce.number().gte(0, 'Quantity must be a positive number'),
     condition: z.string().nullable(),
     status: z.string().nullable(),
   });
