@@ -219,15 +219,14 @@ const ScheduleManagement = () => {
                         </h3>
                       </div>
                       <div className='p-6'>
-                        {round.matches.map((match) => (
+                        {round.matches?.map((match) => (
                           <div
-                            key={match.matchId}
+                            key={match?.matchId}
                             className='flex justify-between items-center mb-4 pb-4 border-b last:mb-0 last:pb-0 last:border-none'
                           >
                             <div className='flex-1 mr-4'>
                               <div className='text-gray-800 font-semibold'>
-                                {match.homeTeam.split(':')[0]} vs{' '}
-                                {match.awayTeam.split(':')[0]}
+                                {match.homeTeam?.name} vs {match.awayTeam?.name}
                               </div>
                               <div className='text-gray-600'>
                                 {new Date(match.startDate).toLocaleString(
