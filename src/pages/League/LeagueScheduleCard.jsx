@@ -22,7 +22,8 @@ const LeagueScheduleCard = () => {
 
   useEffect(() => {
     if (seasons.length > 0) {
-      const lastSeason = seasons[seasons.length - 1].split(':')[1];
+      const lastSeason = seasons[seasons.length - 1]?.id;
+      console.log(lastSeason);
       setSelectedSeason(lastSeason);
     }
   }, [seasons]);
@@ -68,11 +69,13 @@ const LeagueScheduleCard = () => {
             <FaRegCalendarAlt className='ml-2 text-gray-400' />
           </SelectTrigger>
           <SelectContent>
-            {seasons?.map((season, index) => (
-              <SelectItem key={index} value={season?.split(':')[1]}>
-                {season?.split(':')[0]}
-              </SelectItem>
-            ))}
+            {seasons
+              ?.filter((season) => season?.id)
+              .map((season, index) => (
+                <SelectItem key={index} value={season?.id}>
+                  {season?.name}
+                </SelectItem>
+              ))}
           </SelectContent>
         </Select>
       </div>
