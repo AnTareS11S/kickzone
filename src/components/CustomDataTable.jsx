@@ -4,6 +4,7 @@ import Spinner from './Spinner';
 import { FaChevronRight, FaSearch } from 'react-icons/fa';
 import { Input } from './ui/input';
 import { Card } from './ui/card';
+import ExpandedStatsComponent from './ExpandedStatsComponent';
 
 const CustomDataTable = ({
   columns,
@@ -181,6 +182,7 @@ const CustomDataTable = ({
               paginationPerPage={10}
               paginationRowsPerPageOptions={[10, 25, 50]}
               expandableRows={isExpandable}
+              expandableRowsComponent={ExpandedStatsComponent}
               expandOnRowClicked
               defaultSortFieldId={defaultSortFieldId}
               defaultSortAsc={false}
