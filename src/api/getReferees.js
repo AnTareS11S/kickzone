@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export const GetRefeeres = () => {
-  const [referees, setReferees] = useState([]);
+  const [referees, setReferees] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
 
   useEffect(() => {
     const fetchRefereesData = async () => {
@@ -12,10 +17,10 @@ export const GetRefeeres = () => {
         }
         const data = await res.json();
         setReferees(
-          data.map(
-            (referee) =>
-              referee.name + ' ' + referee.surname + ':' + referee._id
-          )
+          data.map((referee) => ({
+            id: referee._id,
+            name: `${referee.name} ${referee.surname}`,
+          }))
         );
       } catch (error) {
         console.log(error);

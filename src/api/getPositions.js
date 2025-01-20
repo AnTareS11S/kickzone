@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export const GetPositions = () => {
-  const [positions, sePositions] = useState([]);
+  const [positions, sePositions] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
 
   useEffect(() => {
     const fetchPositionData = async () => {
@@ -11,7 +16,9 @@ export const GetPositions = () => {
           throw new Error('Failed to fetch positions data!');
         }
         const data = await res.json();
-        sePositions(data.map((position) => position.name + ':' + position._id));
+        sePositions(
+          data?.map((position) => ({ id: position._id, name: position.name }))
+        );
       } catch (error) {
         console.log(error);
       }
