@@ -35,7 +35,12 @@ const columns = [
 ];
 
 const TrainingManage = () => {
-  const [types, setTypes] = useState([]);
+  const [types, setTypes] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
   const { coach } = GetCoachByUserId();
 
   useEffect(() => {
@@ -47,7 +52,7 @@ const TrainingManage = () => {
           throw new Error(data.message || 'Failed to fetch data!');
         }
         const data = await res.json();
-        setTypes(data.map((type) => type.name + ':' + type._id));
+        setTypes(data?.map((type) => ({ id: type._id, name: type.name })));
       } catch (error) {
         console.log(error);
       }
