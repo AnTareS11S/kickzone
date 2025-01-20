@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useToast } from '../../components/ui/use-toast';
 import {
@@ -19,6 +19,7 @@ const AssignReferee = () => {
   const leagueId = useParams().id;
   const { toast } = useToast();
   const [rounds, setRounds] = useState([]);
+  const [isSet, setIsSet] = useState(false);
   const { season, league, loading } = GetSeasonByLeagueId(leagueId);
   const referees = GetRefeeres();
 
@@ -47,6 +48,14 @@ const AssignReferee = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (isSet) {
+      handleGetRounds();
+      setIsSet(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSet]);
 
   if (loading) {
     return <Spinner />;
@@ -91,8 +100,7 @@ const AssignReferee = () => {
                           >
                             <div className='flex-1 mr-4'>
                               <div className='text-gray-800 dark:text-white font-semibold'>
-                                {match.homeTeam?.split(':')[0]} vs{' '}
-                                {match.awayTeam?.split(':')[0]}
+                                {match.homeTeam?.name} vs {match.awayTeam?.name}
                               </div>
                               <div className='text-gray-600 dark:text-gray-400 max-sm:hidden'>
                                 {new Date(match?.startDate).toLocaleString(
@@ -112,6 +120,7 @@ const AssignReferee = () => {
                               <AssignRefereeModal
                                 match={match}
                                 referees={referees}
+                                isSet={setIsSet}
                               />
                             </div>
                           </div>
