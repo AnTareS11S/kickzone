@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export const GetSeasons = () => {
-  const [seasons, setSeasons] = useState([]);
+  const [seasons, setSeasons] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
 
   useEffect(() => {
     const fetchSeasonsData = async () => {
@@ -11,7 +16,9 @@ export const GetSeasons = () => {
           throw new Error('Failed to fetch seasons data!');
         }
         const data = await res.json();
-        setSeasons(data.map((season) => season.name + ':' + season._id));
+        setSeasons(
+          data?.map((season) => ({ id: season._id, name: season.name }))
+        );
       } catch (error) {
         console.log(error);
       }

@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export const GetCoaches = () => {
-  const [coaches, setCoaches] = useState([]);
+  const [coaches, setCoaches] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
 
   useEffect(() => {
     const fetchCoachesData = async () => {
@@ -12,9 +17,10 @@ export const GetCoaches = () => {
         }
         const data = await res.json();
         setCoaches(
-          data.map(
-            (coach) => coach.name + ' ' + coach.surname + ':' + coach._id
-          )
+          data?.map((coach) => ({
+            id: coach._id,
+            name: coach.name + ' ' + coach.surname,
+          }))
         );
       } catch (error) {
         console.log(error);

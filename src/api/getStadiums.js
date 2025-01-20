@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export const GetStadiums = () => {
-  const [stadiums, setStadiums] = useState([]);
+  const [stadiums, setStadiums] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
 
   useEffect(() => {
     const fetchStadiumData = async () => {
@@ -11,7 +16,9 @@ export const GetStadiums = () => {
           throw new Error('Failed to fetch stadium data!');
         }
         const data = await res.json();
-        setStadiums(data.map((stadium) => stadium.name + ':' + stadium._id));
+        setStadiums(
+          data?.map((stadium) => ({ id: stadium._id, name: stadium.name }))
+        );
       } catch (error) {
         console.log(error);
       }
