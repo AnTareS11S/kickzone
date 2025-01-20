@@ -21,7 +21,7 @@ const TeamMatches = () => {
 
   useEffect(() => {
     if (seasons.length > 0) {
-      const lastSeason = seasons[seasons.length - 1].split(':')[1];
+      const lastSeason = seasons[seasons.length - 1].id;
       setSelectedSeason(lastSeason);
     }
   }, [seasons]);
@@ -76,8 +76,8 @@ const TeamMatches = () => {
             </SelectTrigger>
             <SelectContent>
               {seasons?.map((season, index) => (
-                <SelectItem key={index} value={season?.split(':')[1]}>
-                  {season?.split(':')[0]}
+                <SelectItem key={index} value={season?.id}>
+                  {season?.name}
                 </SelectItem>
               ))}
             </SelectContent>
