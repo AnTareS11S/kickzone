@@ -12,15 +12,19 @@ export const useThreadActions = (threadId) => {
   const [editingCommentId, setEditingCommentId] = useState(null);
   const [editingCommentContent, setEditingCommentContent] = useState('');
   const [isLikingComment, setIsLikingComment] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchThread = useCallback(async () => {
     try {
       const res = await fetch(`/api/forum/thread/${threadId}`);
       const data = await res.json();
       setThread(data);
+      setIsLoading(false);
       return data;
     } catch (error) {
       console.error('Error fetching thread:', error);
+    } finally {
+      setIsLoading(false);
     }
   }, [threadId]);
 
@@ -162,6 +166,7 @@ export const useThreadActions = (threadId) => {
     editingCommentContent,
     setEditingCommentContent,
     isLikingComment,
+    isLoading,
     handleComment,
     handleCommentEdit,
     handleCommentDelete,

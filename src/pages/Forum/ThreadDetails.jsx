@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import ThreadContent from '../../components/forum/ThreadContent';
 import { DeleteDialog } from '../../components/forum/DeleteDialog';
+import Spinner from '../../components/Spinner';
 
 const ThreadDetails = () => {
   const threadId = useParams().id;
@@ -29,6 +30,7 @@ const ThreadDetails = () => {
     editingCommentContent,
     setEditingCommentContent,
     isLikingComment,
+    isLoading,
     handleComment,
     handleCommentEdit,
     handleCommentDelete,
@@ -46,7 +48,9 @@ const ThreadDetails = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId, fetchThread]);
 
-  if (!thread) return null;
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div className='max-w-8xl mx-auto p-6'>
