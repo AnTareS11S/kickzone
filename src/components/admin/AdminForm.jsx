@@ -46,12 +46,12 @@ const AdminForm = ({ currentUser }) => {
   const formattedDate = new Date(originalDate);
 
   const countryName = countries?.find((country) =>
-    country.split(':')[1].includes(adminData?.nationality)
+    country.id.includes(adminData?.nationality)
   );
 
   const onSubmit = async (formData) => {
     const countryId = countries.find((country) =>
-      country.split(':')[0].includes(formData?.nationality)
+      country.name.includes(formData?.nationality)
     );
 
     const data = new FormData();
@@ -60,10 +60,7 @@ const AdminForm = ({ currentUser }) => {
     data.append('user', currentUser._id);
     data.append('name', formData.name);
     data.append('surname', formData.surname);
-    data.append(
-      'nationality',
-      countryId?.split(':')[1] || formData.nationality
-    );
+    data.append('nationality', countryId?.id || formData.nationality);
     data.append('city', formData.city);
     data.append('bio', formData.bio);
     data.append('birthDate', formattedDate);
@@ -135,7 +132,7 @@ const AdminForm = ({ currentUser }) => {
               form={form}
               items={countries}
               label='Nationality'
-              placeholder={countryName?.split(':')[0] || 'Select nationality'}
+              placeholder={countryName?.name || 'Select nationality'}
               name='nationality'
             />
           </div>
