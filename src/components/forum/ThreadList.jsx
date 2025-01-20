@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { PinTopIcon } from '@radix-ui/react-icons';
 import { BiMessageSquare } from 'react-icons/bi';
 import { FaThumbsUp, FaClock } from 'react-icons/fa';
@@ -7,9 +8,30 @@ import { getTimeAgo } from '../../lib/utils';
 import { Link } from 'react-router-dom';
 
 const ThreadList = ({ threads, role }) => {
+  const threadsPerPage = 5; // Number of threads per page
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate total pages
+  const totalPages = Math.ceil(threads.length / threadsPerPage);
+
+  // Get threads for the current page
+  const currentThreads = threads.slice(
+    (currentPage - 1) * threadsPerPage,
+    currentPage * threadsPerPage
+  );
+
+  // Handle page change
+  const handlePageChange = (direction) => {
+    if (direction === 'prev' && currentPage > 1) {
+      setCurrentPage((prev) => prev - 1);
+    } else if (direction === 'next' && currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
   return (
     <div className='lg:col-span-3 space-y-4'>
-      {threads?.map((thread) => (
+      {currentThreads.map((thread) => (
         <Card key={thread?._id} className='hover:shadow-md transition-shadow'>
           <Link
             to={`/dashboard/${role === 'Player' ? 'player' : 'coach'}/forum/${
@@ -62,6 +84,27 @@ const ThreadList = ({ threads, role }) => {
           </Link>
         </Card>
       ))}
+
+      {/* Pagination Controls */}
+      <div className='flex justify-between items-center mt-4'>
+        <button
+          onClick={() => handlePageChange('prev')}
+          disabled={currentPage === 1}
+          className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
+        >
+          Previous
+        </button>
+        <span className='text-sm text-gray-600'>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange('next')}
+          disabled={currentPage === totalPages}
+          className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
