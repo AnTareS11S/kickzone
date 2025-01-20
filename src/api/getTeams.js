@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export const GetTeams = () => {
-  const [teams, setTeams] = useState([]);
+  const [teams, setTeams] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
 
   useEffect(() => {
     const fetchTeamData = async () => {
@@ -11,7 +16,7 @@ export const GetTeams = () => {
           throw new Error('Failed to fetch team data!');
         }
         const data = await res.json();
-        setTeams(data.map((team) => team.name + ':' + team._id));
+        setTeams(data?.map((team) => ({ id: team._id, name: team.name })));
       } catch (error) {
         console.log(error);
       }
