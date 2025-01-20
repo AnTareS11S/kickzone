@@ -18,7 +18,7 @@ import { TbLoader2 } from 'react-icons/tb';
 const NewThreadModal = ({ author, isChanged }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { categoriesToSelect } = GetTeamForumCategories();
+  const { categoriesToSelect: categories } = GetTeamForumCategories();
 
   const form = useForm({
     resolver: zodResolver(forumFormSchema()),
@@ -91,7 +91,7 @@ const NewThreadModal = ({ author, isChanged }) => {
                   form={form}
                   name='category'
                   placeholder='Select a category'
-                  items={categoriesToSelect}
+                  items={categories}
                   idFlag={true}
                 />
               </div>
