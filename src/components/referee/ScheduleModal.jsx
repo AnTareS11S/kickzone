@@ -4,7 +4,6 @@ import FormArea from '../FormArea';
 import { Button } from '../ui/button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
@@ -15,6 +14,7 @@ import {
 import { useForm } from 'react-hook-form';
 import { Form } from '../ui/form';
 import { useToast } from '../ui/use-toast';
+import { useState } from 'react';
 
 const schema = z.object({
   homeTeam: z.string().min(1, { message: 'Home team is required' }),
@@ -33,12 +33,13 @@ const schema = z.object({
 
 const ScheduleModal = ({ match, teams }) => {
   const { toast } = useToast();
+  const [open, setOpen] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      homeTeam: match?.homeTeam,
-      awayTeam: match?.awayTeam,
+      homeTeam: match?.homeTeam.id,
+      awayTeam: match?.awayTeam.id,
       startDate: match?.startDate,
     },
     mode: 'onChange',
@@ -50,12 +51,8 @@ const ScheduleModal = ({ match, teams }) => {
   const onSubmit = async (data) => {
     const updatedData = {
       ...data,
-      homeTeam: data?.homeTeam?.split(':')[1]
-        ? data?.homeTeam?.split(':')[1]
-        : data?.homeTeam,
-      awayTeam: data?.awayTeam?.split(':')[1]
-        ? data?.awayTeam?.split(':')[1]
-        : data?.awayTeam,
+      homeTeam: data?.homeTeam?.id ? data?.homeTeam?.id : data?.homeTeam,
+      awayTeam: data?.awayTeam?.id ? data?.awayTeam?.id : data?.awayTeam,
       startDate: formattedDate,
     };
 
@@ -72,6 +69,7 @@ const ScheduleModal = ({ match, teams }) => {
           title: 'Success!',
           description: 'Match updated successfully',
         });
+        setOpen(false);
       } else {
         toast({
           title: 'Error!',
@@ -85,7 +83,7 @@ const ScheduleModal = ({ match, teams }) => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen} className='w-full'>
       <DialogTrigger asChild>
         <Button variant='secondary' className='w-32'>
           Edit Match
@@ -109,10 +107,7 @@ const ScheduleModal = ({ match, teams }) => {
                   type='select'
                   form={form}
                   name='homeTeam'
-                  placeholder={
-                    match?.homeTeam.split(':')[0] || 'Select Home Team'
-                  }
-                  defaultValue={match?.homeTeam.split(':')[0]}
+                  placeholder={match?.homeTeam.name || 'Select Home Team'}
                   items={teams}
                   idFlag={true}
                 />
@@ -124,9 +119,7 @@ const ScheduleModal = ({ match, teams }) => {
                   type='select'
                   form={form}
                   name='awayTeam'
-                  placeholder={
-                    match?.awayTeam.split(':')[0] || 'Select Away Team'
-                  }
+                  placeholder={match?.awayTeam.name || 'Select Away Team'}
                   items={teams}
                   idFlag={true}
                 />
@@ -148,14 +141,12 @@ const ScheduleModal = ({ match, teams }) => {
             </div>
 
             <div className='flex justify-end mt-4'>
-              <DialogClose asChild>
-                <Button
-                  type='submit'
-                  className='bg-primary-500 text-white hover:bg-purple-500 px-4 py-2 rounded-md'
-                >
-                  Save
-                </Button>
-              </DialogClose>
+              <Button
+                type='submit'
+                className='bg-primary-500 text-white hover:bg-purple-500 px-4 py-2 rounded-md'
+              >
+                Save
+              </Button>
             </div>
           </form>
         </Form>
