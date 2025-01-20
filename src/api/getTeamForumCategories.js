@@ -2,7 +2,13 @@ import { useEffect, useState } from 'react';
 
 export const GetTeamForumCategories = () => {
   const [categories, setCategories] = useState([]);
-  const [categoriesToSelect, setCategoriesToSelect] = useState([]);
+  const [categoriesToSelect, setCategoriesToSelect] = useState([
+    {
+      id: '',
+      name: '',
+      count: 0,
+    },
+  ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,7 +19,11 @@ export const GetTeamForumCategories = () => {
         const data = await res.json();
         setCategories(data);
         setCategoriesToSelect(
-          data.map((category) => category.name + ':' + category._id)
+          data?.map((category) => ({
+            id: category?._id,
+            name: category?.name,
+            count: category?.count,
+          }))
         );
         setLoading(false);
       } catch (error) {
