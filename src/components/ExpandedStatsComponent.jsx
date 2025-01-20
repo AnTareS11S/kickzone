@@ -15,7 +15,7 @@ const ExpandedStatsComponent = ({ data }) => {
   const seasonId = GetSeasonByMatchId(matchId);
   const { toast } = useToast();
   const [isReset, setIsReset] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const form = useForm({
     resolver: zodResolver(playerStatsFormSchema()),
@@ -34,7 +34,6 @@ const ExpandedStatsComponent = ({ data }) => {
   useEffect(() => {
     const fetchPlayerStats = async () => {
       try {
-        setLoading(true);
         const res = await fetch(
           `/api/referee/match-stats/${matchId}/${data?._id}`
         );
@@ -55,7 +54,8 @@ const ExpandedStatsComponent = ({ data }) => {
     };
 
     fetchPlayerStats();
-  }, [data, form, matchId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, matchId]);
 
   const onSubmit = async (formData) => {
     try {
