@@ -1,7 +1,12 @@
 import { useEffect, useState } from 'react';
 
 export const GetTeamPlayers = (id) => {
-  const [playersToSelect, setPlayersToSelect] = useState([]);
+  const [playersToSelect, setPlayersToSelect] = useState([
+    {
+      id: '',
+      name: '',
+    },
+  ]);
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -19,9 +24,10 @@ export const GetTeamPlayers = (id) => {
         setPlayers(data);
 
         setPlayersToSelect(
-          data.map(
-            (player) => player.name + ' ' + player.surname + ':' + player._id
-          )
+          data.map((player) => ({
+            id: player._id,
+            name: `${player.name} ${player.surname}`,
+          }))
         );
       } catch (error) {
         console.log(error);
