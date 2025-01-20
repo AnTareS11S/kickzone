@@ -43,6 +43,7 @@ const ThreadDetails = () => {
         setEditData({ title: data.title, content: data.content });
       }
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [threadId, fetchThread]);
 
   if (!thread) return null;
