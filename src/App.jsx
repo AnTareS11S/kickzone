@@ -77,8 +77,8 @@ import PlayerDashboard from './pages/Player/PlayerDashboard';
 import PlayerSchedule from './pages/Player/PlayerSchedule';
 import PlayerStatistics from './pages/Player/PlayerStatistics';
 import TeamForum from './pages/Team/TeamForum';
-import ForumCategory from './pages/ForumCategory/ForumCategory';
 import ThreadDetails from './pages/Forum/ThreadDetails';
+import ForumCategoryManage from './pages/ForumCategory/ForumCategoryManage';
 
 const App = () => {
   return (
@@ -213,7 +213,7 @@ const App = () => {
                 <Route path='/dashboard/admin/faq' element={<FAQManage />} />
                 <Route
                   path='/dashboard/admin/forum-category'
-                  element={<ForumCategory />}
+                  element={<ForumCategoryManage />}
                 />
               </Route>
 
