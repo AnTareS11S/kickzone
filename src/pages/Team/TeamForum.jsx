@@ -11,13 +11,22 @@ import NewThreadModal from '../../components/forum/NewThreadModal';
 import ThreadList from '../../components/forum/ThreadList';
 import Spinner from '../../components/Spinner';
 import { useSelector } from 'react-redux';
+import { GetTeamForumCategories } from '../../api/getTeamForumCategories';
 
 const TeamForum = () => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [threads, setThreads] = useState([]);
+  const [filteredThreads, setFilteredThreads] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isChanged, setIsChanged] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const { currentUser } = useSelector((state) => state.user);
+  const { categoriesToSelect: categories } = GetTeamForumCategories(isChanged);
+
+  const allCategories = [
+    { id: 'all', name: 'All Topics', count: threads.length },
+    ...(categories || []),
+  ];
 
   useEffect(() => {
     try {
@@ -28,6 +37,7 @@ const TeamForum = () => {
       };
 
       fetchThreads();
+      setIsLoading(false);
     } catch (error) {
       console.log(error);
     } finally {
@@ -35,14 +45,25 @@ const TeamForum = () => {
     }
   }, [isChanged]);
 
-  // Example data - replace with real data from your backend
-  const categories = [
-    { id: 'all', name: 'All Topics', count: 45 },
-    { id: 'announcements', name: 'Announcements', count: 12 },
-    { id: 'tactics', name: 'Tactics & Strategy', count: 15 },
-    { id: 'training', name: 'Training', count: 8 },
-    { id: 'social', name: 'Team Social', count: 10 },
-  ];
+  useEffect(() => {
+    let filtered = threads;
+
+    // Filter by category
+    if (activeCategory !== 'all') {
+      filtered = filtered.filter(
+        (thread) => thread.category === activeCategory
+      );
+    }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter((thread) =>
+        thread.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredThreads(filtered);
+  }, [activeCategory, searchTerm, threads]);
 
   if (isLoading) {
     return <Spinner />;
@@ -61,7 +82,12 @@ const TeamForum = () => {
       {/* Search */}
       <div className='mb-6'>
         <div className='flex gap-4'>
-          <Input placeholder='Search discussions...' className='max-w-md' />
+          <Input
+            placeholder='Search discussions...'
+            className='max-w-md'
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
         </div>
       </div>
 
@@ -74,19 +100,21 @@ const TeamForum = () => {
             </CardHeader>
             <CardContent>
               <nav className='space-y-2'>
-                {categories.map((category) => (
+                {allCategories.map((category) => (
                   <button
-                    key={category.id}
-                    onClick={() => setActiveCategory(category.id)}
+                    key={category?.id}
+                    onClick={() => setActiveCategory(category?.id)}
                     className={`w-full text-left px-3 py-2 rounded-lg flex justify-between items-center ${
-                      activeCategory === category.id
+                      activeCategory === category?.id
                         ? 'bg-blue-50 text-blue-600'
                         : 'hover:bg-gray-50'
                     }`}
                   >
-                    <span>{category.name}</span>
+                    <span>{category?.name}</span>
                     <span className='text-sm text-gray-500'>
-                      {category.count}
+                      {category?.id === 'all'
+                        ? threads.length
+                        : category?.count}
                     </span>
                   </button>
                 ))}
@@ -96,8 +124,7 @@ const TeamForum = () => {
         </div>
 
         {/* Posts List */}
-
-        <ThreadList threads={threads} role={currentUser?.role} />
+        <ThreadList threads={filteredThreads} role={currentUser?.role} />
       </div>
     </div>
   );
