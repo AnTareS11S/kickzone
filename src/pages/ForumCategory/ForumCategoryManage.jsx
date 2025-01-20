@@ -11,10 +11,11 @@ const forumSchema = () =>
       .string()
       .min(3, 'Description is required')
       .max(200, 'Description is too long'),
+    order: z.coerce.number().gte(0, 'Order must be a positive number'),
     isActive: z.boolean(),
   });
 
-const ForumCategory = () => {
+const ForumCategoryManage = () => {
   const columns = [
     {
       name: 'No.',
@@ -24,6 +25,11 @@ const ForumCategory = () => {
     {
       name: 'Name',
       selector: (row) => row.name,
+      sortable: true,
+    },
+    {
+      name: 'Order',
+      selector: (row) => row.order,
       sortable: true,
     },
     {
@@ -45,6 +51,12 @@ const ForumCategory = () => {
       label: 'Description',
       type: 'textarea',
       name: 'description',
+    },
+    {
+      id: 'order',
+      label: 'Order',
+      type: 'number',
+      name: 'order',
     },
     {
       id: 'isActive',
@@ -71,6 +83,7 @@ const ForumCategory = () => {
         defaultValues={{
           name: '',
           description: '',
+          order: 0,
           isActive: true,
         }}
         isExpandable={false}
@@ -80,4 +93,4 @@ const ForumCategory = () => {
   );
 };
 
-export default ForumCategory;
+export default ForumCategoryManage;
