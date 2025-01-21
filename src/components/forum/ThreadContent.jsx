@@ -54,7 +54,10 @@ export const ThreadContent = ({
         <div className='flex items-center gap-4'>
           <Avatar className='h-10 w-10'>
             <AvatarImage
-              src={thread.author?.avatar || '/default-avatar.png'}
+              src={
+                thread.author?.avatar ||
+                'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+              }
               alt={thread.author?.name}
             />
           </Avatar>
