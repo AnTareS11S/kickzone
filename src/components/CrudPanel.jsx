@@ -58,6 +58,7 @@ const CrudPanel = ({
   }, [updateSuccess, objectId]);
 
   const onSubmit = async (data) => {
+    setIsLoading(true);
     const formData = new FormData();
     for (const key in data) {
       if (key === 'logo') {
@@ -98,6 +99,7 @@ const CrudPanel = ({
             variant: 'destructive',
           });
           setUpdateSuccess(false);
+          setIsLoading(false);
           return;
         }
       }
@@ -113,7 +115,6 @@ const CrudPanel = ({
           description: `${title} added successfully`,
         });
         setUpdateSuccess(true);
-        setIsLoading(true);
         form.reset();
         setIsModalOpen(false);
       } else {
@@ -126,6 +127,8 @@ const CrudPanel = ({
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
