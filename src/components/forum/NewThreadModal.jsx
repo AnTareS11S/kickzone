@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../ui/dialog';
-import { GetTeamForumCategories } from '../../api/getTeamForumCategories';
+import { GetTeamForumCategoriesToSelect } from '../../api/getTeamForumCategories';
 import { Form } from '../ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -18,7 +18,7 @@ import { TbLoader2 } from 'react-icons/tb';
 const NewThreadModal = ({ author, isChanged }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { categoriesToSelect: categories } = GetTeamForumCategories();
+  const { categoriesToSelect: categories } = GetTeamForumCategoriesToSelect();
 
   const form = useForm({
     resolver: zodResolver(forumFormSchema()),
