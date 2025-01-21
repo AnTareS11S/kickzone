@@ -21,7 +21,7 @@ const TeamForum = () => {
   const [isChanged, setIsChanged] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const { currentUser } = useSelector((state) => state.user);
-  const { categoriesToSelect: categories } = GetTeamForumCategories(isChanged);
+  const { categories } = GetTeamForumCategories(isChanged);
 
   const allCategories = [
     { id: 'all', name: 'All Topics', count: threads.length },
@@ -31,7 +31,9 @@ const TeamForum = () => {
   useEffect(() => {
     try {
       const fetchThreads = async () => {
-        const res = await fetch('/api/forum/threads');
+        const res = await fetch(
+          `/api/forum/threads/${currentUser?._id}/${currentUser?.role}`
+        );
         const data = await res.json();
         setThreads(data);
       };
@@ -43,7 +45,7 @@ const TeamForum = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [isChanged]);
+  }, [isChanged, currentUser]);
 
   useEffect(() => {
     let filtered = threads;
