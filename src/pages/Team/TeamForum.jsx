@@ -21,7 +21,8 @@ const TeamForum = () => {
   const [isChanged, setIsChanged] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const { currentUser } = useSelector((state) => state.user);
-  const { categories } = GetTeamForumCategories(isChanged);
+  const { categories, loading: isCategoriesLoading } =
+    GetTeamForumCategories(isChanged);
 
   const allCategories = [
     { id: 'all', name: 'All Topics', count: threads.length },
@@ -31,6 +32,7 @@ const TeamForum = () => {
   useEffect(() => {
     try {
       const fetchThreads = async () => {
+        setIsLoading(true);
         const res = await fetch(
           `/api/forum/threads/${currentUser?._id}/${currentUser?.role}`
         );
@@ -39,7 +41,6 @@ const TeamForum = () => {
       };
 
       fetchThreads();
-      setIsLoading(false);
     } catch (error) {
       console.log(error);
     } finally {
@@ -66,10 +67,6 @@ const TeamForum = () => {
 
     setFilteredThreads(filtered);
   }, [activeCategory, searchTerm, threads]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   return (
     <div className='max-w-8xl mx-auto p-6'>
@@ -101,32 +98,44 @@ const TeamForum = () => {
               <CardTitle className='text-lg'>Categories</CardTitle>
             </CardHeader>
             <CardContent>
-              <nav className='space-y-2'>
-                {allCategories.map((category) => (
-                  <button
-                    key={category?.id}
-                    onClick={() => setActiveCategory(category?.id)}
-                    className={`w-full text-left px-3 py-2 rounded-lg flex justify-between items-center ${
-                      activeCategory === category?.id
-                        ? 'bg-blue-50 text-blue-600'
-                        : 'hover:bg-gray-50'
-                    }`}
-                  >
-                    <span>{category?.name}</span>
-                    <span className='text-sm text-gray-500'>
-                      {category?.id === 'all'
-                        ? threads.length
-                        : category?.count}
-                    </span>
-                  </button>
-                ))}
-              </nav>
+              {isCategoriesLoading ? (
+                <div className='flex justify-center py-4'>
+                  <Spinner />
+                </div>
+              ) : (
+                <nav className='space-y-2'>
+                  {allCategories.map((category) => (
+                    <button
+                      key={category?.id}
+                      onClick={() => setActiveCategory(category?.id)}
+                      className={`w-full text-left px-3 py-2 rounded-lg flex justify-between items-center ${
+                        activeCategory === category?.id
+                          ? 'bg-blue-50 text-blue-600'
+                          : 'hover:bg-gray-50'
+                      }`}
+                    >
+                      <span>{category?.name}</span>
+                      <span className='text-sm text-gray-500'>
+                        {category?.id === 'all'
+                          ? threads.length
+                          : category?.count}
+                      </span>
+                    </button>
+                  ))}
+                </nav>
+              )}
             </CardContent>
           </Card>
         </div>
 
         {/* Posts List */}
-        <ThreadList threads={filteredThreads} role={currentUser?.role} />
+        {isLoading ? (
+          <div className='lg:col-span-3 flex justify-center py-4'>
+            <Spinner />
+          </div>
+        ) : (
+          <ThreadList threads={filteredThreads} role={currentUser?.role} />
+        )}
       </div>
     </div>
   );
