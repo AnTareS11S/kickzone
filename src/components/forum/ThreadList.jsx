@@ -86,25 +86,31 @@ const ThreadList = ({ threads, role }) => {
       ))}
 
       {/* Pagination Controls */}
-      <div className='flex justify-between items-center mt-4'>
-        <button
-          onClick={() => handlePageChange('prev')}
-          disabled={currentPage === 1}
-          className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
-        >
-          Previous
-        </button>
-        <span className='text-sm text-gray-600'>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={() => handlePageChange('next')}
-          disabled={currentPage === totalPages}
-          className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
-        >
-          Next
-        </button>
-      </div>
+      {threads.length > 0 ? (
+        <div className='flex justify-between items-center mt-4'>
+          <button
+            onClick={() => handlePageChange('prev')}
+            disabled={currentPage === 1}
+            className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
+          >
+            Previous
+          </button>
+          <span className='text-sm text-gray-600'>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange('next')}
+            disabled={currentPage === totalPages}
+            className='px-4 py-2 bg-gray-200 rounded disabled:opacity-50'
+          >
+            Next
+          </button>
+        </div>
+      ) : (
+        <div className='text-center text-gray-500 flex items-center justify-center py-28'>
+          No threads found
+        </div>
+      )}
     </div>
   );
 };
