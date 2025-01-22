@@ -7,6 +7,7 @@ import {
   FaHome,
   FaPlus,
   FaSearch,
+  FaTrophy,
   FaUsers,
 } from 'react-icons/fa';
 import { useSocket } from '../../hook/useSocket';
@@ -21,9 +22,14 @@ const sidebarLinks = [
     label: 'Create Post',
   },
   {
-    icon: <FaUsers className='w-6 h-6' />,
+    icon: <FaTrophy className='w-6 h-6' />,
     route: '/leagues',
     label: 'Leagues',
+  },
+  {
+    icon: <FaUsers className='w-6 h-6' />,
+    route: '/forum',
+    label: 'Team Forum',
   },
   {
     icon: <FaDumbbell className='w-6 h-6' />,
@@ -57,17 +63,21 @@ const SidebarLink = memo(({ link, isActive, isTrainingNotif }) => (
   <Link
     to={link.route}
     className={`group relative flex items-center
-        px-1 py-2.5 rounded-xl
-        transition-all duration-300 ${
-          isActive
-            ? 'bg-primary-500 text-white shadow-lg'
-            : 'text-gray-500 hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-700'
-        }`}
+      px-4 py-3 rounded-lg
+      transition-all duration-200 ease-in-out
+      hover:scale-105
+      ${
+        isActive
+          ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30'
+          : 'text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+      }`}
   >
     <div
       className={`
-        mr-3
-        ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-gray-600'}
+        mr-3 transition-transform group-hover:scale-110
+        ${
+          isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary-500'
+        }
       `}
     >
       {link.icon}
@@ -77,7 +87,7 @@ const SidebarLink = memo(({ link, isActive, isTrainingNotif }) => (
       className={`
         text-sm font-medium
         hidden md:block
-        transition-all duration-300
+        transition-colors duration-200
         ${isActive ? 'text-white' : 'text-gray-700 group-hover:text-gray-900'}
       `}
     >
@@ -90,15 +100,15 @@ const SidebarLink = memo(({ link, isActive, isTrainingNotif }) => (
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 300 }}
         className='
-            absolute top-2 right-1
-            w-7 h-7
-            bg-gray-600
-            rounded-full
-            flex items-center justify-center
-            animate-pulse
-          '
+          absolute -top-1 -right-1
+          w-5 h-5
+          bg-red-500
+          rounded-full
+          flex items-center justify-center
+          animate-pulse
+        '
       >
-        <span className='text-[10px] text-white font-bold'>New</span>
+        <span className='text-[10px] text-white font-bold'>●</span>
       </motion.div>
     )}
   </Link>
@@ -112,6 +122,7 @@ const Sidebar = () => {
   const [trainingNotifications, setTrainingNotifications] = useState({
     unreadCount: 0,
   });
+  const [isScrolled, setIsScrolled] = useState(false);
   const { subscribe, emit, isConnected, unsubscribe } = useSocket();
 
   useEffect(() => {
@@ -194,6 +205,7 @@ const Sidebar = () => {
   );
   const isCoachWithTeam =
     currentUser?.role === 'Coach' || player?.currentTeam !== undefined;
+  const isPlayerOrCoach = ['Player', 'Coach'].includes(currentUser?.role);
 
   const canShowCreatePostLink =
     isAdminOrCoachOrReferee ||
@@ -206,6 +218,7 @@ const Sidebar = () => {
       if (link.route === '/post/create') return canShowCreatePostLink;
       if (link.route === '/training') return canShowTrainingLink;
       if (link.route === '/leagues') return true;
+      if (link.route === '/forum') return isPlayerOrCoach;
       if (link.route.startsWith('/dashboard/'))
         return (
           link.route ===
@@ -216,7 +229,21 @@ const Sidebar = () => {
         );
       return ['/'].includes(link.route);
     });
-  }, [currentUser?.role, canShowCreatePostLink, canShowTrainingLink]);
+  }, [
+    currentUser?.role,
+    canShowCreatePostLink,
+    canShowTrainingLink,
+    isPlayerOrCoach,
+  ]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const renderLinks = () =>
     visibleLinks.map((link) => (
@@ -232,39 +259,50 @@ const Sidebar = () => {
 
   return (
     <>
-      <aside className='hidden md:flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-64 transition-all duration-300'>
-        <div className='flex-1 overflow-y-auto py-4 px-3'>
-          <nav className='space-y-2'>{renderLinks()}</nav>
+      <aside
+        className={`hidden md:flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-72 h-[calc(102vh-5rem)] fixed left-0 ${
+          isScrolled ? 'top-[30px] h-[calc(103vh-3rem)]' : 'top-[64px]'
+        } transition-all duration-0 shadow-lg`}
+      >
+        {/* Content section - links */}
+        <div className='flex-1 overflow-y-auto px-4'>
+          <nav className='space-y-3'>{renderLinks()}</nav>
         </div>
-        <footer className='border-t file:border-gray-200 dark:border-gray-700'>
+        <div className='border-t border-gray-200 dark:border-gray-700 py-4'>
           <div className='flex flex-col justify-center items-center'>
             <div className='flex gap-8 p-4'>
               <Link
                 to='/terms'
-                className='text-sm hover:text-primary transition-colors'
+                className='text-sm text-gray-600 hover:text-primary-500 transition-colors duration-200'
               >
                 Terms
               </Link>
               <Link
                 to='/privacy'
-                className='text-sm hover:text-primary transition-colors'
+                className='text-sm text-gray-600 hover:text-primary-500 transition-colors duration-200'
               >
                 Privacy
               </Link>
               <Link
                 to='/contact'
-                className='text-sm hover:text-primary transition-colors'
+                className='text-sm text-gray-600 hover:text-primary-500 transition-colors duration-200'
               >
                 Contact
               </Link>
             </div>
-            <div className='text-center'>&copy; {currentYear} KickZone</div>
+            <div className='text-sm text-gray-500'>
+              &copy; {currentYear} KickZone
+            </div>
           </div>
-        </footer>
+        </div>
       </aside>
-      <nav className='bottombar md:hidden fixed bottom-0 left-0 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700'>
-        <div className='bottombar_container m-0'>{renderLinks()}</div>
+      {/* Mobile navigation */}
+      <nav className='md:hidden fixed bottom-0 left-0 z-50 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg'>
+        <div className='p-2 grid grid-cols-7 gap-1'>{renderLinks()}</div>
       </nav>
+
+      {/* Spacer div to prevent content from being hidden behind the sidebar */}
+      <div className='hidden md:block w-72' />
     </>
   );
 };
