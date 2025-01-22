@@ -243,6 +243,7 @@ const Header = () => {
     <nav className='bg-white shadow-sm'>
       <div className='px-4 sm:px-6 lg:px-8'>
         <div className='flex justify-between h-16'>
+          {/* Left section */}
           <div className='flex items-center'>
             <Link
               to='/'
@@ -256,10 +257,12 @@ const Header = () => {
             </Link>
           </div>
 
+          {/* Center section */}
           <div className='hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8'>
             <NavItems />
           </div>
 
+          {/* Right section */}
           <div className='flex items-center'>
             {currentUser ? (
               <div className='hidden sm:block'>
@@ -340,6 +343,7 @@ const Header = () => {
         </div>
       </div>
 
+      {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className='sm:hidden bg-white border-t border-gray-200'>
           <div className='pt-2 pb-3 space-y-1'>
