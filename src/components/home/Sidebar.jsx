@@ -257,6 +257,8 @@ const Sidebar = () => {
       />
     ));
 
+  const gridColumns = useMemo(() => visibleLinks.length, [visibleLinks]);
+
   return (
     <>
       <aside
@@ -298,7 +300,9 @@ const Sidebar = () => {
       </aside>
       {/* Mobile navigation */}
       <nav className='md:hidden fixed bottom-0 left-0 z-50 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg'>
-        <div className='p-2 grid grid-cols-7 gap-1'>{renderLinks()}</div>
+        <div className={`p-2 grid grid-cols-${gridColumns} gap-1`}>
+          {renderLinks()}
+        </div>
       </nav>
 
       {/* Spacer div to prevent content from being hidden behind the sidebar */}
