@@ -7,15 +7,15 @@ import { Avatar, AvatarImage } from '../ui/avatar';
 import { getTimeAgo } from '../../lib/utils';
 import { Link } from 'react-router-dom';
 
-const ThreadList = ({ threads, role }) => {
+const ThreadList = ({ threads }) => {
   const threadsPerPage = 5; // Number of threads per page
   const [currentPage, setCurrentPage] = useState(1);
 
   // Calculate total pages
-  const totalPages = Math.ceil(threads.length / threadsPerPage);
+  const totalPages = Math.ceil(threads?.length / threadsPerPage);
 
   // Get threads for the current page
-  const currentThreads = threads.slice(
+  const currentThreads = threads?.slice(
     (currentPage - 1) * threadsPerPage,
     currentPage * threadsPerPage
   );
@@ -31,13 +31,9 @@ const ThreadList = ({ threads, role }) => {
 
   return (
     <div className='lg:col-span-3 space-y-4'>
-      {currentThreads.map((thread) => (
+      {currentThreads?.map((thread) => (
         <Card key={thread?._id} className='hover:shadow-md transition-shadow'>
-          <Link
-            to={`/dashboard/${role === 'Player' ? 'player' : 'coach'}/forum/${
-              thread?._id
-            }`}
-          >
+          <Link to={`/forum/${thread?._id}`}>
             <CardContent className='p-6 '>
               <div className='flex items-start gap-4 '>
                 <Avatar className='h-10 w-10'>
