@@ -119,6 +119,8 @@ const App = () => {
               <Route path='/contact' element={<ContactPage />} />
               <Route path='/about' element={<AboutPage />} />
               <Route path='/explore' element={<ExplorePage />} />
+              <Route path='/forum' element={<TeamForum />} />
+              <Route path='/forum/:id' element={<ThreadDetails />} />
               <Route path='/admin-alerts' element={<RoleNotificationPage />} />
 
               {/* Referee routes */}
@@ -236,11 +238,6 @@ const App = () => {
                   path='/dashboard/coach/team-equipment'
                   element={<TeamEquipment />}
                 />
-                <Route path='/dashboard/coach/forum' element={<TeamForum />} />
-                <Route
-                  path='/dashboard/coach/forum/:id'
-                  element={<ThreadDetails />}
-                />
               </Route>
 
               {/*Player routes */}
@@ -253,11 +250,6 @@ const App = () => {
                 <Route
                   path='/dashboard/player/stats'
                   element={<PlayerStatistics />}
-                />
-                <Route path='/dashboard/player/forum' element={<TeamForum />} />
-                <Route
-                  path='/dashboard/player/forum/:id'
-                  element={<ThreadDetails />}
                 />
               </Route>
             </Route>
