@@ -134,7 +134,7 @@ const TeamForum = () => {
             <Spinner />
           </div>
         ) : (
-          <ThreadList threads={filteredThreads} role={currentUser?.role} />
+          <ThreadList threads={filteredThreads} />
         )}
       </div>
     </div>
