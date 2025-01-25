@@ -14,11 +14,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { forumFormSchema } from '../../lib/validation/ForumValidation';
 import FormArea from '../FormArea';
 import { TbLoader2 } from 'react-icons/tb';
+import { useSocket } from '../../hook/useSocket';
 
 const NewThreadModal = ({ author, isChanged }) => {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { categoriesToSelect: categories } = GetTeamForumCategoriesToSelect();
+  const { emit } = useSocket();
 
   const form = useForm({
     resolver: zodResolver(forumFormSchema()),
@@ -45,6 +47,13 @@ const NewThreadModal = ({ author, isChanged }) => {
       if (!res.ok) {
         throw new Error('Cannot create new thread');
       }
+
+      const thread = await res.json();
+
+      emit('initializeTeamForumNotifications', {
+        teamId: thread.teamId,
+      });
+
       setIsLoading(true);
       isChanged((prev) => !prev);
       form.reset();
