@@ -2,7 +2,13 @@ import { motion } from 'framer-motion';
 import { Separator } from './ui/separator';
 import BackButton from './BackButton';
 
-const PageHeader = ({ title, description, className = '', sideText }) => {
+const PageHeader = ({
+  title,
+  description,
+  className = '',
+  sideText,
+  isBack = true,
+}) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -10,13 +16,15 @@ const PageHeader = ({ title, description, className = '', sideText }) => {
       transition={{ duration: 0.5 }}
       className={`space-y-6 ${className}`}
     >
-      <motion.button
-        whileHover={{ x: -5 }}
-        whileTap={{ scale: 0.95 }}
-        className='flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors'
-      >
-        <BackButton />
-      </motion.button>
+      {isBack && (
+        <motion.button
+          whileHover={{ x: -5 }}
+          whileTap={{ scale: 0.95 }}
+          className='flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors'
+        >
+          <BackButton />
+        </motion.button>
+      )}
 
       <div className='flex flex-col md:flex-row md:justify-between md:items-center gap-4'>
         <motion.div
