@@ -12,6 +12,7 @@ import ThreadList from '../../components/forum/ThreadList';
 import Spinner from '../../components/Spinner';
 import { useSelector } from 'react-redux';
 import { GetTeamForumCategories } from '../../api/getTeamForumCategories';
+import ForumNotifications from '../../components/forum/ForumNotifications';
 
 const TeamForum = () => {
   const [activeCategory, setActiveCategory] = useState('all');
@@ -71,12 +72,21 @@ const TeamForum = () => {
   return (
     <div className='max-w-8xl mx-auto p-6'>
       {/* Header */}
+
       <PageHeader
         title='Team Forum'
         description='Connect, discuss, and stay updated with your team'
+        isBack={false}
       />
 
-      <NewThreadModal author={currentUser} isChanged={setIsChanged} />
+      <div className='mb-6 flex items-center gap-4'>
+        <NewThreadModal author={currentUser} isChanged={setIsChanged} />
+
+        <ForumNotifications
+          userId={currentUser?._id}
+          role={currentUser?.role}
+        />
+      </div>
 
       {/* Search */}
       <div className='mb-6'>
