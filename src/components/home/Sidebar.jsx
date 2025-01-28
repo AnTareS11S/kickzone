@@ -59,10 +59,11 @@ const sidebarLinks = [
 ];
 
 // eslint-disable-next-line react/display-name
-const SidebarLink = memo(({ link, isActive, isTrainingNotif }) => (
-  <Link
-    to={link.route}
-    className={`group relative flex items-center
+const SidebarLink = memo(
+  ({ link, isActive, isTrainingNotif, isForumNotif }) => (
+    <Link
+      to={link.route}
+      className={`group relative flex items-center
       px-4 py-3 rounded-lg
       transition-all duration-200 ease-in-out
       hover:scale-105
@@ -71,80 +72,80 @@ const SidebarLink = memo(({ link, isActive, isTrainingNotif }) => (
           ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/30'
           : 'text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
       }`}
-  >
-    <div
-      className={`
+    >
+      <div
+        className={`
         mr-3 transition-transform group-hover:scale-110
         ${
           isActive ? 'text-white' : 'text-gray-400 group-hover:text-primary-500'
         }
       `}
-    >
-      {link.icon}
-    </div>
+      >
+        {link.icon}
+      </div>
 
-    <span
-      className={`
+      <span
+        className={`
         text-sm font-medium
         hidden md:block
         transition-colors duration-200
         ${isActive ? 'text-white' : 'text-gray-700 group-hover:text-gray-900'}
       `}
-    >
-      {link.label}
-    </span>
+      >
+        {link.label}
+      </span>
 
-    {isTrainingNotif && (
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 300 }}
-        className='
-          absolute -top-1 -right-1
+      {(isTrainingNotif || isForumNotif) && (
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 300 }}
+          className={`
+          absolute top-4 right-4
           w-5 h-5
-          bg-red-500
+          ${isActive ? 'bg-white' : 'bg-blue-600'}
           rounded-full
           flex items-center justify-center
           animate-pulse
-        '
-      >
-        <span className='text-[10px] text-white font-bold'>●</span>
-      </motion.div>
-    )}
-  </Link>
-));
+        `}
+        >
+          <span
+            className={`text-[10px] ${
+              isActive ? 'text-black' : 'text-white'
+            } font-bold`}
+          >
+            ●
+          </span>
+        </motion.div>
+      )}
+    </Link>
+  )
+);
 
 const Sidebar = () => {
   const { pathname } = useLocation();
   const { currentUser } = useSelector((state) => state.user);
   const [player, setPlayer] = useState({});
   const currentYear = new Date().getFullYear();
-  const [trainingNotifications, setTrainingNotifications] = useState({
-    unreadCount: 0,
-  });
+  const [trainingNotifications, setTrainingNotifications] = useState(0);
+  const [unreadForumNotifications, setUnreadForumNotifications] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { subscribe, emit, isConnected, unsubscribe } = useSocket();
+  const { subscribe, isConnected, unsubscribe } = useSocket();
 
   useEffect(() => {
     if (!currentUser?._id || !isConnected || currentUser?.role !== 'Player')
       return;
 
     subscribe('teamTrainingNotificationStatus', (data) => {
-      setTrainingNotifications({
-        unreadCount: data.unreadCount,
-      });
+      setTrainingNotifications(data.unreadCount);
     });
 
     subscribe('unreadTeamTrainingNotification', (data) => {
-      setTrainingNotifications({
-        unreadCount: data.unreadCount,
-      });
+      setTrainingNotifications(data.unreadCount);
     });
 
     subscribe('teamTrainingNotificationStatusAfterDeletion', (data) => {
-      setTrainingNotifications({
-        unreadCount: data.unreadCount,
-      });
+      setTrainingNotifications(data.unreadCount);
     });
 
     return () => {
@@ -152,7 +153,29 @@ const Sidebar = () => {
       unsubscribe('unreadTeamTrainingNotification');
       unsubscribe('teamTrainingNotificationStatusAfterDeletion');
     };
-  }, [subscribe, emit, player, currentUser, isConnected, unsubscribe]);
+  }, [subscribe, currentUser, isConnected, unsubscribe]);
+
+  useEffect(() => {
+    if (!currentUser?._id || !isConnected) return;
+
+    subscribe('teamForumNotificationsStatus', (data) => {
+      setUnreadForumNotifications(data.unreadCount);
+    });
+
+    subscribe('teamForumNotificationStatusAfterUpdate', (data) => {
+      setUnreadForumNotifications(data.unreadCount);
+    });
+
+    subscribe('teamForumNotificationStatusAfterDeletion', (data) => {
+      setUnreadForumNotifications(data.unreadCount);
+    });
+
+    return () => {
+      unsubscribe('teamForumNotificationsStatus');
+      unsubscribe('teamForumNotificationStatusAfterUpdate');
+      unsubscribe('teamForumNotificationStatusAfterDeletion');
+    };
+  }, [subscribe, currentUser, isConnected, unsubscribe]);
 
   useEffect(() => {
     const getPlayer = async () => {
@@ -189,9 +212,7 @@ const Sidebar = () => {
           throw new Error('Failed to fetch data!');
         }
         const data = await res.json();
-        setTrainingNotifications({
-          unreadCount: data.unreadCount,
-        });
+        setTrainingNotifications(data.unreadCount);
       } catch (error) {
         console.error('Error fetching training notifications:', error);
       }
@@ -199,6 +220,22 @@ const Sidebar = () => {
 
     getTrainingNotifications();
   }, [player, currentUser]);
+
+  useEffect(() => {
+    const getTeamForumNotifications = async () => {
+      try {
+        const res = await fetch(
+          `/api/forum/notifications/${currentUser?._id}/${currentUser?.role}`
+        );
+        const data = await res.json();
+        setUnreadForumNotifications(data.unreadCount);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getTeamForumNotifications();
+  }, [currentUser?._id, currentUser?.role]);
 
   const isAdminOrCoachOrReferee = ['Admin', 'Coach', 'Referee'].includes(
     currentUser?.role
@@ -252,8 +289,9 @@ const Sidebar = () => {
         link={link}
         isActive={pathname === link.route}
         isTrainingNotif={
-          link.route === '/training' && trainingNotifications.unreadCount > 0
+          link.route === '/training' && trainingNotifications > 0
         }
+        isForumNotif={link.route === '/forum' && unreadForumNotifications > 0}
       />
     ));
 
