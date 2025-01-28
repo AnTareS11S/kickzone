@@ -1,10 +1,12 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSocket } from './useSocket';
 
 export const useThreadActions = (threadId) => {
   const navigate = useNavigate();
   const [thread, setThread] = useState();
   const [isLiking, setIsLiking] = useState(false);
+  const [teamId, setTeamId] = useState('');
   const [comment, setComment] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState();
@@ -13,12 +15,15 @@ export const useThreadActions = (threadId) => {
   const [editingCommentContent, setEditingCommentContent] = useState('');
   const [isLikingComment, setIsLikingComment] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { emit } = useSocket();
 
   const fetchThread = useCallback(async () => {
     try {
       const res = await fetch(`/api/forum/thread/${threadId}`);
       const data = await res.json();
       setThread(data);
+      setTeamId(data?.teamId);
       setIsLoading(false);
       return data;
     } catch (error) {
@@ -87,14 +92,21 @@ export const useThreadActions = (threadId) => {
 
   const handleDelete = async () => {
     try {
+      setIsDeleting(true);
       const res = await fetch(`/api/forum/thread/delete/${threadId}`, {
         method: 'DELETE',
       });
+
       if (res.ok) {
+        emit('removeTeamForum', {
+          teamId,
+        });
         navigate(-1);
       }
     } catch (error) {
       console.error('Error deleting thread:', error);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -167,6 +179,7 @@ export const useThreadActions = (threadId) => {
     setEditingCommentContent,
     isLikingComment,
     isLoading,
+    isDeleting,
     handleComment,
     handleCommentEdit,
     handleCommentDelete,
