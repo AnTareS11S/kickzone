@@ -31,6 +31,7 @@ const ThreadDetails = () => {
     setEditingCommentContent,
     isLikingComment,
     isLoading,
+    isDeleting,
     handleComment,
     handleCommentEdit,
     handleCommentDelete,
@@ -105,6 +106,7 @@ const ThreadDetails = () => {
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={handleDelete}
+        isDeleting={isDeleting}
       />
     </div>
   );
