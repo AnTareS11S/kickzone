@@ -52,6 +52,7 @@ const NewThreadModal = ({ author, isChanged }) => {
 
       emit('initializeTeamForumNotifications', {
         teamId: thread.teamId,
+        threadId: thread._id,
       });
 
       setIsLoading(true);
