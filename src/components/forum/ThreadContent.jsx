@@ -100,7 +100,7 @@ export const ThreadContent = ({
                 onClick={onLike}
                 disabled={isLiking}
                 className={`flex items-center gap-2 ${
-                  thread.likes.includes() ? 'text-primary-500' : ''
+                  thread.likes?.includes() ? 'text-primary-500' : ''
                 }`}
               >
                 <FaThumbsUp className='h-4 w-4' />
