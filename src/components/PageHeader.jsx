@@ -17,13 +17,13 @@ const PageHeader = ({
       className={`space-y-6 ${className}`}
     >
       {isBack && (
-        <motion.button
+        <motion.div
           whileHover={{ x: -5 }}
           whileTap={{ scale: 0.95 }}
           className='flex items-center space-x-2 text-muted-foreground hover:text-foreground transition-colors'
         >
           <BackButton />
-        </motion.button>
+        </motion.div>
       )}
 
       <div className='flex flex-col md:flex-row md:justify-between md:items-center gap-4'>
