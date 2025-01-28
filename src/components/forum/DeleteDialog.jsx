@@ -1,3 +1,4 @@
+import { TbLoader2 } from 'react-icons/tb';
 import { Button } from '../ui/button';
 import {
   Dialog,
@@ -13,6 +14,7 @@ export const DeleteDialog = ({
   isOpen,
   onClose,
   onConfirm,
+  isDeleting,
 }) => {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -25,8 +27,21 @@ export const DeleteDialog = ({
           <Button variant='outline' onClick={onClose}>
             Cancel
           </Button>
-          <Button variant='destructive' onClick={onConfirm}>
-            Delete
+          <Button
+            variant='destructive'
+            onClick={onConfirm}
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <>
+                <TbLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                <span>Deleting...</span>
+              </>
+            ) : (
+              <>
+                <span>Delete</span>
+              </>
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
