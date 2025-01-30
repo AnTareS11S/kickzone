@@ -221,18 +221,22 @@ const Header = () => {
               </span>
             )}
           </Link>
-          {adminNotificationExists && (
-            <Link
-              to='/admin-alerts'
-              className='text-gray-600 hover:text-primary-500 transition-colors relative'
-            >
-              <FaExclamationCircle className='w-5 h-5 text-red-500' />
-            </Link>
-          )}
         </>
       )}
     </>
   );
+
+  const AdminNotification = () =>
+    adminNotificationExists &&
+    currentUser && (
+      <Link
+        to='/admin-alerts'
+        className='text-gray-600 hover:text-primary-500 transition-colors relative'
+      >
+        <FaExclamationCircle className='w-5 h-5 text-red-500' />
+      </Link>
+    );
+
   return (
     <nav className='bg-white shadow-sm'>
       <div className='px-4 sm:px-6 lg:px-8'>
@@ -252,8 +256,12 @@ const Header = () => {
           </div>
 
           {/* Center section */}
-          <div className='hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8'>
-            <NavItems />
+          <div className='flex items-center gap-6'>
+            <div className='hidden sm:ml-6 sm:flex sm:items-center sm:space-x-8'>
+              <NavItems />
+            </div>
+            {/* Admin notification visible on both mobile and desktop */}
+            <AdminNotification />
           </div>
 
           {/* Right section */}
