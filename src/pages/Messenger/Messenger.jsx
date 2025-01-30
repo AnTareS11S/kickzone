@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { useSelector } from 'react-redux';
 import { Input } from '../../components/ui/input';
 import { Button } from '../../components/ui/button';
 import {
@@ -22,9 +21,10 @@ import {
   fetchInitialMessagesCount,
   markConversationAsRead,
 } from '../../service/messengerService';
+import { GetUserById } from '../../api/getUserById';
 
 const Messenger = () => {
-  const { currentUser } = useSelector((state) => state.user);
+  const { user } = GetUserById();
   const [accountId, setAccountId] = useState(null);
   const [conversations, setConversations] = useState([]);
   const [currentChat, setCurrentChat] = useState(null);
@@ -138,8 +138,8 @@ const Messenger = () => {
   useEffect(() => {
     const getAccountId = async () => {
       try {
-        if (!currentUser?.isProfileFilled) return;
-        const res = await fetch(`/api/user/get-account-id/${currentUser?._id}`);
+        if (!user?.isProfileFilled) return;
+        const res = await fetch(`/api/user/get-account-id/${user?._id}`);
         if (!res.ok) throw new Error('Failed to fetch account id');
         const data = await res.json();
         setAccountId(data);
@@ -149,7 +149,7 @@ const Messenger = () => {
     };
 
     getAccountId();
-  }, [currentUser]);
+  }, [user]);
 
   useEffect(() => {
     const fetchChatPartner = async () => {
@@ -338,7 +338,7 @@ const Messenger = () => {
     }
   };
 
-  if (!currentUser?.isProfileFilled) {
+  if (!user?.isProfileFilled) {
     return (
       <motion.div
         initial={{ opacity: 0 }}
@@ -518,7 +518,7 @@ const Messenger = () => {
                     </>
                   </div>
                   <div className='p-4 bg-gray-100'>
-                    {!currentUser.isProfileFilled ? (
+                    {!user.isProfileFilled ? (
                       <div className='text-yellow-600 bg-yellow-100 p-3 rounded-lg'>
                         Please complete your profile before sending messages.
                       </div>
