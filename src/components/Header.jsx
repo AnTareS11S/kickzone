@@ -35,6 +35,7 @@ import {
 } from 'react-icons/md';
 import { useSocket } from '../hook/useSocket';
 import { GetUserById } from '../api/getUserById';
+import { AiFillAlert } from 'react-icons/ai';
 
 const Header = () => {
   const { user, currentUser } = GetUserById();
@@ -226,7 +227,7 @@ const Header = () => {
     </>
   );
 
-  const AdminNotification = () =>
+  const NotificationFromAdmin = () =>
     adminNotificationExists &&
     currentUser && (
       <Link
@@ -261,7 +262,12 @@ const Header = () => {
               <NavItems />
             </div>
             {/* Admin notification visible on both mobile and desktop */}
-            <AdminNotification />
+            <NotificationFromAdmin />
+            {currentUser?.role === 'Admin' && (
+              <Link to='/admin-notifications'>
+                <AiFillAlert className='w-6 h-6 text-red-600' />
+              </Link>
+            )}
           </div>
 
           {/* Right section */}
