@@ -25,20 +25,23 @@ const PostEdit = () => {
   const form = useForm({
     resolver: zodResolver(postFormSchema(true)),
     defaultValues: {
-      title: post?.title || '',
-      postContent: post?.postContent || '',
-      postPhoto: post?.imageUrl || '',
+      title: '',
+      postContent: '',
+      postPhoto: '',
     },
     mode: 'onChange',
   });
 
   useEffect(() => {
-    form.reset({
-      title: post?.title || '',
-      postContent: post?.postContent || '',
-      postPhoto: post?.photo || '',
-    });
-  }, [post, form]);
+    if (post && Object.keys(post).length > 0) {
+      form.reset({
+        title: post.title || '',
+        postContent: post.postContent || '',
+        postPhoto: post.photo || '',
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post]);
 
   useEffect(() => {
     return () => {
