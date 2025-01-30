@@ -6,174 +6,187 @@ import {
 } from '../../components/ui/tabs';
 import { Card, CardContent, CardHeader } from '../../components/ui/card';
 import BackButton from '../../components/BackButton';
-import { Separator } from '../../components/ui/separator';
 import { Link, useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import {
-  FaEnvelope,
-  FaUserTag,
-  FaRegCommentDots,
-  FaRegFileAlt,
-} from 'react-icons/fa';
+import { FaCalendar, FaUser, FaEnvelopeOpen } from 'react-icons/fa';
 import Spinner from '../../components/Spinner';
 import { GetUserById } from '../../api/getUserById';
+import { Badge } from '../../components/ui/badge';
+import { MdChatBubble } from 'react-icons/md';
+import { IoMdDocument } from 'react-icons/io';
 
 const profileTabs = [
-  { value: 'posts', label: 'Posts', icon: FaRegFileAlt },
-  { value: 'replies', label: 'Replies', icon: FaRegCommentDots },
+  { value: 'posts', label: 'Posts', icon: IoMdDocument },
+  { value: 'replies', label: 'Replies', icon: MdChatBubble },
 ];
 
 const HomeProfile = () => {
-  const userId = useParams().id;
+  const { id: userId } = useParams();
   const { user: currentUser, loading } = GetUserById(null, userId);
   const [comments, setComments] = useState([]);
+  const [activeTab, setActiveTab] = useState('posts');
 
   useEffect(() => {
     const getComments = async () => {
       try {
         const res = await fetch(`/api/user/get-comments/${userId}`);
         const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
         setComments(data);
-
-        if (!res.ok) {
-          throw new Error(data.message);
-        }
       } catch (error) {
-        console.log(error);
+        console.error('Error fetching comments:', error);
       }
     };
     getComments();
   }, [userId]);
 
-  if (loading) return <Spinner />;
+  if (loading) {
+    return (
+      <div className='min-h-screen flex items-center justify-center'>
+        <Spinner />
+      </div>
+    );
+  }
+
+  const formatDate = (date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    });
+  };
 
   return (
-    <div className='container mx-auto px-4 py-8 max-w-4xl'>
-      <BackButton className='text-white hover:text-gray-200 transition-colors duration-200' />
-      <Card className='bg-white shadow-xl rounded-lg overflow-hidden'>
-        <CardHeader className='bg-gradient-to-r from-primary-500 to-primary-600 text-white p-6'>
-          <Separator className='my-4 opacity-50' />
-          <div className='flex flex-col items-center'>
-            <img
-              src={
-                currentUser.imageUrl ||
-                'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
-              }
-              alt={`${currentUser.username}`}
-              className='w-32 h-32 md:w-48 md:h-48 rounded-full object-cover border-4 border-white shadow-lg'
-            />
-            <h2 className='mt-4 text-3xl md:text-4xl font-bold'>
-              {currentUser.username}
-            </h2>
-            <p className='text-gray-200 mt-2'>{currentUser.bio}</p>
-          </div>
-        </CardHeader>
-        <CardContent className='p-6'>
-          <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-            <div className='flex items-center space-x-3'>
-              <FaEnvelope className='text-gray-500' />
-              <p className='text-gray-700'>{currentUser?.email}</p>
+    <div className='min-h-screen'>
+      <div className='container mx-auto px-4 py-8 max-w-8xl'>
+        <BackButton />
+
+        <Card className='bg-white  shadow-xl rounded-lg overflow-hidden'>
+          <CardHeader className='relative p-0'>
+            {/* Cover Image */}
+            <div className='h-16 bg-gradient-to-r from-purple-300 to-white' />
+
+            {/* Profile Section */}
+            <div className='px-6 pb-6 -mt-24'>
+              <div className='flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-6'>
+                <img
+                  src={currentUser.imageUrl || '/api/placeholder/150/150'}
+                  alt={currentUser.username}
+                  className='w-36 h-36 rounded-full border-4 border-white dark:border-gray-800 shadow-lg object-cover'
+                />
+                <div className='flex-1'>
+                  <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
+                    {currentUser.username}
+                  </h1>
+                  <p className='mt-2 text-gray-600 dark:text-gray-300'>
+                    {currentUser.bio || 'No bio available'}
+                  </p>
+
+                  <div className='mt-4 flex flex-wrap gap-4'>
+                    <div className='flex items-center text-gray-600 dark:text-gray-300'>
+                      <FaEnvelopeOpen className='w-4 h-4 mr-2' />
+                      {currentUser.email}
+                    </div>
+                    <div className='flex items-center text-gray-600 dark:text-gray-300'>
+                      <FaUser className='w-4 h-4 mr-2' />
+                      <Badge variant='secondary'>
+                        {currentUser?.role?.charAt(0).toUpperCase() +
+                          currentUser?.role?.slice(1) || 'User'}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className='flex items-center space-x-3'>
-              <FaUserTag className='text-gray-500' />
-              <p className='text-gray-700'>
-                {currentUser?.role
-                  ? currentUser?.role?.charAt(0).toUpperCase() +
-                    currentUser?.role?.slice(1)
-                  : 'User'}
-              </p>
-            </div>
-          </div>
-          <div className='mt-8'>
-            <Tabs defaultValue='posts' className='w-full'>
-              <TabsList className='flex justify-center mb-6'>
+          </CardHeader>
+
+          <CardContent className='p-6'>
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              className='w-full'
+            >
+              <TabsList className='flex justify-center mb-6  p-1 rounded-lg'>
                 {profileTabs.map((tab) => (
                   <TabsTrigger
-                    key={tab.label}
+                    key={tab.value}
                     value={tab.value}
-                    className='flex items-center px-4 py-2 text-gray-600 font-semibold transition-colors duration-200 hover:text-primary-500'
+                    className='flex items-center px-4 py-2 space-x-2'
                   >
-                    <tab.icon className='mr-2' />
+                    <tab.icon className='w-4 h-4' />
                     <span>{tab.label}</span>
-                    <span className='ml-2 bg-primary-100 text-primary-600 px-2 py-1 rounded-full text-xs'>
+                    <Badge variant='secondary' className='ml-2'>
                       {tab.value === 'posts'
                         ? currentUser?.posts?.length ?? 0
                         : comments?.length ?? 0}
-                    </span>
+                    </Badge>
                   </TabsTrigger>
                 ))}
               </TabsList>
+
               <TabsContent value='posts'>
                 {currentUser?.posts?.length > 0 ? (
-                  <div className='space-y-4'>
-                    {currentUser?.posts?.map((post) => (
-                      <Link to={`/post/${post?._id}`} key={post?._id}>
-                        <Card className='hover:shadow-md transition-shadow duration-200'>
-                          <CardContent className='p-4 flex justify-between items-center'>
-                            <h3 className='text-lg font-semibold text-gray-800'>
-                              {post?.title}
+                  <div className='grid gap-4'>
+                    {currentUser.posts.map((post) => (
+                      <Link to={`/post/${post._id}`} key={post._id}>
+                        <Card className='hover:shadow-lg transition-all duration-200 hover:scale-[1.01]'>
+                          <CardContent className='p-4'>
+                            <h3 className='text-xl font-semibold text-gray-900 dark:text-white'>
+                              {post.title}
                             </h3>
-                            <span className='text-sm text-gray-500'>
-                              {new Date(post?.createdAt).toLocaleString(
-                                'en-US',
-                                {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric',
-                                }
-                              )}
-                            </span>
+                            <div className='mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                              <FaCalendar className='w-4 h-4 mr-2' />
+                              {formatDate(post.createdAt)}
+                            </div>
                           </CardContent>
                         </Card>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <p className='text-center text-gray-500'>
-                    No posts available.
-                  </p>
+                  <div className='text-center py-12'>
+                    <IoMdDocument className='mx-auto h-12 w-12 text-gray-400' />
+                    <p className='mt-2 text-gray-500 dark:text-gray-400'>
+                      No posts available yet.
+                    </p>
+                  </div>
                 )}
               </TabsContent>
+
               <TabsContent value='replies'>
                 {comments?.length > 0 ? (
-                  <div className='space-y-4'>
-                    {comments?.map((comment) => (
-                      <Link
-                        to={`/post/${comment?.parentId}`}
-                        key={comment?._id}
-                      >
-                        <Card className='hover:shadow-md transition-shadow duration-200'>
+                  <div className='grid gap-4'>
+                    {comments.map((comment) => (
+                      <Link to={`/post/${comment.parentId}`} key={comment._id}>
+                        <Card className='hover:shadow-lg transition-all duration-200 hover:scale-[1.01]'>
                           <CardContent className='p-4'>
-                            <p className='text-gray-800'>
-                              {comment?.postContent}
+                            <p className='text-gray-800 dark:text-gray-200'>
+                              {comment.postContent}
                             </p>
-                            <p className='text-sm text-gray-500 mt-2'>
-                              {new Date(comment?.createdAt).toLocaleString(
-                                'en-US',
-                                {
-                                  day: 'numeric',
-                                  month: 'short',
-                                  year: 'numeric',
-                                  hour: 'numeric',
-                                  minute: 'numeric',
-                                }
-                              )}
-                            </p>
+                            <div className='mt-2 flex items-center text-sm text-gray-500 dark:text-gray-400'>
+                              <FaCalendar className='w-4 h-4 mr-2' />
+                              {formatDate(comment.createdAt)}
+                            </div>
                           </CardContent>
                         </Card>
                       </Link>
                     ))}
                   </div>
                 ) : (
-                  <p className='text-center text-gray-500'>
-                    No replies available.
-                  </p>
+                  <div className='text-center py-12'>
+                    <MdChatBubble className='mx-auto h-12 w-12 text-gray-400' />
+                    <p className='mt-2 text-gray-500 dark:text-gray-400'>
+                      No replies available yet.
+                    </p>
+                  </div>
                 )}
               </TabsContent>
             </Tabs>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
