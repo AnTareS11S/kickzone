@@ -71,8 +71,8 @@ const RoleNotificationPage = () => {
   };
 
   return (
-    <div className='min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 sm:p-6 lg:p-8'>
-      <div className='max-w-4xl mx-auto space-y-6'>
+    <div className='min-h-screen p-4 sm:p-6 lg:p-8'>
+      <div className='max-w-8xl mx-auto space-y-6'>
         <div className='flex items-center justify-between'>
           <div>
             <h1 className='text-2xl font-bold text-gray-900 sm:text-3xl'>
