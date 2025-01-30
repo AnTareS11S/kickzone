@@ -46,13 +46,7 @@ const Header = () => {
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [notificationCount, setNotificationCount] = useState(0);
   const [adminNotificationExists, setAdminNotificationExists] = useState(false);
-  const { emit, subscribe, unsubscribe, isConnected } = useSocket();
-
-  useEffect(() => {
-    if (isConnected) {
-      emit('addUser', currentUser?._id);
-    }
-  }, [isConnected, emit, currentUser?._id]);
+  const { subscribe, unsubscribe, isConnected } = useSocket();
 
   useEffect(() => {
     const getAccountId = async () => {
