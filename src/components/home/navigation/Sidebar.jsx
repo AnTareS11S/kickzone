@@ -10,8 +10,9 @@ import {
   FaTrophy,
   FaUsers,
 } from 'react-icons/fa';
-import { useSocket } from '../../hook/useSocket';
+import { useSocket } from '../../../hook/useSocket';
 import { motion } from 'framer-motion';
+import MobileNavigation from './MobileNavigation';
 
 const sidebarLinks = [
   { icon: <FaHome className='w-6 h-6' />, route: '/', label: 'Home' },
@@ -163,6 +164,7 @@ const Sidebar = () => {
     });
 
     subscribe('teamForumNotificationStatusAfterUpdate', (data) => {
+      console.log(data, 'data');
       setUnreadForumNotifications(data.unreadCount);
     });
 
@@ -295,8 +297,6 @@ const Sidebar = () => {
       />
     ));
 
-  const gridColumns = useMemo(() => visibleLinks.length, [visibleLinks]);
-
   return (
     <>
       <aside
@@ -337,11 +337,7 @@ const Sidebar = () => {
         </div>
       </aside>
       {/* Mobile navigation */}
-      <nav className='md:hidden fixed bottom-0 left-0 z-50 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg'>
-        <div className={`p-2 grid grid-cols-${gridColumns} gap-1`}>
-          {renderLinks()}
-        </div>
-      </nav>
+      <MobileNavigation visibleLinks={visibleLinks} renderLinks={renderLinks} />
 
       {/* Spacer div to prevent content from being hidden behind the sidebar */}
       <div className='hidden md:block w-72' />
