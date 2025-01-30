@@ -533,20 +533,24 @@ const Messenger = () => {
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           onFocus={async () => {
-                            await markConversationAsRead(
-                              currentChat._id,
-                              accountId
-                            );
+                            if (currentChat) {
+                              await markConversationAsRead(
+                                currentChat?._id,
+                                accountId
+                              );
 
-                            emit('messagesRead', {
-                              readerId: accountId,
-                              conversationId: currentChat._id,
-                            });
+                              emit('messagesRead', {
+                                readerId: accountId,
+                                conversationId: currentChat._id,
+                              });
 
-                            emit('updateUnreadMessageCount', {
-                              userId: accountId,
-                              count: await fetchInitialMessagesCount(accountId),
-                            });
+                              emit('updateUnreadMessageCount', {
+                                userId: accountId,
+                                count: await fetchInitialMessagesCount(
+                                  accountId
+                                ),
+                              });
+                            }
                           }}
                           className='flex-grow mr-2 p-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-primary-500'
                         />
