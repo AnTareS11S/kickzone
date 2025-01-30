@@ -80,6 +80,7 @@ import TeamForum from './pages/Team/TeamForum';
 import ThreadDetails from './pages/Forum/ThreadDetails';
 import ForumCategoryManage from './pages/ForumCategory/ForumCategoryManage';
 import AdminAlertsProtectedRoute from './pages/Admin/AdminAlertsProtectedRoute';
+import PostProtectedRoute from './pages/Posts/PostProtectedRoute';
 
 const App = () => {
   return (
@@ -96,9 +97,11 @@ const App = () => {
             <Route path='/' element={<Layout />}>
               <Route path='/' element={<Home />} />
               <Route path='*' element={<PageNotFound />} />
-              <Route path='/post/create' element={<PostForm />} />
               <Route path='/post/:id' element={<PostPage />} />
-              <Route path='/post/edit/:id' element={<PostEdit />} />
+              <Route path='/post' element={<PostProtectedRoute />}>
+                <Route path='/post/create' element={<PostForm />} />
+                <Route path='/post/edit/:id' element={<PostEdit />} />
+              </Route>
               <Route path='/post/comment/edit/:id' element={<CommentEdit />} />
               <Route path='/notifications' element={<Notification />} />
               <Route path='/search' element={<Search />} />
