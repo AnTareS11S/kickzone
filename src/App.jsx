@@ -81,6 +81,7 @@ import ThreadDetails from './pages/Forum/ThreadDetails';
 import ForumCategoryManage from './pages/ForumCategory/ForumCategoryManage';
 import AdminAlertsProtectedRoute from './pages/Admin/AdminAlertsProtectedRoute';
 import PostProtectedRoute from './pages/Posts/PostProtectedRoute';
+import TeamProtectedRoute from './pages/Team/TeamProtectedRoute';
 
 const App = () => {
   return (
@@ -114,8 +115,10 @@ const App = () => {
               <Route path='/referee/:id' element={<RefereeDetails />} />
               <Route path='/stadium/:id' element={<StadiumPage />} />
               <Route path='/player/:id' element={<PlayerDetails />} />
-              <Route path='/training' element={<TrainingPage />} />
-              <Route path='/training/:id' element={<TrainingDetails />} />
+              <Route path='/training' element={<TeamProtectedRoute />}>
+                <Route path='/training' element={<TrainingPage />} />
+                <Route path='/training/:id' element={<TrainingDetails />} />
+              </Route>
               <Route path='/results/:id' element={<ResultDetails />} />
               <Route path='/match/:id' element={<MatchOverview />} />
               <Route path='/terms' element={<TermsPage />} />
@@ -123,8 +126,10 @@ const App = () => {
               <Route path='/contact' element={<ContactPage />} />
               <Route path='/about' element={<AboutPage />} />
               <Route path='/explore' element={<ExplorePage />} />
-              <Route path='/forum' element={<TeamForum />} />
-              <Route path='/forum/:id' element={<ThreadDetails />} />
+              <Route path='/forum' element={<TeamProtectedRoute />}>
+                <Route path='/forum' element={<TeamForum />} />
+                <Route path='/forum/:id' element={<ThreadDetails />} />
+              </Route>
               <Route
                 path='/admin-alerts'
                 element={<AdminAlertsProtectedRoute />}
