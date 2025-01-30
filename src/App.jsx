@@ -79,6 +79,7 @@ import PlayerStatistics from './pages/Player/PlayerStatistics';
 import TeamForum from './pages/Team/TeamForum';
 import ThreadDetails from './pages/Forum/ThreadDetails';
 import ForumCategoryManage from './pages/ForumCategory/ForumCategoryManage';
+import AdminAlertsProtectedRoute from './pages/Admin/AdminAlertsProtectedRoute';
 
 const App = () => {
   return (
@@ -121,7 +122,15 @@ const App = () => {
               <Route path='/explore' element={<ExplorePage />} />
               <Route path='/forum' element={<TeamForum />} />
               <Route path='/forum/:id' element={<ThreadDetails />} />
-              <Route path='/admin-alerts' element={<RoleNotificationPage />} />
+              <Route
+                path='/admin-alerts'
+                element={<AdminAlertsProtectedRoute />}
+              >
+                <Route
+                  path='/admin-alerts'
+                  element={<RoleNotificationPage />}
+                />
+              </Route>
 
               {/* Referee routes */}
               <Route path='/dashboard/referee' element={<RefereeRoute />}>
