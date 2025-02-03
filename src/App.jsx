@@ -82,8 +82,8 @@ import ForumCategoryManage from './pages/ForumCategory/ForumCategoryManage';
 import AdminAlertsProtectedRoute from './pages/Admin/AdminAlertsProtectedRoute';
 import PostProtectedRoute from './pages/Posts/PostProtectedRoute';
 import TeamProtectedRoute from './pages/Team/TeamProtectedRoute';
-
 import RoleChanges from './pages/Admin/RoleChanges';
+import ReportsManagement from './pages/Report/ReportsManagement';
 
 const App = () => {
   return (
@@ -242,7 +242,7 @@ const App = () => {
                 />
                 <Route
                   path='/dashboard/admin/reports'
-                  element={<AboutManage />}
+                  element={<ReportsManagement />}
                 />
               </Route>
 
