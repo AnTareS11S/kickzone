@@ -17,7 +17,6 @@ const CrudPanel = ({
   onDeleteComponent: DeleteComponent,
   onAddTeamComponent: AddTeamComponent,
   onRemoveTeamComponent: RemoveTeamComponent,
-  onSetRoleComponent: SetRoleComponent,
   onSendMessageComponent: SendMessageComponent,
   defaultValues,
   formSchema,
@@ -182,12 +181,6 @@ const CrudPanel = ({
                     <RemoveTeamComponent
                       row={row}
                       teams={teams}
-                      onEntityUpdated={handleEntityUpdated}
-                    />
-                  )}
-                  {SetRoleComponent && (
-                    <SetRoleComponent
-                      row={row}
                       onEntityUpdated={handleEntityUpdated}
                     />
                   )}
