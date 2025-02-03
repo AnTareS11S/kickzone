@@ -14,6 +14,7 @@ import { GetUserById } from '../../api/getUserById';
 import { Badge } from '../../components/ui/badge';
 import { MdChatBubble } from 'react-icons/md';
 import { IoMdDocument } from 'react-icons/io';
+import ReportModal from '../Report/ReportModal';
 
 const profileTabs = [
   { value: 'posts', label: 'Posts', icon: IoMdDocument },
@@ -22,7 +23,7 @@ const profileTabs = [
 
 const HomeProfile = () => {
   const { id: userId } = useParams();
-  const { user: currentUser, loading } = GetUserById(null, userId);
+  const { user, currentUser, loading } = GetUserById(null, userId);
   const [comments, setComments] = useState([]);
   const [activeTab, setActiveTab] = useState('posts');
 
@@ -72,30 +73,38 @@ const HomeProfile = () => {
             <div className='px-6 pb-6 -mt-24'>
               <div className='flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-6'>
                 <img
-                  src={currentUser.imageUrl || '/api/placeholder/150/150'}
-                  alt={currentUser.username}
+                  src={user.imageUrl || '/api/placeholder/150/150'}
+                  alt={user.username}
                   className='w-36 h-36 rounded-full border-4 border-white dark:border-gray-800 shadow-lg object-cover'
                 />
                 <div className='flex-1'>
                   <h1 className='text-3xl font-bold text-gray-900 dark:text-white'>
-                    {currentUser.username}
+                    {user.username}
                   </h1>
                   <p className='mt-2 text-gray-600 dark:text-gray-300'>
-                    {currentUser.bio || 'No bio available'}
+                    {user.bio || 'No bio available'}
                   </p>
 
                   <div className='mt-4 flex flex-wrap gap-4'>
                     <div className='flex items-center text-gray-600 dark:text-gray-300'>
                       <FaEnvelopeOpen className='w-4 h-4 mr-2' />
-                      {currentUser.email}
+                      {user.email}
                     </div>
                     <div className='flex items-center text-gray-600 dark:text-gray-300'>
                       <FaUser className='w-4 h-4 mr-2' />
                       <Badge variant='secondary'>
-                        {currentUser?.role?.charAt(0).toUpperCase() +
-                          currentUser?.role?.slice(1) || 'User'}
+                        {user?.role?.charAt(0).toUpperCase() +
+                          user?.role?.slice(1) || 'User'}
                       </Badge>
                     </div>
+                    {user && currentUser?._id !== userId && (
+                      <ReportModal
+                        currentUserId={currentUser?._id}
+                        reportedUserId={userId}
+                        contentType={'user'}
+                        contentId={userId}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -119,7 +128,7 @@ const HomeProfile = () => {
                     <span>{tab.label}</span>
                     <Badge variant='secondary' className='ml-2'>
                       {tab.value === 'posts'
-                        ? currentUser?.posts?.length ?? 0
+                        ? user?.posts?.length ?? 0
                         : comments?.length ?? 0}
                     </Badge>
                   </TabsTrigger>
@@ -127,9 +136,9 @@ const HomeProfile = () => {
               </TabsList>
 
               <TabsContent value='posts'>
-                {currentUser?.posts?.length > 0 ? (
+                {user?.posts?.length > 0 ? (
                   <div className='grid gap-4'>
-                    {currentUser.posts.map((post) => (
+                    {user.posts.map((post) => (
                       <Link to={`/post/${post._id}`} key={post._id}>
                         <Card className='hover:shadow-lg transition-all duration-200 hover:scale-[1.01]'>
                           <CardContent className='p-4'>
