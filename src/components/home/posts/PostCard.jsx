@@ -5,6 +5,7 @@ import { FaHeart, FaRegHeart, FaComment, FaEllipsisV } from 'react-icons/fa';
 import DeletePost from './DeletePost';
 import BackButton from '../../BackButton';
 import { useSocket } from '../../../hook/useSocket';
+import ReportModal from '../../../pages/Report/ReportModal';
 
 const CONTENT_TRUNCATE_LENGTH = 100;
 const LIKE_THROTTLE_DELAY = 300;
@@ -207,6 +208,14 @@ const PostCard = ({
           <FaComment />
           <span>{comments?.length || 0}</span>
         </Link>
+        {currentUserId && currentUserId !== author?._id && (
+          <ReportModal
+            currentUserId={currentUserId}
+            reportedUserId={author?._id}
+            contentType={isComment ? 'comment' : 'post'}
+            contentId={id}
+          />
+        )}
       </div>
       {currentUserId === author?._id && (
         <div className='relative'>
@@ -267,6 +276,7 @@ const PostCard = ({
               <div className='absolute inset-0 bg-gradient-to-t from-black/60 to-transparent' />
             </div>
           )}
+
           <div className='flex-1 p-4 flex flex-col justify-between'>
             {renderPostHeader()}
             {renderPostContent()}
