@@ -212,7 +212,7 @@ const PostCard = ({
           <ReportModal
             currentUserId={currentUserId}
             reportedUserId={author?._id}
-            contentType={isComment ? 'comment' : 'post'}
+            contentType={isComment ? 'Comment' : 'Post'}
             contentId={id}
           />
         )}

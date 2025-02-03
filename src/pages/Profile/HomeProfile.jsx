@@ -101,7 +101,7 @@ const HomeProfile = () => {
                       <ReportModal
                         currentUserId={currentUser?._id}
                         reportedUserId={userId}
-                        contentType={'user'}
+                        contentType={'Profile'}
                         contentId={userId}
                       />
                     )}
