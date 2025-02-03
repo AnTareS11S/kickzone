@@ -23,6 +23,11 @@ const AdminDashboard = () => {
 
       {user.isProfileFilled ? (
         <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6'>
+          <AdminCard
+            title='Role Changes'
+            linkTo='/dashboard/admin/role-changes'
+          />
+          <AdminCard title='Reports' linkTo='/dashboard/admin/reports' />
           <AdminCard title='Users' linkTo='/dashboard/admin/users' />
           <AdminCard title='Players' linkTo='/dashboard/admin/players' />
           <AdminCard title='Coaches' linkTo='/dashboard/admin/coaches' />
