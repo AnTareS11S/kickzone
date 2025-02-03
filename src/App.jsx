@@ -82,7 +82,8 @@ import ForumCategoryManage from './pages/ForumCategory/ForumCategoryManage';
 import AdminAlertsProtectedRoute from './pages/Admin/AdminAlertsProtectedRoute';
 import PostProtectedRoute from './pages/Posts/PostProtectedRoute';
 import TeamProtectedRoute from './pages/Team/TeamProtectedRoute';
-import AdminNotifications from './pages/Admin/AdminNotifications';
+
+import RoleChanges from './pages/Admin/RoleChanges';
 
 const App = () => {
   return (
@@ -138,12 +139,6 @@ const App = () => {
                 <Route
                   path='/admin-alerts'
                   element={<RoleNotificationPage />}
-                />
-              </Route>
-              <Route path='/admin-notifications' element={<AdminRoute />}>
-                <Route
-                  path='/admin-notifications'
-                  element={<AdminNotifications />}
                 />
               </Route>
 
@@ -240,6 +235,14 @@ const App = () => {
                 <Route
                   path='/dashboard/admin/forum-category'
                   element={<ForumCategoryManage />}
+                />
+                <Route
+                  path='/dashboard/admin/role-changes'
+                  element={<RoleChanges />}
+                />
+                <Route
+                  path='/dashboard/admin/reports'
+                  element={<AboutManage />}
                 />
               </Route>
 
