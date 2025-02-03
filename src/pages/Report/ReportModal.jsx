@@ -21,15 +21,15 @@ import {
 } from '../../components/ui/select';
 
 const REPORT_REASONS = {
-  inappropriate_content: 'Inappropriate Content',
-  harassment: 'Harassment',
-  spam: 'Spam',
-  misinformation: 'Misinformation',
-  hate_speech: 'Hate Speech',
-  violence: 'Violence',
-  copyright_infringement: 'Copyright Infringement',
-  impersonation: 'Impersonation',
-  other: 'Other',
+  Inappropriate_content: 'Inappropriate Content',
+  Harassment: 'Harassment',
+  Spam: 'Spam',
+  Misinformation: 'Misinformation',
+  Hate_speech: 'Hate Speech',
+  Violence: 'Violence',
+  Copyright_infringement: 'Copyright Infringement',
+  Impersonation: 'Impersonation',
+  Other: 'Other',
 };
 
 const ReportModal = ({
@@ -51,7 +51,7 @@ const ReportModal = ({
     }
 
     try {
-      const res = await fetch('/api/reports', {
+      const res = await fetch('/api/admin/add-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
