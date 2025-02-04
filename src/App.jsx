@@ -84,6 +84,8 @@ import PostProtectedRoute from './pages/Posts/PostProtectedRoute';
 import TeamProtectedRoute from './pages/Team/TeamProtectedRoute';
 import RoleChanges from './pages/Admin/RoleChanges';
 import ReportsManagement from './pages/Report/ReportsManagement';
+import UserBanManagement from './pages/User/UsersBanManagement';
+import ContentManagement from './pages/Admin/ContentManagement';
 
 const App = () => {
   return (
@@ -243,6 +245,14 @@ const App = () => {
                 <Route
                   path='/dashboard/admin/reports'
                   element={<ReportsManagement />}
+                />
+                <Route
+                  path='/dashboard/admin/user-management'
+                  element={<UserBanManagement />}
+                />
+                <Route
+                  path='/dashboard/admin/content-management'
+                  element={<ContentManagement />}
                 />
               </Route>
 
