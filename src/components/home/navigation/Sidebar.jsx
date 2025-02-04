@@ -61,7 +61,7 @@ const sidebarLinks = [
 
 // eslint-disable-next-line react/display-name
 const SidebarLink = memo(
-  ({ link, isActive, isTrainingNotif, isForumNotif }) => (
+  ({ link, isActive, isTrainingNotif, isForumNotif, isAdminNotif }) => (
     <Link
       to={link.route}
       className={`group relative flex items-center
@@ -96,7 +96,7 @@ const SidebarLink = memo(
         {link.label}
       </span>
 
-      {(isTrainingNotif || isForumNotif) && (
+      {(isTrainingNotif || isForumNotif || isAdminNotif) && (
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -130,6 +130,7 @@ const Sidebar = () => {
   const currentYear = new Date().getFullYear();
   const [trainingNotifications, setTrainingNotifications] = useState(0);
   const [unreadForumNotifications, setUnreadForumNotifications] = useState(0);
+  const [adminNotfication, setAdminNotification] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const { subscribe, isConnected, unsubscribe } = useSocket();
 
@@ -239,6 +240,21 @@ const Sidebar = () => {
     getTeamForumNotifications();
   }, [currentUser?._id, currentUser?.role]);
 
+  useEffect(() => {
+    if (!currentUser?._id || currentUser?.role !== 'Admin') return;
+    const getAdminNotifications = async () => {
+      try {
+        const res = await fetch('/api/admin/notifications-count');
+        const data = await res.json();
+        setAdminNotification(data.notificationsCount + data.reportsCount);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    getAdminNotifications();
+  }, [currentUser?._id, currentUser?.role]);
+
   const isAdminOrCoachOrReferee = ['Admin', 'Coach', 'Referee'].includes(
     currentUser?.role
   );
@@ -294,6 +310,7 @@ const Sidebar = () => {
           link.route === '/training' && trainingNotifications > 0
         }
         isForumNotif={link.route === '/forum' && unreadForumNotifications > 0}
+        isAdminNotif={link.route === '/dashboard/admin' && adminNotfication > 0}
       />
     ));
 
