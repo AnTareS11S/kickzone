@@ -89,7 +89,6 @@ const ReportsManagement = () => {
         );
         setIsDetailsDialogOpen(false);
         setSelectedReport(null);
-        setAdminNote('');
       }
     } catch (error) {
       console.error('Failed to update report:', error);
@@ -202,69 +201,71 @@ const ReportsManagement = () => {
               Report Details
             </DialogTitle>
           </DialogHeader>
-          <DialogDescription>
-            {selectedReport?.contentId && (
-              <div>
-                <strong>Content ID:</strong>{' '}
-                <Link to={`/post/${selectedReport.contentId}`}>
-                  {selectedReport.contentType}
-                </Link>
-              </div>
-            )}
-          </DialogDescription>
+          <DialogDescription></DialogDescription>
 
           {selectedReport && (
-            <div className='space-y-4'>
-              <div>
-                <strong>Reported By:</strong>{' '}
-                <Link to={`/profile/${selectedReport.reportedBy._id}`}>
-                  {selectedReport.reportedBy.username}
-                </Link>
-              </div>
-              <div>
-                <strong>Reported User:</strong>{' '}
-                <Link to={`/profile/${selectedReport.reportedUser._id}`}>
-                  {selectedReport.reportedUser.username}
-                </Link>
-              </div>
-              <div>
-                <strong>Content Type:</strong> {selectedReport.contentType}
-              </div>
-              <div>
-                <strong>Reason:</strong> {selectedReport.reason}
-              </div>
-              <div>
-                <strong>Description:</strong> {selectedReport.description}
-              </div>
+            <>
+              <div className='space-y-4'>
+                {selectedReport.contentId && (
+                  <div>
+                    <strong>Content ID:</strong>{' '}
+                    <Link to={`/post/${selectedReport.contentId}`}>
+                      {selectedReport.contentType}
+                    </Link>
+                  </div>
+                )}
 
-              <Textarea
-                placeholder='Add admin notes...'
-                value={adminNote || selectedReport?.adminNotes || ''}
-                onChange={(e) => setAdminNote(e.target.value)}
-                className='w-full'
-              />
+                <div>
+                  <strong>Reported By:</strong>{' '}
+                  <Link to={`/profile/${selectedReport.reportedBy._id}`}>
+                    {selectedReport.reportedBy.username}
+                  </Link>
+                </div>
+                <div>
+                  <strong>Reported User:</strong>{' '}
+                  <Link to={`/profile/${selectedReport.reportedUser._id}`}>
+                    {selectedReport.reportedUser.username}
+                  </Link>
+                </div>
+                <div>
+                  <strong>Content Type:</strong> {selectedReport.contentType}
+                </div>
+                <div>
+                  <strong>Reason:</strong> {selectedReport.reason}
+                </div>
+                <div>
+                  <strong>Description:</strong> {selectedReport.description}
+                </div>
 
-              <div className='flex justify-between space-x-2'>
-                <Button
-                  variant='outline'
-                  onClick={() => handleReportAction('under_review')}
-                >
-                  Start Review
-                </Button>
-                <Button
-                  variant='destructive'
-                  onClick={() => handleReportAction('resolved')}
-                >
-                  Take Action
-                </Button>
-                <Button
-                  variant='secondary'
-                  onClick={() => handleReportAction('dismissed')}
-                >
-                  Dismiss Report
-                </Button>
+                <Textarea
+                  placeholder='Add admin notes...'
+                  value={adminNote || selectedReport?.adminNotes || ''}
+                  onChange={(e) => setAdminNote(e.target.value)}
+                  className='w-full'
+                />
+
+                <div className='flex justify-between space-x-2'>
+                  <Button
+                    variant='outline'
+                    onClick={() => handleReportAction('under_review')}
+                  >
+                    Start Review
+                  </Button>
+                  <Button
+                    variant='destructive'
+                    onClick={() => handleReportAction('resolved')}
+                  >
+                    Take Action
+                  </Button>
+                  <Button
+                    variant='secondary'
+                    onClick={() => handleReportAction('dismissed')}
+                  >
+                    Dismiss Report
+                  </Button>
+                </div>
               </div>
-            </div>
+            </>
           )}
         </DialogContent>
       </Dialog>
