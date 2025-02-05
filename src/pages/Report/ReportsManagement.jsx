@@ -187,38 +187,45 @@ const ReportsManagement = () => {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      {report.actionTaken === 'User_banned' ? (
-                        <span className='text-red-500'>User Banned</span>
-                      ) : (
-                        <Link
-                          to={`/profile/${report.reportedUser._id}`}
-                          className='text-blue-600 hover:text-blue-800'
-                        >
-                          {report.reportedUser.username}
-                        </Link>
-                      )}
+                      <Link
+                        to={`/profile/${report.reportedUser._id}`}
+                        className='text-blue-600 hover:text-blue-800'
+                      >
+                        {report.reportedUser.username}
+                      </Link>
                     </TableCell>
                     <TableCell>
-                      {report.actionTaken === 'Content_removed' ? (
-                        <span className='text-red-500'>Content Removed</span>
-                      ) : (
-                        <Link
-                          to={`${
-                            (
-                              report.contentType === 'Post'
-                                ? '/post'
-                                : '/comment'
-                            )
-                              ? report.contentType === 'Profile'
-                                ? '/profile'
-                                : '/league/team'
-                              : ''
-                          }/${report.contentId}`}
-                          className='text-blue-600 hover:text-blue-800'
-                        >
-                          {report.contentType}
-                        </Link>
-                      )}
+                      {(() => {
+                        switch (report.actionTaken) {
+                          case 'Content_removed':
+                            return (
+                              <span className='text-red-500'>
+                                Content Removed
+                              </span>
+                            );
+                          case 'User_banned':
+                            return (
+                              <span className='text-red-500'>User Banned</span>
+                            );
+                          default:
+                            return (
+                              <Link
+                                to={`${
+                                  report.contentType === 'Post'
+                                    ? '/post'
+                                    : report.contentType === 'Comment'
+                                    ? '/comment'
+                                    : report.contentType === 'Profile'
+                                    ? '/profile'
+                                    : ''
+                                }/${report.contentId}`}
+                                className='text-blue-600 hover:text-blue-800'
+                              >
+                                {report.contentType}
+                              </Link>
+                            );
+                        }
+                      })()}
                     </TableCell>
                     <TableCell className='max-w-xs truncate'>
                       {report.reason}
@@ -320,34 +327,37 @@ const ReportsManagement = () => {
                     <FaFileAlt className='text-gray-400' />
                     <div>
                       <p className='text-sm text-gray-500'>Content Type</p>
-                      {selectedReport.actionTaken === 'Content_removed' ? (
-                        <span className='text-red-500'>Content Removed</span>
-                      ) : (
-                        <Link
-                          to={`${
-                            (
-                              selectedReport.contentType === 'Post'
-                                ? '/post'
-                                : '/comment'
-                            )
-                              ? selectedReport.contentType === 'Profile'
-                                ? '/profile'
-                                : '/league/team'
-                              : ''
-                          }/${selectedReport.contentId}`}
-                          className='text-blue-600 hover:text-blue-800'
-                        >
-                          {(
-                            selectedReport.actionTaken === 'Content_removed'
-                              ? 'Content Removed'
-                              : selectedReport.contentType
-                          )
-                            ? selectedReport.actionTaken === 'User_banned'
-                              ? 'User Banned'
-                              : selectedReport.contentType
-                            : ''}
-                        </Link>
-                      )}
+                      {(() => {
+                        switch (selectedReport.actionTaken) {
+                          case 'Content_removed':
+                            return (
+                              <span className='text-red-500'>
+                                Content Removed
+                              </span>
+                            );
+                          case 'User_banned':
+                            return (
+                              <span className='text-red-500'>User Banned</span>
+                            );
+                          default:
+                            return (
+                              <Link
+                                to={`${
+                                  selectedReport.contentType === 'Post'
+                                    ? '/post'
+                                    : selectedReport.contentType === 'Comment'
+                                    ? '/comment'
+                                    : selectedReport.contentType === 'Profile'
+                                    ? '/profile'
+                                    : ''
+                                }/${selectedReport.contentId}`}
+                                className='text-blue-600 hover:text-blue-800'
+                              >
+                                {selectedReport.contentType}
+                              </Link>
+                            );
+                        }
+                      })()}
                     </div>
                   </div>
 
