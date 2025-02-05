@@ -187,12 +187,16 @@ const ReportsManagement = () => {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Link
-                        to={`/profile/${report.reportedUser._id}`}
-                        className='text-blue-600 hover:text-blue-800'
-                      >
-                        {report.reportedUser.username}
-                      </Link>
+                      {report.actionTaken === 'User_banned' ? (
+                        <span className='text-red-500'>User Banned</span>
+                      ) : (
+                        <Link
+                          to={`/profile/${report.reportedUser._id}`}
+                          className='text-blue-600 hover:text-blue-800'
+                        >
+                          {report.reportedUser.username}
+                        </Link>
+                      )}
                     </TableCell>
                     <TableCell>
                       {report.actionTaken === 'Content_removed' ? (
@@ -200,7 +204,15 @@ const ReportsManagement = () => {
                       ) : (
                         <Link
                           to={`${
-                            report.contentType === 'Post' ? '/post' : '/comment'
+                            (
+                              report.contentType === 'Post'
+                                ? '/post'
+                                : '/comment'
+                            )
+                              ? report.contentType === 'Profile'
+                                ? '/profile'
+                                : '/league/team'
+                              : ''
                           }/${report.contentId}`}
                           className='text-blue-600 hover:text-blue-800'
                         >
@@ -313,15 +325,27 @@ const ReportsManagement = () => {
                       ) : (
                         <Link
                           to={`${
-                            selectedReport.contentType === 'Post'
-                              ? '/post'
-                              : '/comment'
+                            (
+                              selectedReport.contentType === 'Post'
+                                ? '/post'
+                                : '/comment'
+                            )
+                              ? selectedReport.contentType === 'Profile'
+                                ? '/profile'
+                                : '/league/team'
+                              : ''
                           }/${selectedReport.contentId}`}
                           className='text-blue-600 hover:text-blue-800'
                         >
-                          {selectedReport.actionTaken === 'Content_removed'
-                            ? 'Content Removed'
-                            : selectedReport.contentType}
+                          {(
+                            selectedReport.actionTaken === 'Content_removed'
+                              ? 'Content Removed'
+                              : selectedReport.contentType
+                          )
+                            ? selectedReport.actionTaken === 'User_banned'
+                              ? 'User Banned'
+                              : selectedReport.contentType
+                            : ''}
                         </Link>
                       )}
                     </div>
@@ -366,7 +390,8 @@ const ReportsManagement = () => {
                       onClick={navigateToContentManagement}
                       className='flex items-center justify-center gap-2'
                       disabled={
-                        selectedReport.actionTaken === 'Content_removed'
+                        selectedReport.actionTaken === 'Content_removed' ||
+                        selectedReport.contentType === 'Profile'
                       }
                     >
                       <FaTrash />
@@ -378,7 +403,7 @@ const ReportsManagement = () => {
                     variant='destructive'
                     onClick={navigateToUserManagement}
                     className='flex items-center justify-center gap-2'
-                    disabled={selectedReport.actionTaken === 'User_suspended'}
+                    disabled={selectedReport.actionTaken === 'User_banned'}
                   >
                     <FaBan />
                     Manage User
