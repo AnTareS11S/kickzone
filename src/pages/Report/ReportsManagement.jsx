@@ -29,17 +29,29 @@ import {
   DialogTitle,
 } from '../../components/ui/dialog';
 import { Textarea } from '../../components/ui/textarea';
-import { Link } from 'react-router-dom';
+import { Separator } from '../../components/ui/separator';
+import { Link, useNavigate } from 'react-router-dom';
 import BackButton from '../../components/BackButton';
+import {
+  FaBan,
+  FaExclamationTriangle,
+  FaTrash,
+  FaUser,
+  FaFileAlt,
+  FaTag,
+  FaInfoCircle,
+} from 'react-icons/fa';
+import { ReportCard } from '../../components/report/ReportCard';
+import { getStatusBadge } from '../../lib/utils.jsx';
 
 const ReportsManagement = () => {
+  const navigate = useNavigate();
   const [reports, setReports] = useState([]);
   const [selectedReport, setSelectedReport] = useState(null);
   const [filterStatus, setFilterStatus] = useState('all');
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [adminNote, setAdminNote] = useState('');
 
-  // Fetch reports from API
   useEffect(() => {
     const fetchReports = async () => {
       try {
@@ -53,13 +65,11 @@ const ReportsManagement = () => {
     fetchReports();
   }, []);
 
-  // Filter reports based on status
   const filteredReports =
     filterStatus === 'all'
       ? reports
       : reports.filter((report) => report.status === filterStatus);
 
-  // Handle report actions
   const handleReportAction = async (action) => {
     if (!selectedReport) return;
 
@@ -80,7 +90,6 @@ const ReportsManagement = () => {
       });
 
       if (response.ok) {
-        // Update local state
         setReports(
           reports.map((report) =>
             report._id === selectedReport._id
@@ -96,21 +105,41 @@ const ReportsManagement = () => {
     }
   };
 
-  // Open details dialog
-  const openReportDetails = (report) => {
-    setSelectedReport(report);
-    setIsDetailsDialogOpen(true);
+  const navigateToContentManagement = () => {
+    if (selectedReport?.contentType && selectedReport?.contentId) {
+      navigate('/dashboard/admin/content-management', {
+        state: {
+          contentType: selectedReport.contentType,
+          contentId: selectedReport.contentId,
+          reportId: selectedReport._id,
+        },
+      });
+    }
+  };
+
+  const navigateToUserManagement = () => {
+    if (selectedReport?.reportedUser?._id) {
+      navigate('/dashboard/admin/user-management', {
+        state: {
+          userId: selectedReport.reportedUser._id,
+          username: selectedReport.reportedUser.username,
+          reportId: selectedReport._id,
+        },
+      });
+    }
   };
 
   return (
-    <>
-      <BackButton />
-      <Card className='w-full'>
-        <CardHeader>
-          <CardTitle>Reports Management</CardTitle>
-          <div className='flex items-center space-x-4'>
-            <Select onValueChange={setFilterStatus}>
-              <SelectTrigger className='w-[180px]'>
+    <div className='p-4 max-w-8xl mx-auto'>
+      <BackButton className='mb-4' />
+      <Card className='w-full shadow-lg'>
+        <CardHeader className='bg-gray-50'>
+          <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4'>
+            <CardTitle className='text-2xl font-bold'>
+              Reports Management
+            </CardTitle>
+            <Select onValueChange={setFilterStatus} value={filterStatus}>
+              <SelectTrigger className='w-full md:w-[200px]'>
                 <SelectValue placeholder='Filter by Status' />
               </SelectTrigger>
               <SelectContent>
@@ -124,156 +153,251 @@ const ReportsManagement = () => {
           </div>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Reported By</TableHead>
-                <TableHead>Reported User</TableHead>
-                <TableHead>Content Type</TableHead>
-                <TableHead>Reason</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredReports?.map((report) => (
-                <TableRow key={report._id}>
-                  <TableCell>
-                    <Link to={`/profile/${report.reportedBy._id}`}>
-                      {report.reportedBy.username}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link to={`/profile/${report.reportedUser._id}`}>
-                      {report.reportedUser.username}
-                    </Link>
-                  </TableCell>
-                  <TableCell>{report.contentType}</TableCell>
-                  <TableCell>{report.reason}</TableCell>
-                  <TableCell>
-                    <span
-                      className={`
-                    px-2 py-1 rounded 
-                    ${
-                      report.status === 'pending'
-                        ? 'bg-yellow-100 text-yellow-800'
-                        : report.status === 'resolved'
-                        ? 'bg-green-100 text-green-800'
-                        : report.status === 'dismissed'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-blue-100 text-blue-800'
-                    }
-                  `}
-                    >
-                      {report.status}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant='outline'
-                      size='sm'
-                      onClick={() => openReportDetails(report)}
-                    >
-                      View Details
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filteredReports?.length === 0 && (
+          {/* Desktop View */}
+          <div className='hidden md:block overflow-x-auto'>
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    colSpan={5}
-                    className='text-center pt-10 text-gray-500'
-                  >
-                    No reports found
-                  </TableCell>
+                  <TableHead className='font-semibold'>Reported By</TableHead>
+                  <TableHead className='font-semibold'>Reported User</TableHead>
+                  <TableHead className='font-semibold'>Content Type</TableHead>
+                  <TableHead className='font-semibold'>Reason</TableHead>
+                  <TableHead className='font-semibold'>Status</TableHead>
+                  <TableHead className='font-semibold'>Actions</TableHead>
                 </TableRow>
-              )}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {filteredReports?.map((report) => (
+                  <TableRow key={report._id} className='hover:bg-gray-50'>
+                    <TableCell>
+                      <Link
+                        to={`/profile/${report.reportedBy._id}`}
+                        className='text-blue-600 hover:text-blue-800'
+                      >
+                        {report.reportedBy.username}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        to={`/profile/${report.reportedUser._id}`}
+                        className='text-blue-600 hover:text-blue-800'
+                      >
+                        {report.reportedUser.username}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link
+                        to={`${
+                          report.contentType === 'Post' ? '/post' : '/comment'
+                        }/${report.contentId}`}
+                        className='text-blue-600 hover:text-blue-800'
+                      >
+                        {report.contentType}
+                      </Link>
+                    </TableCell>
+                    <TableCell className='max-w-xs truncate'>
+                      {report.reason}
+                    </TableCell>
+                    <TableCell>{getStatusBadge(report.status)}</TableCell>
+                    <TableCell>
+                      <Button
+                        variant='outline'
+                        size='sm'
+                        onClick={() => {
+                          setSelectedReport(report);
+                          setIsDetailsDialogOpen(true);
+                        }}
+                        className='hover:bg-gray-100'
+                      >
+                        View Details
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {filteredReports?.length === 0 && (
+                  <TableRow>
+                    <TableCell colSpan={6} className='text-center py-8'>
+                      <div className='flex flex-col items-center text-gray-500'>
+                        <FaInfoCircle size={24} className='mb-2' />
+                        <p>No reports found</p>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          {/* Mobile View */}
+          <div className='md:hidden'>
+            {filteredReports?.length > 0 ? (
+              filteredReports.map((report) => (
+                <ReportCard
+                  key={report._id}
+                  report={report}
+                  setSelectedReport={setSelectedReport}
+                  setIsDetailsDialogOpen={setIsDetailsDialogOpen}
+                />
+              ))
+            ) : (
+              <div className='text-center py-8'>
+                <div className='flex flex-col items-center text-gray-500'>
+                  <FaInfoCircle size={24} className='mb-2' />
+                  <p>No reports found</p>
+                </div>
+              </div>
+            )}
+          </div>
         </CardContent>
+      </Card>
 
-        {/* Report Details Dialog */}
-        <Dialog
-          open={isDetailsDialogOpen}
-          onOpenChange={() => setIsDetailsDialogOpen(false)}
-        >
-          <DialogContent className='sm:max-w-[600px]'>
-            <DialogHeader>
-              <DialogTitle className='text-body-medium'>
-                Report Details
-              </DialogTitle>
-            </DialogHeader>
-            <DialogDescription></DialogDescription>
+      <Dialog open={isDetailsDialogOpen} onOpenChange={setIsDetailsDialogOpen}>
+        <DialogContent className='sm:max-w-[700px] sm:max-h-[70vh] max-sm:h-[70vh] lg:max-h-[85vh] overflow-scroll '>
+          <DialogHeader>
+            <DialogTitle className='text-2xl font-bold mb-4'>
+              Report Details
+            </DialogTitle>
+          </DialogHeader>
+          <DialogDescription></DialogDescription>
 
-            {selectedReport && (
-              <>
+          {selectedReport && (
+            <div className='space-y-6'>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
                 <div className='space-y-4'>
-                  {selectedReport.contentId && (
+                  <div className='flex items-center gap-2'>
+                    <FaUser className='text-gray-400' />
                     <div>
-                      <strong>Content ID:</strong>{' '}
-                      <Link to={`/post/${selectedReport.contentId}`}>
+                      <p className='text-sm text-gray-500'>Reported By</p>
+                      <Link
+                        to={`/profile/${selectedReport.reportedBy._id}`}
+                        className='text-blue-600 hover:text-blue-800'
+                      >
+                        {selectedReport.reportedBy.username}
+                      </Link>
+                    </div>
+                  </div>
+
+                  <div className='flex items-center gap-2'>
+                    <FaUser className='text-gray-400' />
+                    <div>
+                      <p className='text-sm text-gray-500'>Reported User</p>
+                      <Link
+                        to={`/profile/${selectedReport.reportedUser._id}`}
+                        className='text-blue-600 hover:text-blue-800'
+                      >
+                        {selectedReport.reportedUser.username}
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+
+                <div className='space-y-4'>
+                  <div className='flex items-center gap-2'>
+                    <FaFileAlt className='text-gray-400' />
+                    <div>
+                      <p className='text-sm text-gray-500'>Content Type</p>
+                      <Link
+                        to={`${
+                          selectedReport.contentType === 'Post'
+                            ? '/post'
+                            : '/comment'
+                        }/${selectedReport.contentId}`}
+                        className='text-blue-600 hover:text-blue-800'
+                      >
                         {selectedReport.contentType}
                       </Link>
                     </div>
-                  )}
-
-                  <div>
-                    <strong>Reported By:</strong>{' '}
-                    <Link to={`/profile/${selectedReport.reportedBy._id}`}>
-                      {selectedReport.reportedBy.username}
-                    </Link>
-                  </div>
-                  <div>
-                    <strong>Reported User:</strong>{' '}
-                    <Link to={`/profile/${selectedReport.reportedUser._id}`}>
-                      {selectedReport.reportedUser.username}
-                    </Link>
-                  </div>
-                  <div>
-                    <strong>Content Type:</strong> {selectedReport.contentType}
-                  </div>
-                  <div>
-                    <strong>Reason:</strong> {selectedReport.reason}
-                  </div>
-                  <div>
-                    <strong>Description:</strong> {selectedReport.description}
                   </div>
 
-                  <Textarea
-                    placeholder='Add admin notes...'
-                    value={adminNote || selectedReport?.adminNotes || ''}
-                    onChange={(e) => setAdminNote(e.target.value)}
-                    className='w-full'
-                  />
-
-                  <div className='flex justify-between space-x-2'>
-                    <Button
-                      variant='outline'
-                      onClick={() => handleReportAction('under_review')}
-                    >
-                      Start Review
-                    </Button>
-                    <Button
-                      variant='destructive'
-                      onClick={() => handleReportAction('resolved')}
-                    >
-                      Take Action
-                    </Button>
-                    <Button
-                      variant='secondary'
-                      onClick={() => handleReportAction('dismissed')}
-                    >
-                      Dismiss Report
-                    </Button>
+                  <div className='flex items-center gap-2'>
+                    <FaTag className='text-gray-400' />
+                    <div>
+                      <p className='text-sm text-gray-500'>Status</p>
+                      {getStatusBadge(selectedReport.status)}
+                    </div>
                   </div>
                 </div>
-              </>
-            )}
-          </DialogContent>
-        </Dialog>
-      </Card>
-    </>
+              </div>
+
+              <Separator />
+
+              <div className='space-y-4'>
+                <div>
+                  <h3 className='font-semibold mb-2'>Reason</h3>
+                  <p className='text-gray-700'>{selectedReport.reason}</p>
+                </div>
+
+                <div>
+                  <h3 className='font-semibold mb-2'>Description</h3>
+                  <p className='text-gray-700'>{selectedReport.description}</p>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div className='space-y-4'>
+                <h3 className='font-semibold flex items-center gap-2'>
+                  <FaExclamationTriangle className='text-yellow-500' />
+                  Available Actions
+                </h3>
+
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  {selectedReport.contentId && (
+                    <Button
+                      variant='destructive'
+                      onClick={navigateToContentManagement}
+                      className='flex items-center justify-center gap-2'
+                    >
+                      <FaTrash />
+                      Manage Content
+                    </Button>
+                  )}
+
+                  <Button
+                    variant='destructive'
+                    onClick={navigateToUserManagement}
+                    className='flex items-center justify-center gap-2'
+                  >
+                    <FaBan />
+                    Manage User
+                  </Button>
+                </div>
+
+                <Textarea
+                  placeholder='Add admin notes...'
+                  value={adminNote || selectedReport?.adminNotes || ''}
+                  onChange={(e) => setAdminNote(e.target.value)}
+                  className='min-h-[100px] w-full'
+                />
+
+                <div className='flex flex-col md:flex-row justify-between gap-4'>
+                  <Button
+                    variant='outline'
+                    onClick={() => handleReportAction('under_review')}
+                    className='flex-1'
+                  >
+                    Start Review
+                  </Button>
+                  <Button
+                    variant='destructive'
+                    onClick={() => handleReportAction('resolved')}
+                    className='flex-1'
+                  >
+                    Take Action
+                  </Button>
+                  <Button
+                    variant='secondary'
+                    onClick={() => handleReportAction('dismissed')}
+                    className='flex-1'
+                  >
+                    Dismiss Report
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 
