@@ -45,7 +45,10 @@ const Header = () => {
   const [accountId, setAccountId] = useState(null);
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [notificationCount, setNotificationCount] = useState(0);
-  const [adminNotificationExists, setAdminNotificationExists] = useState(false);
+  const [adminNotificationExists, setAdminNotificationExists] = useState({
+    hasRoleChangeNotification: false,
+    hasDeletedContentNotification: false,
+  });
   const { subscribe, unsubscribe, isConnected } = useSocket();
 
   useEffect(() => {
@@ -110,7 +113,10 @@ const Header = () => {
         );
         if (!res.ok) throw new Error('Failed to fetch admin notifications');
         const data = await res.json();
-        setAdminNotificationExists(data.exists);
+        setAdminNotificationExists({
+          hasRoleChangeNotification: data.hasRoleChangeNotification,
+          hasDeletedContentNotification: data.hasDeletedContentNotification,
+        });
       } catch (error) {
         console.error('Error checking admin notifications: ', error);
       }
@@ -227,7 +233,8 @@ const Header = () => {
   );
 
   const NotificationFromAdmin = () =>
-    adminNotificationExists &&
+    adminNotificationExists.hasRoleChangeNotification &&
+    adminNotificationExists.hasDeletedContentNotification &&
     currentUser && (
       <Link
         to='/admin-alerts'
