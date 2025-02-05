@@ -317,7 +317,7 @@ const Sidebar = () => {
   return (
     <>
       <aside
-        className={`hidden md:flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-72 h-[calc(102vh-5rem)] fixed left-0 ${
+        className={`hidden lg:flex lg:flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 w-72 h-[calc(102vh-5rem)] fixed left-0 ${
           isScrolled ? 'top-[30px] h-[calc(103vh-3rem)]' : 'top-[64px]'
         } transition-all duration-0 shadow-lg`}
       >
@@ -357,7 +357,7 @@ const Sidebar = () => {
       <MobileNavigation visibleLinks={visibleLinks} renderLinks={renderLinks} />
 
       {/* Spacer div to prevent content from being hidden behind the sidebar */}
-      <div className='hidden md:block w-72' />
+      <div className='hidden lg:block w-72' />
     </>
   );
 };
