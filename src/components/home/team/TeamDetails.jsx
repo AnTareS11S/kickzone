@@ -160,9 +160,10 @@ const TeamDetails = () => {
               className='flex flex-col md:flex-row items-center justify-between mb-8'
             >
               <div className='flex flex-col items-center md:items-start mb-6 md:mb-0'>
-                <h1 className='text-3xl font-bold text-gray-900 mb-2'>
+                <h1 className='text-heading2-semibold font-bold text-gray-900 mb-2'>
                   {team?.name}
                 </h1>
+
                 <p className='text-lg text-gray-600'>
                   {team?.fans?.length} fans
                 </p>
