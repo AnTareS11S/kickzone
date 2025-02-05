@@ -43,6 +43,7 @@ import {
 } from 'react-icons/fa';
 import { ReportCard } from '../../components/report/ReportCard';
 import { getStatusBadge } from '../../lib/utils.jsx';
+import Spinner from '../../components/Spinner.jsx';
 
 const ReportsManagement = () => {
   const navigate = useNavigate();
@@ -51,6 +52,7 @@ const ReportsManagement = () => {
   const [filterStatus, setFilterStatus] = useState('all');
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [adminNote, setAdminNote] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -58,8 +60,11 @@ const ReportsManagement = () => {
         const response = await fetch('/api/admin/reports');
         const data = await response.json();
         setReports(data);
+        setLoading(false);
       } catch (error) {
         console.error('Failed to fetch reports:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchReports();
@@ -81,11 +86,11 @@ const ReportsManagement = () => {
           status: action,
           adminNotes: adminNote,
           actionTaken:
-            action === 'resolved'
-              ? 'warning'
-              : action === 'dismissed'
-              ? 'no_action'
-              : 'content_removed',
+            action === 'Resolved'
+              ? 'Warning'
+              : action === 'Dismissed'
+              ? 'No_action'
+              : 'Content_removed',
         }),
       });
 
@@ -128,6 +133,10 @@ const ReportsManagement = () => {
       });
     }
   };
+
+  if (loading) {
+    return <Spinner />;
+  }
 
   return (
     <div className='p-4 max-w-8xl mx-auto'>
@@ -186,14 +195,18 @@ const ReportsManagement = () => {
                       </Link>
                     </TableCell>
                     <TableCell>
-                      <Link
-                        to={`${
-                          report.contentType === 'Post' ? '/post' : '/comment'
-                        }/${report.contentId}`}
-                        className='text-blue-600 hover:text-blue-800'
-                      >
-                        {report.contentType}
-                      </Link>
+                      {report.actionTaken === 'Content_removed' ? (
+                        <span className='text-red-500'>Content Removed</span>
+                      ) : (
+                        <Link
+                          to={`${
+                            report.contentType === 'Post' ? '/post' : '/comment'
+                          }/${report.contentId}`}
+                          className='text-blue-600 hover:text-blue-800'
+                        >
+                          {report.contentType}
+                        </Link>
+                      )}
                     </TableCell>
                     <TableCell className='max-w-xs truncate'>
                       {report.reason}
@@ -295,16 +308,22 @@ const ReportsManagement = () => {
                     <FaFileAlt className='text-gray-400' />
                     <div>
                       <p className='text-sm text-gray-500'>Content Type</p>
-                      <Link
-                        to={`${
-                          selectedReport.contentType === 'Post'
-                            ? '/post'
-                            : '/comment'
-                        }/${selectedReport.contentId}`}
-                        className='text-blue-600 hover:text-blue-800'
-                      >
-                        {selectedReport.contentType}
-                      </Link>
+                      {selectedReport.actionTaken === 'Content_removed' ? (
+                        <span className='text-red-500'>Content Removed</span>
+                      ) : (
+                        <Link
+                          to={`${
+                            selectedReport.contentType === 'Post'
+                              ? '/post'
+                              : '/comment'
+                          }/${selectedReport.contentId}`}
+                          className='text-blue-600 hover:text-blue-800'
+                        >
+                          {selectedReport.actionTaken === 'Content_removed'
+                            ? 'Content Removed'
+                            : selectedReport.contentType}
+                        </Link>
+                      )}
                     </div>
                   </div>
 
@@ -346,6 +365,9 @@ const ReportsManagement = () => {
                       variant='destructive'
                       onClick={navigateToContentManagement}
                       className='flex items-center justify-center gap-2'
+                      disabled={
+                        selectedReport.actionTaken === 'Content_removed'
+                      }
                     >
                       <FaTrash />
                       Manage Content
@@ -356,6 +378,7 @@ const ReportsManagement = () => {
                     variant='destructive'
                     onClick={navigateToUserManagement}
                     className='flex items-center justify-center gap-2'
+                    disabled={selectedReport.actionTaken === 'User_suspended'}
                   >
                     <FaBan />
                     Manage User
