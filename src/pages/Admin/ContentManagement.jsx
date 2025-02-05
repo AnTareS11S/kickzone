@@ -19,12 +19,13 @@ const ContentManagement = () => {
 
   const handleDeleteContent = async () => {
     try {
-      const response = await fetch(`/api/admin/content/${contentId}`, {
+      const response = await fetch(`/api/admin/content/delete/${contentId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          reason: deleteReason,
+          reasonInfo: deleteReason,
           reportId,
+          contentModel: contentType,
         }),
       });
 
