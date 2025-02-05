@@ -73,7 +73,10 @@ const HomeProfile = () => {
             <div className='px-6 pb-6 -mt-24'>
               <div className='flex flex-col md:flex-row md:items-end space-y-4 md:space-y-0 md:space-x-6'>
                 <img
-                  src={user.imageUrl || '/api/placeholder/150/150'}
+                  src={
+                    user.imageUrl ||
+                    'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+                  }
                   alt={user.username}
                   className='w-36 h-36 rounded-full border-4 border-white dark:border-gray-800 shadow-lg object-cover'
                 />

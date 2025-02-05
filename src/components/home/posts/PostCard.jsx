@@ -167,7 +167,10 @@ const PostCard = ({
       <Link to={`/profile/${author?._id}`}>
         <div className='flex items-center space-x-2'>
           <img
-            src={author?.imageUrl}
+            src={
+              author?.imageUrl ||
+              'https://d3awt09vrts30h.cloudfront.net/blank-profile-picture.webp'
+            }
             alt={author?.username}
             className='w-8 h-8 rounded-full border-2 border-primary-500'
             loading='lazy'
