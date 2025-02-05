@@ -164,8 +164,9 @@ const Signup = () => {
                 <Button
                   type='submit'
                   className='w-full bg-primary-500 hover:bg-purple-500'
+                  disabled={loading}
                 >
-                  {loading ? 'Loading...' : 'Create account'}
+                  {loading ? 'Creating...' : 'Create account'}
                 </Button>
               </CardFooter>
               <div className='flex items-center justify-center mb-4'>
