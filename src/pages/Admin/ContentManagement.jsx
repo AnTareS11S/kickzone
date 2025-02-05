@@ -10,22 +10,29 @@ import { Button } from '../../components/ui/button';
 import { Textarea } from '../../components/ui/textarea';
 import BackButton from '../../components/BackButton';
 import { FaTrash, FaExclamationTriangle } from 'react-icons/fa';
+import { TbLoader2 } from 'react-icons/tb';
+import { useSelector } from 'react-redux';
 
 const ContentManagement = () => {
+  const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
   const navigate = useNavigate();
   const [deleteReason, setDeleteReason] = useState('');
-  const { contentType, contentId, reportId } = location.state || {};
+  const { contentType, contentId, reportId, reason } = location.state || {};
+  const [updating, setUpdating] = useState(false);
 
   const handleDeleteContent = async () => {
     try {
+      setUpdating(true);
       const response = await fetch(`/api/admin/content/delete/${contentId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reasonInfo: deleteReason,
           reportId,
+          reason,
           contentModel: contentType,
+          deletedBy: currentUser._id,
         }),
       });
 
@@ -34,6 +41,8 @@ const ContentManagement = () => {
       }
     } catch (error) {
       console.error('Failed to delete content:', error);
+    } finally {
+      setUpdating(false);
     }
   };
 
@@ -72,9 +81,19 @@ const ContentManagement = () => {
               variant='destructive'
               className='flex items-center gap-2'
               onClick={handleDeleteContent}
+              disabled={updating}
             >
-              <FaTrash />
-              Delete Content
+              {updating ? (
+                <>
+                  <TbLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                  <span>Deleting...</span>
+                </>
+              ) : (
+                <>
+                  <FaTrash />
+                  <span>Delete Content</span>
+                </>
+              )}
             </Button>
           </div>
         </CardContent>
