@@ -22,11 +22,18 @@ import { useForm } from 'react-hook-form';
 import { signInFormSchema } from '../../lib/validation/AuthFormSchema';
 import FormArea from '../../components/FormArea';
 import { useToast } from '../../components/ui/use-toast';
+import { useState } from 'react';
+import { formatRemainingTime } from '../../lib/utils';
+import { FaClock, FaExclamationTriangle, FaInfoCircle } from 'react-icons/fa';
+import { Alert, AlertDescription, AlertTitle } from '../../components/ui/alert';
+import { TbLoader2 } from 'react-icons/tb';
 
 const Signin = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [banInfo, setBanInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(signInFormSchema()),
@@ -39,6 +46,7 @@ const Signin = () => {
 
   const onSubmit = async (formData) => {
     try {
+      setLoading(true);
       const emailExists = await fetch(
         `/api/auth/check-email?email=${formData.email}`
       );
@@ -65,6 +73,10 @@ const Signin = () => {
 
       const data = await res.json();
 
+      if (data.statusCode === 405 && data.banInfo) {
+        setBanInfo(data.banInfo);
+      }
+
       if (data.statusCode === 403) {
         form.setError('password', {
           type: 'manual',
@@ -83,6 +95,7 @@ const Signin = () => {
           title: 'Success!',
           description: 'Logged in successfully',
         });
+        setLoading(false);
 
         dispatch(signInSuccess(data));
         if (!data.isOnboardingCompleted) {
@@ -100,6 +113,8 @@ const Signin = () => {
       }
     } catch (error) {
       dispatch(signInFailure(error.message));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -107,6 +122,40 @@ const Signin = () => {
     <>
       <Header />
       <div className='flex flex-col p-3 max-w-lg mx-auto mt-28'>
+        {banInfo && (
+          <>
+            <div className='mb-6'>
+              <Alert variant='destructive'>
+                <FaExclamationTriangle className='h-4 w-4' />
+                <AlertTitle className='flex items-center gap-2'>
+                  <FaInfoCircle /> Account Suspended
+                </AlertTitle>
+                <AlertDescription className='space-y-2'>
+                  <div className='flex items-center gap-2'>
+                    <FaClock />
+                    <span>
+                      Ban expires in: {formatRemainingTime(banInfo.endDate)}
+                    </span>
+                  </div>
+                  <div>
+                    <strong>Reason:</strong> {banInfo.reason}
+                  </div>
+                  {banInfo.endDate && (
+                    <div>
+                      <strong>Until:</strong>{' '}
+                      {new Date(banInfo.endDate).toLocaleString()}
+                    </div>
+                  )}
+                  {banInfo.bannedBy && (
+                    <div>
+                      <strong>Banned by:</strong> {banInfo.bannedBy.username}
+                    </div>
+                  )}
+                </AlertDescription>
+              </Alert>
+            </div>
+          </>
+        )}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <Card>
@@ -154,8 +203,16 @@ const Signin = () => {
                 <Button
                   type='submit'
                   className='w-full bg-primary-500 hover:bg-purple-500'
+                  disabled={!!banInfo || loading}
                 >
-                  Log In
+                  {loading ? (
+                    <>
+                      <TbLoader2 className='mr-2 h-4 w-4 animate-spin' />
+                      <span>Login in...</span>
+                    </>
+                  ) : (
+                    <span>Log In</span>
+                  )}
                 </Button>
               </CardFooter>
               <div className='flex items-center justify-center mb-4'>
