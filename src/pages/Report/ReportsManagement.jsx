@@ -117,6 +117,7 @@ const ReportsManagement = () => {
           contentType: selectedReport.contentType,
           contentId: selectedReport.contentId,
           reportId: selectedReport._id,
+          reason: selectedReport.reason,
         },
       });
     }
@@ -152,11 +153,11 @@ const ReportsManagement = () => {
                 <SelectValue placeholder='Filter by Status' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='all'>All Reports</SelectItem>
-                <SelectItem value='pending'>Pending</SelectItem>
-                <SelectItem value='under_review'>Under Review</SelectItem>
-                <SelectItem value='resolved'>Resolved</SelectItem>
-                <SelectItem value='dismissed'>Dismissed</SelectItem>
+                <SelectItem value='All'>All Reports</SelectItem>
+                <SelectItem value='Pending'>Pending</SelectItem>
+                <SelectItem value='Under_review'>Under Review</SelectItem>
+                <SelectItem value='Resolved'>Resolved</SelectItem>
+                <SelectItem value='Dismissed'>Dismissed</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -211,10 +212,9 @@ const ReportsManagement = () => {
                             return (
                               <Link
                                 to={`${
-                                  report.contentType === 'Post'
+                                  report.contentType === 'Post' ||
+                                  report.contentType === 'Comment'
                                     ? '/post'
-                                    : report.contentType === 'Comment'
-                                    ? '/comment'
                                     : report.contentType === 'Profile'
                                     ? '/profile'
                                     : ''
@@ -343,10 +343,9 @@ const ReportsManagement = () => {
                             return (
                               <Link
                                 to={`${
-                                  selectedReport.contentType === 'Post'
+                                  selectedReport.contentType === 'Post' ||
+                                  selectedReport.contentType === 'Comment'
                                     ? '/post'
-                                    : selectedReport.contentType === 'Comment'
-                                    ? '/comment'
                                     : selectedReport.contentType === 'Profile'
                                     ? '/profile'
                                     : ''
