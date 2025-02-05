@@ -27,7 +27,7 @@ const MobileNavigation = ({ visibleLinks, renderLinks }) => {
   }, [visibleLinks.length]);
 
   return (
-    <nav className='md:hidden fixed bottom-0 left-0 z-50 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg'>
+    <nav className='lg:hidden fixed bottom-0 left-0 z-50 w-full bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 shadow-lg'>
       <div className={`p-2 grid ${gridColsClass} gap-1`}>{renderLinks()}</div>
     </nav>
   );
