@@ -17,8 +17,6 @@ const MatchOverview = () => {
   const [match, setMatch] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // zrobic zeby pod spodem bylo W/L/D
-
   useEffect(() => {
     const fetchMatchOverview = async () => {
       try {
