@@ -20,12 +20,11 @@ const DeletePost = ({
   const handleDeletePost = async () => {
     setIsDeleting(true);
     try {
-      const res = await fetch('/api/post/delete', {
+      const res = await fetch(`/api/post/delete/${postId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: postId }),
       });
       if (res.ok) {
         emit('newUnreadNotification', {
