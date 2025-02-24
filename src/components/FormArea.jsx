@@ -215,7 +215,7 @@ const SelectInput = ({
   <SelectData
     id={name}
     items={items}
-    defaultValue={defaultValue}
+    defaultValue={defaultValue || null}
     placeholder={placeholder}
     isDisabled={isDisabled}
     idFlag={idFlag}
