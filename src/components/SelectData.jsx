@@ -34,8 +34,15 @@ const SelectData = ({
         {Array.isArray(items) && items.length > 0 ? (
           <SelectGroup className={items.length > 4 ? 'h-48' : ''}>
             {items?.map((item) => (
-              <SelectItem key={item?.id} value={idFlag ? item?.id : item?.name}>
-                {item.name}
+              <SelectItem
+                key={item?.id || item?.name || Math.random()} // Ensure a unique key
+                value={
+                  idFlag
+                    ? item?.id || 'unknown-id'
+                    : item?.name || 'unknown-name'
+                }
+              >
+                {item.name || 'Unnamed'}
               </SelectItem>
             ))}
           </SelectGroup>
