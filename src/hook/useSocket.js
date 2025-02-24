@@ -10,7 +10,7 @@ export const useSocket = () => {
   useEffect(() => {
     // Inicjalizacja socketa
     if (!socketInstance) {
-      socketInstance = io('ws://localhost:3000', {
+      socketInstance = io('https://kickzone-api.onrender.com', {
         withCredentials: true,
         transports: ['websocket', 'polling'],
       });
