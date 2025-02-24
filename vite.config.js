@@ -6,13 +6,13 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: import.meta.env.API_URL,
+        target: 'https://kickzone-api.onrender.com',
         changeOrigin: true,
         secure: true,
         rewrite: (path) => path.replace(/^\/api/, '/api'),
       },
       '/socket.io': {
-        target: import.meta.env.API_URL,
+        target: 'https://kickzone-api.onrender.com',
         changeOrigin: true,
         secure: true,
         ws: true,
