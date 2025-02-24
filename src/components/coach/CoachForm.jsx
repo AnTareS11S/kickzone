@@ -126,6 +126,7 @@ const CoachForm = ({ currentUser }) => {
               initialDate={coachData?.birthDate || new Date()}
               placeholder='Select date'
             />
+
             <FormArea
               id='nationality'
               type='select'
@@ -134,6 +135,7 @@ const CoachForm = ({ currentUser }) => {
               label='Nationality'
               placeholder={countryName?.name || 'Select nationality'}
               name='nationality'
+              idFlag={true}
             />
           </div>
           <FormArea

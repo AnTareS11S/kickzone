@@ -135,6 +135,7 @@ const RefereeForm = ({ currentUser }) => {
               label='Nationality'
               placeholder={countryName?.name || 'Select nationality'}
               name='nationality'
+              idFlag={true}
             />
           </div>
           <FormArea
