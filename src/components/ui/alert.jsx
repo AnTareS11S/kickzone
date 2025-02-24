@@ -1,6 +1,6 @@
-import React from 'react';
 import { cva } from 'class-variance-authority';
 import { cn } from '../../lib/utils';
+import { forwardRef } from 'react';
 
 const alertVariants = cva(
   'relative w-full rounded-lg border px-4 py-3 text-sm [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground [&>svg~*]:pl-7',
@@ -18,7 +18,7 @@ const alertVariants = cva(
   }
 );
 
-const Alert = React.forwardRef((props, ref) => {
+const Alert = forwardRef((props, ref) => {
   const { className, variant, ...rest } = props;
   return (
     <div
@@ -31,7 +31,7 @@ const Alert = React.forwardRef((props, ref) => {
 });
 Alert.displayName = 'Alert';
 
-const AlertTitle = React.forwardRef((props, ref) => {
+const AlertTitle = forwardRef((props, ref) => {
   const { className, ...rest } = props;
   return (
     <h5
@@ -43,7 +43,7 @@ const AlertTitle = React.forwardRef((props, ref) => {
 });
 AlertTitle.displayName = 'AlertTitle';
 
-const AlertDescription = React.forwardRef((props, ref) => {
+const AlertDescription = forwardRef((props, ref) => {
   const { className, ...rest } = props;
   return (
     <div
