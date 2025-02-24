@@ -6,8 +6,16 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
+        target: 'https://kickzone-api.onrender.com/',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/socket.io': {
         target: 'https://kickzone-api.onrender.com',
-        secure: false,
+        changeOrigin: true,
+        secure: true,
+        ws: true,
       },
     },
   },
