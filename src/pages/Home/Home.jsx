@@ -21,7 +21,9 @@ const Home = () => {
     const fetchPosts = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/post/all');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/post/all`
+        );
         const data = await res.json();
         setPosts(data);
       } catch (error) {
