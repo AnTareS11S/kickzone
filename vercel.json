@@ -4,5 +4,11 @@
       "source": "/(.*)",
       "destination": "/"
     }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "https://kickzone-api.onrender.com/api/$1"
+    }
   ]
 }
