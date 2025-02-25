@@ -69,7 +69,9 @@ const Search = () => {
 
       setIsLoading(true);
       try {
-        const res = await fetch(`/api/player?q=${search}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/player?q=${search}`
+        );
         if (res.ok) {
           const data = await res.json();
           setSearchResults(data);

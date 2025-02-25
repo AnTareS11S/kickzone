@@ -11,7 +11,9 @@ export const GetTrainingsByCoachId = (id) => {
           return;
         }
         setLoading(true);
-        const res = await fetch(`/api/admin/training/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/training/${id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch trainings data!');
         }

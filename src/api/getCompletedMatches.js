@@ -11,7 +11,9 @@ export const GetCompletedMatches = (id, isResultApproved) => {
       try {
         setLoading(true);
         const res = await fetch(
-          `/api/referee/completed-matches/${id}?userId=${currentUser?._id}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/referee/completed-matches/${id}?userId=${currentUser?._id}`
         );
         if (!res.ok) {
           throw new Error('Failed to fetch matches data!');

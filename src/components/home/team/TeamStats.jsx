@@ -64,7 +64,9 @@ const TeamStats = () => {
       setLoading(true);
 
       fetchData(
-        `/api/team/team-cards/${teamId}?season=${selectedSeason}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/team/team-cards/${teamId}?season=${selectedSeason}`,
         (data) => {
           setStats((prev) => ({
             ...prev,
@@ -76,7 +78,9 @@ const TeamStats = () => {
       );
 
       fetchData(
-        `/api/team/team-goals/${teamId}?season=${selectedSeason}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/team/team-goals/${teamId}?season=${selectedSeason}`,
         (data) => {
           setStats((prev) => ({
             ...prev,
@@ -88,7 +92,9 @@ const TeamStats = () => {
       );
 
       fetchData(
-        `/api/team/team-outcomes/${teamId}?season=${selectedSeason}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/team/team-outcomes/${teamId}?season=${selectedSeason}`,
         (data) => {
           setStats((prev) => ({
             ...prev,

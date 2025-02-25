@@ -8,7 +8,9 @@ export const GetRefereeById = (id) => {
     const fetchRefereeById = async () => {
       try {
         if (!id) return;
-        const res = await fetch(`/api/referee/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/referee/${id}`
+        );
         const data = await res.json();
         setReferee(data);
         setLoading(false);

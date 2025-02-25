@@ -40,10 +40,13 @@ const PostForm = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('/api/post/add', {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/post/add`,
+        {
+          method: 'POST',
+          body: data,
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

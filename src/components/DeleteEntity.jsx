@@ -20,7 +20,9 @@ const DeleteEntity = ({ row, onEntityDelete, apiEndpoint, title }) => {
     setIsDeleting(true);
     try {
       const res = await fetch(
-        `/api/admin/${apiEndpoint?.split('/')[0]}/delete/${row._id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/${
+          apiEndpoint?.split('/')[0]
+        }/delete/${row._id}`,
         {
           method: 'DELETE',
         }

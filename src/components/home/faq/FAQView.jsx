@@ -8,7 +8,9 @@ const FAQView = () => {
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const res = await fetch('/api/admin/faq');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/faq`
+        );
         if (!res.ok) throw new Error('Failed to fetch faqs');
         const data = await res.json();
         setFaqs(data);

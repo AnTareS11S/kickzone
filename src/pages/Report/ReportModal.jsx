@@ -51,18 +51,21 @@ const ReportModal = ({
     }
 
     try {
-      const res = await fetch('/api/admin/add-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          reportedBy: currentUserId,
-          reportedUser: reportedUserId,
-          contentType,
-          contentId,
-          reason,
-          description: reportReason,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/add-report`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reportedBy: currentUserId,
+            reportedUser: reportedUserId,
+            contentType,
+            contentId,
+            reason,
+            description: reportReason,
+          }),
+        }
+      );
 
       if (res.ok) {
         toast({

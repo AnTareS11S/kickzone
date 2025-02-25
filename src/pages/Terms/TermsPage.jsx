@@ -14,7 +14,9 @@ const TermsPage = () => {
   useEffect(() => {
     const fetchTerms = async () => {
       try {
-        const response = await fetch('/api/admin/terms');
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/terms`
+        );
         const data = await response.json();
         setTerms(data);
         setLoading(false);

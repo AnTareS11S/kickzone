@@ -17,7 +17,9 @@ const CoachTeamView = () => {
 
   const fetchTeamById = async (id) => {
     try {
-      const res = await fetch(`/api/team/${id}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/team/${id}`
+      );
       if (!res.ok) {
         throw new Error('Failed to fetch team data!');
       }

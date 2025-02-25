@@ -15,7 +15,11 @@ const ForumNotifications = ({ userId, role }) => {
   useEffect(() => {
     const getTeamForumNotifications = async () => {
       try {
-        const res = await fetch(`/api/forum/notifications/${userId}/${role}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/forum/notifications/${userId}/${role}`
+        );
         const data = await res.json();
         setNotifications(data.notifications);
         setTeamId(data.teamId);

@@ -30,7 +30,9 @@ const HomeProfile = () => {
   useEffect(() => {
     const getComments = async () => {
       try {
-        const res = await fetch(`/api/user/get-comments/${userId}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/user/get-comments/${userId}`
+        );
         const data = await res.json();
         if (!res.ok) throw new Error(data.message);
         setComments(data);

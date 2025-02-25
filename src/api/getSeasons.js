@@ -11,7 +11,9 @@ export const GetSeasons = () => {
   useEffect(() => {
     const fetchSeasonsData = async () => {
       try {
-        const res = await fetch('/api/admin/season');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/season`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch seasons data!');
         }

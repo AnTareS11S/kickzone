@@ -66,10 +66,13 @@ const AdminForm = ({ currentUser }) => {
     data.append('birthDate', formattedDate);
 
     try {
-      const res = await fetch('/api/admin/add', {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/add`,
+        {
+          method: 'POST',
+          body: data,
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

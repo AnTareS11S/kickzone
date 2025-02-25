@@ -41,13 +41,16 @@ const Onboarding = () => {
     try {
       setLoading(true);
       const userId = currentUser?._id;
-      const res = await fetch('/api/auth/complete-onboarding', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...formData, userId }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/complete-onboarding`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ ...formData, userId }),
+        }
+      );
 
       if (res.ok) {
         dispatch(updateOnboarding(true));

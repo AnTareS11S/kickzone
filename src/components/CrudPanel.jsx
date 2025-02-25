@@ -43,7 +43,9 @@ const CrudPanel = ({
   const fetchData = async () => {
     try {
       const endpoint = objectId ? `${apiPath}/${objectId}` : apiPath;
-      const res = await fetch(`/api/admin/${endpoint}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/${endpoint}`
+      );
       const data = await res.json();
       setData(data);
     } catch (error) {
@@ -79,7 +81,9 @@ const CrudPanel = ({
           apiPath
         )
       ) {
-        let url = `/api/${apiPath}/check-${apiPath}-name?name=${data.name}`;
+        let url = `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/${apiPath}/check-${apiPath}-name?name=${data.name}`;
 
         if (apiPath === 'league') {
           url += `&season=${data.season}`;
@@ -104,10 +108,13 @@ const CrudPanel = ({
       }
 
       const endpoint = objectId ? `${apiPath}/${objectId}` : apiPath;
-      const res = await fetch(`/api/admin/${endpoint}/add`, {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/${endpoint}/add`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

@@ -24,17 +24,22 @@ const ContentManagement = () => {
   const handleDeleteContent = async () => {
     try {
       setUpdating(true);
-      const response = await fetch(`/api/admin/content/delete/${contentId}`, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          reasonInfo: deleteReason,
-          reportId,
-          reason,
-          contentModel: contentType,
-          deletedBy: currentUser._id,
-        }),
-      });
+      const response = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/admin/content/delete/${contentId}`,
+        {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            reasonInfo: deleteReason,
+            reportId,
+            reason,
+            contentModel: contentType,
+            deletedBy: currentUser._id,
+          }),
+        }
+      );
 
       if (response.ok) {
         navigate('/dashboard/admin/reports');

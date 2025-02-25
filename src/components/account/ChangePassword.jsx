@@ -42,13 +42,18 @@ const ChangePassword = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch(`/api/user/change-password/${currentUser._id}`, {
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/change-password/${
+          currentUser._id
+        }`,
+        {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       const response = await res.json();
       if (response.statusCode === 403) {
         form.setError('currentPassword', {

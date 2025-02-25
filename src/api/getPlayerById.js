@@ -8,7 +8,9 @@ export const GetPlayerById = (id, isChanged) => {
     const fetchPlayerById = async () => {
       try {
         if (!id) return;
-        const res = await fetch(`/api/player/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/player/${id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch player data!');
         }

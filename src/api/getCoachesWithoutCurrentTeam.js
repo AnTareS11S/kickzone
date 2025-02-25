@@ -6,7 +6,9 @@ export const GetCoachesWithoutCurrentTeam = () => {
   useEffect(() => {
     const fetchCoachesData = async () => {
       try {
-        const res = await fetch('/api/coach/coaches-without-team');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/coach/coaches-without-team`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch coaches data!');
         }

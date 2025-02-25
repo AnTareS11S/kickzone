@@ -8,7 +8,11 @@ export const GetSeasonByLeagueId = (leagueId) => {
   useEffect(() => {
     const fetchSeasonData = async () => {
       try {
-        const res = await fetch(`/api/season/get-season/${leagueId}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/season/get-season/${leagueId}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch season data!');
         }

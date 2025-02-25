@@ -65,7 +65,11 @@ const TrainingDetails = () => {
   const fetchTraining = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/admin/training/get/${trainingId}`);
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/admin/training/get/${trainingId}`
+      );
       if (!res.ok) throw new Error('Failed to fetch data!');
       const data = await res.json();
       setTraining(data);
@@ -93,11 +97,16 @@ const TrainingDetails = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch(`/api/admin/training/attendance/${trainingId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, playerId: player?._id }),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/admin/training/attendance/${trainingId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...data, playerId: player?._id }),
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

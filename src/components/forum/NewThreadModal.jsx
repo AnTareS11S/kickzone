@@ -35,15 +35,18 @@ const NewThreadModal = ({ author, isChanged }) => {
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
-      const res = await fetch('/api/forum/new-thread', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          authorId: author._id,
-          authorModel: author.role,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/forum/new-thread`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...data,
+            authorId: author._id,
+            authorModel: author.role,
+          }),
+        }
+      );
       if (!res.ok) {
         throw new Error('Cannot create new thread');
       }

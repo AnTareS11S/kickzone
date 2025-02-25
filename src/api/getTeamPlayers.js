@@ -15,7 +15,9 @@ export const GetTeamPlayers = (id) => {
       try {
         if (!id) return;
         setLoading(true);
-        const res = await fetch(`/api/admin/team-player/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/team-player/${id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch players data!');
         }

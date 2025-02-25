@@ -66,10 +66,13 @@ const RefereeForm = ({ currentUser }) => {
     data.append('user', currentUser?._id);
 
     try {
-      const res = await fetch('/api/referee/add', {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/referee/add`,
+        {
+          method: 'POST',
+          body: data,
+        }
+      );
 
       if (res.ok) {
         toast({

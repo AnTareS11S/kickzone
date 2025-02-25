@@ -30,7 +30,9 @@ const TeamMatches = () => {
     const getMatches = async () => {
       try {
         const res = await fetch(
-          `/api/team/matches/${teamId}?season=${selectedSeason}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/team/matches/${teamId}?season=${selectedSeason}`
         );
         const data = await res.json();
         setMatches(data);

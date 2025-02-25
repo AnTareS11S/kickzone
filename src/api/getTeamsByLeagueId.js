@@ -17,7 +17,9 @@ export const GetTeamsByLeagueId = (id) => {
         if (!id) {
           return;
         }
-        const res = await fetch(`/api/league/teams/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/league/teams/${id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch team data!');
         }

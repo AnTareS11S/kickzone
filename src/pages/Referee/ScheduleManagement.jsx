@@ -95,7 +95,9 @@ const ScheduleManagement = () => {
     const { startDate } = form.getValues();
 
     const newSchedule = await fetchFromApi(
-      `/api/referee/generate-schedule/${leagueId}`,
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/referee/generate-schedule/${leagueId}`,
       'POST',
       { startDate, seasonId: season._id }
     );
@@ -113,7 +115,9 @@ const ScheduleManagement = () => {
 
   const handleDeleteRounds = async () => {
     await fetchFromApi(
-      `/api/referee/delete-schedule/${leagueId}?seasonId=${season._id}`,
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/referee/delete-schedule/${leagueId}?seasonId=${season._id}`,
       'DELETE'
     );
     setShowGeneratedSchedule(false);
@@ -125,7 +129,9 @@ const ScheduleManagement = () => {
 
   const handleGetRounds = async () => {
     const fetchedRounds = await fetchFromApi(
-      `/api/referee/get-rounds/${leagueId}?seasonId=${season._id}`
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/referee/get-rounds/${leagueId}?seasonId=${season._id}`
     );
 
     if (fetchedRounds?.length === 0) {

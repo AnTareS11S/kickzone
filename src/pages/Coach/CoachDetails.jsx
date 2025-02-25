@@ -43,7 +43,9 @@ const CoachDetails = () => {
       try {
         if (coach?.currentTeam) {
           const res = await fetch(
-            `/api/coach/coach-stats/${coachId}/${coach.currentTeamId}`
+            `${
+              import.meta.env.VITE_API_BASE_URL
+            }/api/coach/coach-stats/${coachId}/${coach.currentTeamId}`
           );
           const data = await res.json();
           setStats(data);

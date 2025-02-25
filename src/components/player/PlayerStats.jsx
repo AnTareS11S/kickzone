@@ -12,7 +12,11 @@ const PlayerStats = ({ leagueId, type }) => {
     const fetchPlayersStats = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/player/top-stats/${leagueId}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/player/top-stats/${leagueId}`
+        );
         if (res.ok) {
           let data = await res.json();
           data = data.filter((player) => {

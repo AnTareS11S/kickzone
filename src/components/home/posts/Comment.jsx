@@ -36,13 +36,16 @@ const Comment = ({
       commentContent: formData.post,
     };
     try {
-      const res = await fetch(`/api/post/comment/${postId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/post/comment/${postId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedData),
+        }
+      );
 
       if (res.ok) {
         const data = await res.json();

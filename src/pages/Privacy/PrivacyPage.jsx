@@ -14,7 +14,9 @@ const PrivacyPage = () => {
   useEffect(() => {
     const fetchPrivacy = async () => {
       try {
-        const response = await fetch('/api/admin/privacy');
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/privacy`
+        );
         const data = await response.json();
         setPrivacy(data);
         setLoading(false);

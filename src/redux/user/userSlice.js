@@ -4,7 +4,9 @@ export const fetchUserData = createAsyncThunk(
   'user/fetchUserData',
   async (userId, { rejectWithValue }) => {
     try {
-      const response = await fetch(`/api/user/get/${userId}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/get/${userId}`
+      );
       if (!response.ok) {
         throw new Error('Failed to fetch user data');
       }

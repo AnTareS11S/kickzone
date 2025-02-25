@@ -8,7 +8,9 @@ export const GetCoachById = (id) => {
     const fetchCoachById = async () => {
       try {
         if (!id) return;
-        const res = await fetch(`/api/coach/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/coach/${id}`
+        );
         const data = await res.json();
         setCoach(data);
         setLoading(false);

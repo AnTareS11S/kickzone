@@ -29,7 +29,11 @@ const Leagues = () => {
   useEffect(() => {
     const getLeagues = async () => {
       try {
-        const res = await fetch(`/api/admin/league?season=${selectedSeason}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/admin/league?season=${selectedSeason}`
+        );
         const data = await res.json();
         setLeagues(data);
         setLoading(false);

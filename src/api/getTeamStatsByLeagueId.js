@@ -8,7 +8,11 @@ export const GetTeamStatsByLeagueId = (leagueId) => {
   useEffect(() => {
     const fetchTeamStatsByLeagueId = async () => {
       try {
-        const res = await fetch(`/api/league/teams-stats/${leagueId}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/league/teams-stats/${leagueId}`
+        );
         const data = await res.json();
         setTeamStats(data);
         setLoading(false);

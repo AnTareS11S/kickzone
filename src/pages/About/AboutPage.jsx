@@ -10,7 +10,9 @@ const AboutPage = () => {
   useEffect(() => {
     const fetchAbout = async () => {
       try {
-        const res = await fetch('/api/admin/aboutOne');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/aboutOne`
+        );
         const data = await res.json();
         setAbout(data);
         setLoading(false);

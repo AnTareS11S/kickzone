@@ -31,7 +31,9 @@ const TeamResult = () => {
     const fetchResultsData = async () => {
       try {
         const res = await fetch(
-          `/api/team/results/${teamId}?season=${selectedSeason}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/team/results/${teamId}?season=${selectedSeason}`
         );
         if (!res.ok) {
           throw new Error('Failed to fetch results data!');

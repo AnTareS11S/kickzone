@@ -31,7 +31,9 @@ const ExplorePage = () => {
   useEffect(() => {
     const fetchTodaysMatches = async () => {
       try {
-        const res = await fetch('/api/admin/today-matches');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/today-matches`
+        );
         const data = await res.json();
         setTodaysMatches(data);
         setLoading(false);
@@ -47,7 +49,9 @@ const ExplorePage = () => {
     const fetchRecentResults = async () => {
       try {
         setLoading(true);
-        const res = await fetch('/api/admin/recent-results');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/recent-results`
+        );
         const data = await res.json();
         setRecentResults(data);
         setLoading(false);

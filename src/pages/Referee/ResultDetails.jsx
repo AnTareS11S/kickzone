@@ -15,7 +15,11 @@ const ResultDetails = () => {
   useEffect(() => {
     const getResult = async () => {
       try {
-        const res = await fetch(`/api/referee/result-details/${resultId}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/referee/result-details/${resultId}`
+        );
         const data = await res.json();
 
         const filterPlayersWithStats = (playersStats) => {

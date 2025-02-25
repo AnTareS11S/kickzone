@@ -11,7 +11,11 @@ export const GetAdminByUserId = (isChanged) => {
     const fetchAdminById = async () => {
       try {
         if (!currentUser?._id || currentUser?.role !== 'Admin') return;
-        const res = await fetch(`/api/admin/get/${currentUser?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/get/${
+            currentUser?._id
+          }`
+        );
         if (res.ok) {
           const data = await res.json();
           setAdmin(data);

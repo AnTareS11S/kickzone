@@ -47,7 +47,11 @@ const TrainingManage = () => {
     const getTypes = async () => {
       try {
         if (!coach?._id) return;
-        const res = await fetch(`/api/admin/training-type/${coach?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/training-type/${
+            coach?._id
+          }`
+        );
         if (!res.ok) {
           throw new Error(data.message || 'Failed to fetch data!');
         }

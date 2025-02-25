@@ -18,7 +18,11 @@ const ChatUsers = ({
     const getAccounts = async () => {
       try {
         setIsLoading(true);
-        const res = await fetch(`/api/user/get-accounts?term=${searchTerm}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/user/get-accounts?term=${searchTerm}`
+        );
         if (!res.ok) throw new Error('Failed to fetch accounts');
         const data = await res.json();
         setAllUsers(data.filter((u) => u._id !== currentId));
@@ -44,7 +48,9 @@ const ChatUsers = ({
   const handleClick = async (user) => {
     try {
       const res = await fetch(
-        `/api/conversations/find/${currentId}/${user._id}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/conversations/find/${currentId}/${user._id}`
       );
       if (!res.ok) throw new Error('Failed to fetch conversation');
       const data = await res.json();

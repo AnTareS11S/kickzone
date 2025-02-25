@@ -26,7 +26,9 @@ const MatchDetails = () => {
     const getRefereeMatches = async () => {
       try {
         const response = await fetch(
-          `/api/referee/referee-matches/${leagueId}?userId=${currentUser?._id}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/referee/referee-matches/${leagueId}?userId=${currentUser?._id}`
         );
         const data = await response.json();
         setMatches(data);
@@ -41,7 +43,11 @@ const MatchDetails = () => {
 
   const handleDownloadPDF = async (id, name) => {
     try {
-      const res = await fetch(`/api/referee/download-match-details-pdf/${id}`);
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/referee/download-match-details-pdf/${id}`
+      );
 
       // Check if the response is OK
       if (!res.ok) {
@@ -89,7 +95,11 @@ const MatchDetails = () => {
   };
 
   const handleDownloadXLSX = async (id, name) => {
-    const res = await fetch(`/api/referee/download-match-details-xlsx/${id}`);
+    const res = await fetch(
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/referee/download-match-details-xlsx/${id}`
+    );
     const blob = await res.blob();
     const url = window.URL.createObjectURL(new Blob([blob]));
     const link = document.createElement('a');
@@ -101,7 +111,11 @@ const MatchDetails = () => {
   };
 
   const handleDownloadDocx = async (id, name) => {
-    const res = await fetch(`/api/referee/download-match-details-docx/${id}`);
+    const res = await fetch(
+      `${
+        import.meta.env.VITE_API_BASE_URL
+      }/api/referee/download-match-details-docx/${id}`
+    );
     const blob = await res.blob();
     const url = window.URL.createObjectURL(new Blob([blob]));
     const link = document.createElement('a');

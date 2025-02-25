@@ -66,10 +66,13 @@ const CoachForm = ({ currentUser }) => {
     data.append('birthDate', formattedDate);
 
     try {
-      const res = await fetch('/api/coach/create', {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/coach/create`,
+        {
+          method: 'POST',
+          body: data,
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

@@ -29,13 +29,18 @@ const DeleteConversation = ({
 
   const handleDeleteConfirm = async () => {
     try {
-      const res = await fetch(`/api/conversations/delete/${conversation._id}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/conversations/delete/${
+          conversation._id
+        }`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }),
+        }
+      );
       if (!res.ok) throw new Error('Failed to delete conversation');
       toast({
         title: 'Success',

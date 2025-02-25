@@ -20,7 +20,9 @@ export const useThreadActions = (threadId) => {
 
   const fetchThread = useCallback(async () => {
     try {
-      const res = await fetch(`/api/forum/thread/${threadId}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/forum/thread/${threadId}`
+      );
       const data = await res.json();
       setThread(data);
       setTeamId(data?.teamId);
@@ -37,11 +39,16 @@ export const useThreadActions = (threadId) => {
     if (isLiking) return;
     try {
       setIsLiking(true);
-      const res = await fetch(`/api/forum/thread/${threadId}/like`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, role }),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/forum/thread/${threadId}/like`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, role }),
+        }
+      );
       if (res.ok) {
         await fetchThread();
       }
@@ -55,15 +62,20 @@ export const useThreadActions = (threadId) => {
   const handleComment = async (e, userId, role) => {
     e.preventDefault();
     try {
-      const res = await fetch(`/api/forum/thread/${threadId}/comment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: comment,
-          userId,
-          model: role,
-        }),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/forum/thread/${threadId}/comment`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: comment,
+            userId,
+            model: role,
+          }),
+        }
+      );
       if (res.ok) {
         setComment('');
         await fetchThread();
@@ -76,11 +88,16 @@ export const useThreadActions = (threadId) => {
   const handleEdit = async (e) => {
     e?.preventDefault();
     try {
-      const res = await fetch(`/api/forum/thread/edit/${threadId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editData),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/forum/thread/edit/${threadId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(editData),
+        }
+      );
       if (res.ok) {
         setIsEditing(false);
         await fetchThread();
@@ -93,9 +110,14 @@ export const useThreadActions = (threadId) => {
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      const res = await fetch(`/api/forum/thread/delete/${threadId}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/forum/thread/delete/${threadId}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       if (res.ok) {
         emit('removeTeamForum', {
@@ -112,11 +134,16 @@ export const useThreadActions = (threadId) => {
 
   const handleCommentEdit = async (commentId, content) => {
     try {
-      const res = await fetch(`/api/forum/comment/edit/${commentId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content }),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/forum/comment/edit/${commentId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ content }),
+        }
+      );
       if (res.ok) {
         setEditingCommentId(null);
         setEditingCommentContent('');
@@ -130,9 +157,14 @@ export const useThreadActions = (threadId) => {
   const handleCommentDelete = async (commentId) => {
     console.log(commentId);
     try {
-      const res = await fetch(`/api/forum/comment/delete/${commentId}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/forum/comment/delete/${commentId}`,
+        {
+          method: 'DELETE',
+        }
+      );
       if (res.ok) {
         await fetchThread();
       }
@@ -145,11 +177,16 @@ export const useThreadActions = (threadId) => {
     if (isLikingComment) return;
     try {
       setIsLikingComment(true);
-      const res = await fetch(`/api/forum/comment/${commentId}/like`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, role }),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/forum/comment/${commentId}/like`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, role }),
+        }
+      );
       if (res.ok) {
         await fetchThread();
       }

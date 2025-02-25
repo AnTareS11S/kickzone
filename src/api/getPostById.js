@@ -7,7 +7,9 @@ export const GetPostById = (id, updateSuccess, deleteSuccess) => {
   useEffect(() => {
     const fetchPostById = async () => {
       try {
-        const res = await fetch(`/api/post/get/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/post/get/${id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch post data!');
         }

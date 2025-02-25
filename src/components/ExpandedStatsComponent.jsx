@@ -35,7 +35,9 @@ const ExpandedStatsComponent = ({ data }) => {
     const fetchPlayerStats = async () => {
       try {
         const res = await fetch(
-          `/api/referee/match-stats/${matchId}/${data?._id}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/referee/match-stats/${matchId}/${data?._id}`
         );
         if (res.ok) {
           const playerData = await res.json();
@@ -59,18 +61,21 @@ const ExpandedStatsComponent = ({ data }) => {
 
   const onSubmit = async (formData) => {
     try {
-      const res = await fetch('/api/referee/add-match-stats', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          player: data?._id,
-          season: seasonId,
-          matchId,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/referee/add-match-stats`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...formData,
+            player: data?._id,
+            season: seasonId,
+            matchId,
+          }),
+        }
+      );
 
       if (res.ok) {
         setIsReset(true);
@@ -94,7 +99,9 @@ const ExpandedStatsComponent = ({ data }) => {
   const handleResetStats = async () => {
     try {
       const res = await fetch(
-        `/api/referee/delete-stats/${matchId}/${data?._id}`,
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/referee/delete-stats/${matchId}/${data?._id}`,
         {
           method: 'DELETE',
         }

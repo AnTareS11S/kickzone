@@ -26,7 +26,9 @@ const ContactPage = () => {
   useEffect(() => {
     const fetchContactInfo = async () => {
       try {
-        const res = await fetch('/api/admin/contactOne');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/contactOne`
+        );
         if (!res.ok) throw new Error('Failed to fetch contact info');
         const data = await res.json();
         setContactInfo(data);

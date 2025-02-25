@@ -9,7 +9,9 @@ export const GetTeamById = (id, isChanged) => {
     const fetchTeamById = async () => {
       try {
         if (!id) return;
-        const res = await fetch(`/api/team/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/team/${id}`
+        );
         const data = await res.json();
         setTeam(data);
         setLoading(false);

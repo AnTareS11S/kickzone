@@ -15,7 +15,9 @@ const PlayerSchedule = () => {
       try {
         setLoading(true);
         const res = await fetch(
-          `/api/team/matches/${player?.currentTeam?._id}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/team/matches/${
+            player?.currentTeam?._id
+          }`
         );
         const data = await res.json();
         setMatches(data?.matches);

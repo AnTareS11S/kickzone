@@ -66,17 +66,20 @@ const UserBanManagement = () => {
     if (!validateForm()) return;
     try {
       setUpdating(true);
-      const response = await fetch(`/api/admin/ban-user/${userId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          duration: parseInt(banDuration),
-          reason: banReason,
-          description: banDescription,
-          reportId,
-          bannedBy: currentUser._id,
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/ban-user/${userId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            duration: parseInt(banDuration),
+            reason: banReason,
+            description: banDescription,
+            reportId,
+            bannedBy: currentUser._id,
+          }),
+        }
+      );
 
       if (response.ok) {
         navigate('/dashboard/admin/reports');

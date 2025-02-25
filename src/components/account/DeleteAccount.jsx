@@ -16,9 +16,14 @@ const DeleteAccount = () => {
   const handleDeleteUser = async () => {
     try {
       dispatch(deleteUserStart());
-      const res = await fetch(`/api/user/delete/${currentUser._id}`, {
-        method: 'DELETE',
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/delete/${
+          currentUser._id
+        }`,
+        {
+          method: 'DELETE',
+        }
+      );
       const data = await res.json();
       if (data.success === false) {
         dispatch(deleteUserFailure(data.message));

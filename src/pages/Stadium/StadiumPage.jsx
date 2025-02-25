@@ -25,7 +25,9 @@ const StadiumPage = () => {
   useEffect(() => {
     const getStadium = async () => {
       try {
-        const res = await fetch(`/api/admin/stadium/${stadiumId}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/stadium/${stadiumId}`
+        );
         const data = await res.json();
         setStadium(data);
         setLoading(false);

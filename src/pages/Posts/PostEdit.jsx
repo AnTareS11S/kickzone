@@ -59,10 +59,13 @@ const PostEdit = () => {
     data.append('postPhoto', file || post?.postPhoto);
 
     try {
-      const res = await fetch(`/api/post/edit/${postId}`, {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/post/edit/${postId}`,
+        {
+          method: 'POST',
+          body: data,
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

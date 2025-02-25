@@ -90,7 +90,9 @@ const PostCard = ({
 
     try {
       const isLiking = !liked;
-      const endpoint = `/api/post/${isLiking ? 'like' : 'unlike'}/${id}`;
+      const endpoint = `${import.meta.env.VITE_API_BASE_URL}/api/post/${
+        isLiking ? 'like' : 'unlike'
+      }/${id}`;
       const res = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -13,7 +13,11 @@ export const GetRefereeByUserId = (isChanged) => {
         if (!currentUser?._id || currentUser?.role !== 'Referee') {
           return;
         }
-        const res = await fetch(`/api/referee/get/${currentUser?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/referee/get/${
+            currentUser?._id
+          }`
+        );
         const data = await res.json();
         setReferee(data);
         setLoading(false);

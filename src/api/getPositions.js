@@ -11,7 +11,9 @@ export const GetPositions = () => {
   useEffect(() => {
     const fetchPositionData = async () => {
       try {
-        const res = await fetch('/api/admin/position');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/position`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch positions data!');
         }

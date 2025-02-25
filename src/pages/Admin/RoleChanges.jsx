@@ -55,7 +55,9 @@ const RoleChanges = () => {
   const fetchRoleChanges = async () => {
     try {
       setLoading(true);
-      const roleRes = await fetch('/api/admin/role-changes');
+      const roleRes = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/role-changes`
+      );
       const roleData = await roleRes.json();
       setRoleChanges(roleData);
     } catch (error) {
@@ -75,7 +77,9 @@ const RoleChanges = () => {
     try {
       setUpdating(true);
       const response = await fetch(
-        `/api/admin/update-role/${selectedChange._id}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/update-role/${
+          selectedChange._id
+        }`,
         {
           method: 'POST',
           headers: {

@@ -11,7 +11,9 @@ export const GetUserById = (isChanged, userId = null) => {
       try {
         if (!currentUser?._id && !userId) return;
         const res = await fetch(
-          `/api/user/get/${userId ? userId : currentUser?._id}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/user/get/${
+            userId ? userId : currentUser?._id
+          }`
         );
         const data = await res.json();
         setUser(data);

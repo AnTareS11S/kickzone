@@ -20,7 +20,9 @@ const MatchOverview = () => {
   useEffect(() => {
     const fetchMatchOverview = async () => {
       try {
-        const res = await fetch(`/api/match/overview/${matchId}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/match/overview/${matchId}`
+        );
 
         if (!res.ok) {
           throw new Error('Failed to fetch match overview');

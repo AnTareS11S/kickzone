@@ -13,7 +13,11 @@ export const GetTeamPlayersByWantedTeam = (id) => {
   useEffect(() => {
     const fetchTeamPlayers = async () => {
       try {
-        const res = await fetch(`/api/player/get-wanted-team/${id}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/player/get-wanted-team/${id}`
+        );
         const data = await res.json();
         setPlayers(
           data.map((player) => ({

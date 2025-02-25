@@ -33,13 +33,18 @@ const CommentEdit = () => {
 
   const onSubmit = async (formData) => {
     try {
-      const res = await fetch(`/api/post/comment/edit/${commentId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/post/comment/edit/${commentId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

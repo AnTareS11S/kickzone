@@ -57,13 +57,18 @@ const ScheduleModal = ({ match, teams }) => {
     };
 
     try {
-      const res = await fetch(`/api/referee/edit-match/${match?.matchId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(updatedData),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/referee/edit-match/${
+          match?.matchId
+        }`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(updatedData),
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',

@@ -8,7 +8,9 @@ const TableComponent = ({ leagueId }) => {
   const { teamStats } = GetTeamStatsByLeagueId(leagueId);
 
   const handleDownloadXLSX = async () => {
-    const res = await fetch(`/api/team/download-xlsx/${leagueId}`);
+    const res = await fetch(
+      `${import.meta.env.VITE_API_BASE_URL}/api/team/download-xlsx/${leagueId}`
+    );
     const blob = await res.blob();
     const url = window.URL.createObjectURL(new Blob([blob]));
     const link = document.createElement('a');

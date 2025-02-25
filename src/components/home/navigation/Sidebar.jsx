@@ -185,7 +185,11 @@ const Sidebar = () => {
       if (!currentUser?._id || currentUser?.role !== 'Player') return;
 
       try {
-        const res = await fetch(`/api/player/get/${currentUser._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/player/get/${
+            currentUser._id
+          }`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch data!');
         }
@@ -209,7 +213,11 @@ const Sidebar = () => {
         return;
       try {
         const res = await fetch(
-          `/api/player/trainingNotifications/${player?.currentTeam?._id}/${player?._id}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/player/trainingNotifications/${player?.currentTeam?._id}/${
+            player?._id
+          }`
         );
         if (!res.ok) {
           throw new Error('Failed to fetch data!');
@@ -228,7 +236,9 @@ const Sidebar = () => {
     const getTeamForumNotifications = async () => {
       try {
         const res = await fetch(
-          `/api/forum/notifications/${currentUser?._id}/${currentUser?.role}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/forum/notifications/${
+            currentUser?._id
+          }/${currentUser?.role}`
         );
         const data = await res.json();
         setUnreadForumNotifications(data.unreadCount);

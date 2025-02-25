@@ -26,7 +26,9 @@ const AssignReferee = () => {
   const handleGetRounds = async () => {
     try {
       const res = await fetch(
-        `/api/referee/get-rounds/${leagueId}?seasonId=${season?._id}`
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/referee/get-rounds/${leagueId}?seasonId=${season?._id}`
       );
       const fetchedRounds = await res.json();
 

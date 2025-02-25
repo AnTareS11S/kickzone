@@ -41,7 +41,9 @@ const AddTeam = ({ row, onEntityUpdated }) => {
   useEffect(() => {
     const fetchTeams = async () => {
       try {
-        const res = await fetch(`/api/admin/teams/no-league`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/teams/no-league`
+        );
         const data = await res.json();
 
         setTeams(data?.map((team) => ({ id: team._id, name: team.name })));
@@ -70,13 +72,16 @@ const AddTeam = ({ row, onEntityUpdated }) => {
     const teamId = getTeamId(formData.names);
 
     try {
-      const res = await fetch(`/api/league/addTeam/${row._id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ teamId }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/league/addTeam/${row._id}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ teamId }),
+        }
+      );
       if (!res.ok) {
         throw new Error('Failed to fetch data!');
       }

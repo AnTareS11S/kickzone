@@ -51,15 +51,18 @@ const AddResult = () => {
 
   const onSubmit = async (data) => {
     try {
-      const res = await fetch('/api/referee/add-result', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          match: match?._id,
-          season: match?.season,
-        }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/referee/add-result`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...data,
+            match: match?._id,
+            season: match?.season,
+          }),
+        }
+      );
 
       if (res.ok) {
         toast({

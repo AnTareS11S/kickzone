@@ -10,7 +10,9 @@ const Conversation = ({ conversation, isActive, isUnread }) => {
     const getUser = async () => {
       try {
         const res = await fetch(
-          `/api/user/get-user-info/${currentUser?._id}?conversationId=${conversation._id}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/user/get-user-info/${
+            currentUser?._id
+          }?conversationId=${conversation._id}`
         );
         if (!res.ok) throw new Error('Failed to fetch user');
         const data = await res.json();

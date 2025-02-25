@@ -17,7 +17,11 @@ export const GetTeamForumCategories = (isChanged) => {
     const fetchCategories = async () => {
       try {
         const res = await fetch(
-          `/api/admin/team-forum-categories/${currentUser?._id}/${currentUser?.role}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/admin/team-forum-categories/${currentUser?._id}/${
+            currentUser?.role
+          }`
         );
         const data = await res.json();
         setCategories(
@@ -56,7 +60,9 @@ export const GetTeamForumCategoriesToSelect = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(`/api/admin/team-forum-categories`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/team-forum-categories`
+        );
         const data = await res.json();
 
         setCategoriesToSelect(

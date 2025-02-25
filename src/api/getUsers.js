@@ -6,7 +6,9 @@ export const GetUsers = () => {
   useEffect(() => {
     const fetchUsersData = async () => {
       try {
-        const res = await fetch('/api/admin/users');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/users`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch user data!');
         }

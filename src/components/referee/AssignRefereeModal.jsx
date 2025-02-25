@@ -69,7 +69,9 @@ const AssignRefereeModal = ({ match, referees, isSet }) => {
   const onSubmit = async (data) => {
     try {
       const res = await fetch(
-        `/api/referee/assign-referees/${match?.matchId}`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/referee/assign-referees/${
+          match?.matchId
+        }`,
         {
           method: 'POST',
           headers: {

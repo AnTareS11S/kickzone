@@ -43,7 +43,11 @@ const EditEntity = ({
           apiEndpoint
         )
       ) {
-        let url = `/api/${apiEndpoint}/check-${apiEndpoint}-name?name=${data.name}&id=${row._id}`;
+        let url = `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/${apiEndpoint}/check-${apiEndpoint}-name?name=${data.name}&id=${
+          row._id
+        }`;
         if (apiEndpoint === 'league') {
           url += `&season=${data.season}`;
         }
@@ -69,10 +73,15 @@ const EditEntity = ({
         }
       }
 
-      const res = await fetch(`/api/admin/${apiEndpoint}/edit/${row._id}`, {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/${apiEndpoint}/edit/${
+          row._id
+        }`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
 
       if (res.ok) {
         toast({

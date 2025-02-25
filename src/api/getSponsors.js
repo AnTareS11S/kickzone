@@ -11,7 +11,9 @@ export const GetSponsors = () => {
   useEffect(() => {
     const fetchSponsorsData = async () => {
       try {
-        const res = await fetch('/api/admin/sponsor');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/sponsor`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch sponsors data!');
         }

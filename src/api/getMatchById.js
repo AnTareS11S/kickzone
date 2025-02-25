@@ -11,7 +11,9 @@ export const GetMatchById = (id) => {
           return;
         }
         setLoading(true);
-        const res = await fetch(`/api/referee/get-match/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/referee/get-match/${id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch match data!');
         }

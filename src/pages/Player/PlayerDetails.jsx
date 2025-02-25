@@ -37,13 +37,16 @@ const PlayerDetails = () => {
   useEffect(() => {
     const checkIfFan = async () => {
       try {
-        const res = await fetch(`/api/player/is-fan/${playerId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId: currentUser?._id }),
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/player/is-fan/${playerId}`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: currentUser?._id }),
+          }
+        );
         const data = await res.json();
 
         setIsFan(data.isFan);
@@ -59,13 +62,16 @@ const PlayerDetails = () => {
 
   const handleFollow = async () => {
     try {
-      const res = await fetch(`/api/player/follow/${playerId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: currentUser?._id }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/player/follow/${playerId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: currentUser?._id }),
+        }
+      );
 
       if (res.ok) {
         toast({
@@ -87,13 +93,16 @@ const PlayerDetails = () => {
 
   const handleUnfollow = async () => {
     try {
-      const res = await fetch(`/api/player/unfollow/${playerId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId: currentUser?._id }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/player/unfollow/${playerId}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: currentUser?._id }),
+        }
+      );
 
       if (res.ok) {
         toast({

@@ -85,7 +85,9 @@ const Messenger = () => {
     if (!accountId) return;
 
     try {
-      const res = await fetch(`/api/conversations/${accountId}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/conversations/${accountId}`
+      );
       if (!res.ok) throw new Error('Failed to fetch conversations');
       const data = await res.json();
       setConversations(data.conversations);
@@ -120,7 +122,11 @@ const Messenger = () => {
           return;
         }
         setIsMessageLoaded(true);
-        const res = await fetch(`/api/messages/${currentChat?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/messages/${
+            currentChat?._id
+          }`
+        );
         if (!res.ok) throw new Error('Failed to fetch messages');
         const data = await res.json();
         setMessages(data);
@@ -139,7 +145,11 @@ const Messenger = () => {
     const getAccountId = async () => {
       try {
         if (!user?.isProfileFilled) return;
-        const res = await fetch(`/api/user/get-account-id/${user?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/user/get-account-id/${
+            user?._id
+          }`
+        );
         if (!res.ok) throw new Error('Failed to fetch account id');
         const data = await res.json();
         setAccountId(data);
@@ -162,7 +172,11 @@ const Messenger = () => {
         if (!chatPartnerId) return;
 
         const res = await fetch(
-          `/api/user/get-user-info/${chatPartnerId}?conversationId=${currentChat?._id}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/user/get-user-info/${chatPartnerId}?conversationId=${
+            currentChat?._id
+          }`
         );
         if (!res.ok) throw new Error('Failed to fetch chat partner');
         const data = await res.json();
@@ -219,11 +233,14 @@ const Messenger = () => {
 
     try {
       setIsMessageSending(true);
-      const res = await fetch('/api/messages/send-message', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(message),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/messages/send-message`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(message),
+        }
+      );
 
       if (!res.ok) throw new Error('Failed to send message');
       const data = await res.json();
@@ -312,7 +329,11 @@ const Messenger = () => {
 
   const getOrCreateConversation = async (userId) => {
     try {
-      const res = await fetch(`/api/conversations/find/${accountId}/${userId}`);
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/conversations/find/${accountId}/${userId}`
+      );
       if (res.ok) {
         const existingConversation = await res.json();
         if (existingConversation) {
@@ -320,14 +341,17 @@ const Messenger = () => {
         }
       }
       // If no existing conversation, create a new one
-      const createRes = await fetch('/api/conversations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          senderId: accountId,
-          receiverId: userId,
-        }),
-      });
+      const createRes = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/conversations`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            senderId: accountId,
+            receiverId: userId,
+          }),
+        }
+      );
       if (!createRes.ok) throw new Error('Failed to create conversation');
       const newConversation = await createRes.json();
       setConversations((prev) => [...prev, newConversation]);

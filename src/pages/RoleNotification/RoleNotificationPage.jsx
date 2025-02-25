@@ -40,8 +40,16 @@ const RoleNotificationPage = () => {
       try {
         setIsLoading(true);
         const [roleResponse, contentResponse] = await Promise.all([
-          fetch(`/api/user/get-role-change-notifications/${currentUser._id}`),
-          fetch(`/api/user/get-content-notif/${currentUser._id}`),
+          fetch(
+            `${
+              import.meta.env.VITE_API_BASE_URL
+            }/api/user/get-role-change-notifications/${currentUser._id}`
+          ),
+          fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/user/get-content-notif/${
+              currentUser._id
+            }`
+          ),
         ]);
 
         const roleData = await roleResponse.json();
@@ -62,14 +70,19 @@ const RoleNotificationPage = () => {
   const handleMarkContentAsRead = async (notificationId) => {
     try {
       setUpdating(true);
-      const res = await fetch('/api/user/mark-content-notification-as-read', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: currentUser?._id,
-          notificationId,
-        }),
-      });
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/user/mark-content-notification-as-read`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: currentUser?._id,
+            notificationId,
+          }),
+        }
+      );
 
       if (res.ok) {
         // Remove the notification and navigate to home
@@ -90,7 +103,9 @@ const RoleNotificationPage = () => {
   const handleLogout = async () => {
     try {
       const res = await fetch(
-        '/api/user/mark-role-change-notification-as-read',
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/user/mark-role-change-notification-as-read`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

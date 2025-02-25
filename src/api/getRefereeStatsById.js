@@ -7,7 +7,11 @@ export const GetRefereeStatsById = (refereeId) => {
   useEffect(() => {
     const fetchRefereeStatsById = async () => {
       try {
-        const res = await fetch(`/api/referee/referee-stats/${refereeId}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/referee/referee-stats/${refereeId}`
+        );
         const data = await res.json();
         setRefereeStats(data);
         setLoading(false);

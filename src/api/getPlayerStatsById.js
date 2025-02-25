@@ -8,7 +8,11 @@ export const GetPlayerStatsById = (playerId) => {
   useEffect(() => {
     const fetchPlayerStatsById = async () => {
       try {
-        const res = await fetch(`/api/player/player-top-stats/${playerId}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/player/player-top-stats/${playerId}`
+        );
         const data = await res.json();
         setPlayerStats(data);
         setLoading(false);

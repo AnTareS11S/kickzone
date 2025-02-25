@@ -17,11 +17,14 @@ const RemoveTeamFromLeague = ({ row, teams, onEntityUpdated }) => {
     if (!isEmpty) {
       const getTeams = async () => {
         try {
-          const res = await fetch(`/api/admin/league/teams`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ teams }),
-          });
+          const res = await fetch(
+            `${import.meta.env.VITE_API_BASE_URL}/api/admin/league/teams`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ teams }),
+            }
+          );
           const data = await res.json();
           setTeam(data);
         } catch (error) {
@@ -34,11 +37,14 @@ const RemoveTeamFromLeague = ({ row, teams, onEntityUpdated }) => {
 
   const handleDeleteTeamFromLeague = async (teamId) => {
     try {
-      const res = await fetch(`/api/league/delete/${row._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ teamId }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/league/delete/${row._id}`,
+        {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ teamId }),
+        }
+      );
       const data = await res.json();
 
       if (data.success === false) {

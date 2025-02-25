@@ -35,7 +35,9 @@ const TeamForum = () => {
       const fetchThreads = async () => {
         setIsLoading(true);
         const res = await fetch(
-          `/api/forum/threads/${currentUser?._id}/${currentUser?.role}`
+          `${import.meta.env.VITE_API_BASE_URL}/api/forum/threads/${
+            currentUser?._id
+          }/${currentUser?.role}`
         );
         const data = await res.json();
         setThreads(data);

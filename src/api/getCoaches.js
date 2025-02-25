@@ -11,7 +11,9 @@ export const GetCoaches = () => {
   useEffect(() => {
     const fetchCoachesData = async () => {
       try {
-        const res = await fetch('/api/admin/coach');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/coach`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch coaches data!');
         }

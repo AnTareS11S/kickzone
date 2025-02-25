@@ -57,7 +57,9 @@ const ReportsManagement = () => {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await fetch('/api/admin/reports');
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/reports`
+        );
         const data = await response.json();
         setReports(data);
         setLoading(false);
@@ -79,20 +81,25 @@ const ReportsManagement = () => {
     if (!selectedReport) return;
 
     try {
-      const response = await fetch(`/api/admin/report/${selectedReport._id}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          status: action,
-          adminNotes: adminNote,
-          actionTaken:
-            action === 'Resolved'
-              ? 'Warning'
-              : action === 'Dismissed'
-              ? 'No_action'
-              : 'Content_removed',
-        }),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/report/${
+          selectedReport._id
+        }`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            status: action,
+            adminNotes: adminNote,
+            actionTaken:
+              action === 'Resolved'
+                ? 'Warning'
+                : action === 'Dismissed'
+                ? 'No_action'
+                : 'Content_removed',
+          }),
+        }
+      );
 
       if (response.ok) {
         setReports(

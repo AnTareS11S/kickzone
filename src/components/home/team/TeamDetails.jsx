@@ -40,11 +40,14 @@ const TeamDetails = () => {
   useEffect(() => {
     const checkIfFan = async () => {
       try {
-        const res = await fetch(`/api/team/is-fan/${teamId}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: currentUser?._id }),
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/team/is-fan/${teamId}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: currentUser?._id }),
+          }
+        );
         const data = await res.json();
         setIsFan(data.isFan);
       } catch (error) {
@@ -59,11 +62,14 @@ const TeamDetails = () => {
 
   const handleFollowAction = async (action) => {
     try {
-      const res = await fetch(`/api/team/${action}/${teamId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: currentUser?._id }),
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/team/${action}/${teamId}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: currentUser?._id }),
+        }
+      );
 
       if (res.ok) {
         toast({
@@ -87,7 +93,9 @@ const TeamDetails = () => {
 
   const handleDownloadPDF = async () => {
     try {
-      const res = await fetch(`/api/team/download-pdf/${teamId}`);
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/team/download-pdf/${teamId}`
+      );
       if (!res.ok)
         throw new Error(`Failed to download PDF. Status: ${res.status}`);
 

@@ -13,7 +13,11 @@ export const GetPlayerByUserId = (isChanged) => {
         if (!currentUser?._id || currentUser?.role !== 'Player') {
           return;
         }
-        const res = await fetch(`/api/player/get/${currentUser?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/player/get/${
+            currentUser?._id
+          }`
+        );
         const data = await res.json();
         setPlayer(data);
         setLoading(false);

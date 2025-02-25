@@ -11,7 +11,9 @@ export const GetStadiums = () => {
   useEffect(() => {
     const fetchStadiumData = async () => {
       try {
-        const res = await fetch('/api/admin/stadium');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/stadium`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch stadium data!');
         }

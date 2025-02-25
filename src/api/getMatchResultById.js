@@ -8,7 +8,9 @@ export const GetMatchResultById = (id) => {
     const fetchMatchData = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/referee/match-result/${id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/referee/match-result/${id}`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch match data!');
         }

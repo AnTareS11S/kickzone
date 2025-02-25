@@ -11,7 +11,11 @@ export const GetCoachByUserId = (isChanged) => {
     const fetchCoachById = async () => {
       try {
         if (!currentUser?._id || currentUser?.role !== 'Coach') return;
-        const res = await fetch(`/api/coach/get/${currentUser?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/coach/get/${
+            currentUser?._id
+          }`
+        );
         if (res.ok) {
           const data = await res.json();
           setCoach(data);

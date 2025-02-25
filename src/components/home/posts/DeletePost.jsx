@@ -20,12 +20,15 @@ const DeletePost = ({
   const handleDeletePost = async () => {
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/post/delete/${postId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/post/delete/${postId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      );
       if (res.ok) {
         emit('newUnreadNotification', {
           userId,

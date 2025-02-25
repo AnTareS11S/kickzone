@@ -105,10 +105,13 @@ const PlayerForm = () => {
     data.append('user', currentUser?._id);
 
     try {
-      const res = await fetch('/api/player/add', {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/player/add`,
+        {
+          method: 'POST',
+          body: data,
+        }
+      );
 
       if (res.ok) {
         dispatch(updateProfileFilled(true));

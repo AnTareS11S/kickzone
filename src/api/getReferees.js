@@ -11,7 +11,9 @@ export const GetRefeeres = () => {
   useEffect(() => {
     const fetchRefereesData = async () => {
       try {
-        const res = await fetch('/api/admin/referee');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/referee`
+        );
         if (!res.ok) {
           throw new Error('Failed to fetch referees data!');
         }

@@ -55,7 +55,11 @@ const Header = () => {
     const getAccountId = async () => {
       try {
         if (!currentUser?.isProfileFilled) return;
-        const res = await fetch(`/api/user/get-account-id/${currentUser?._id}`);
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/user/get-account-id/${
+            currentUser?._id
+          }`
+        );
         if (!res.ok) throw new Error('Failed to fetch account id');
         const data = await res.json();
         setAccountId(data);
@@ -73,7 +77,9 @@ const Header = () => {
         if (!currentUser?._id) return;
 
         const res = await fetch(
-          `/api/notifications/unread-count/${currentUser._id}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/notifications/unread-count/${currentUser._id}`
         );
         if (!res.ok) throw new Error('Failed to fetch notifications');
         const data = await res.json();
@@ -91,7 +97,11 @@ const Header = () => {
       try {
         if (!accountId) return;
 
-        const res = await fetch(`/api/conversations/unread/${accountId}`);
+        const res = await fetch(
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/conversations/unread/${accountId}`
+        );
         if (!res.ok) throw new Error('Failed to fetch unread messages');
         const data = await res.json();
         setUnreadMessages(data || 0);
@@ -109,7 +119,9 @@ const Header = () => {
         if (!currentUser?._id) return;
 
         const res = await fetch(
-          `/api/user/has-admin-notification/${currentUser?._id}`
+          `${
+            import.meta.env.VITE_API_BASE_URL
+          }/api/user/has-admin-notification/${currentUser?._id}`
         );
         if (!res.ok) throw new Error('Failed to fetch admin notifications');
         const data = await res.json();
@@ -155,10 +167,13 @@ const Header = () => {
   const handleSignOut = async () => {
     try {
       dispatch(signOutUserStart());
-      const res = await fetch('/api/auth/signout', {
-        method: 'POST',
-        credentials: 'include',
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/auth/signout`,
+        {
+          method: 'POST',
+          credentials: 'include',
+        }
+      );
 
       const data = await res.json();
 

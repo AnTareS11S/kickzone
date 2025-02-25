@@ -37,7 +37,9 @@ const AdminDashboard = () => {
 
     const getNotifications = async () => {
       try {
-        const response = await fetch('/api/admin/notifications-count');
+        const response = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/notifications-count`
+        );
         const data = await response.json();
         setRoleChangeNotif(data.notificationsCount);
         setReportNotif(data.reportsCount);

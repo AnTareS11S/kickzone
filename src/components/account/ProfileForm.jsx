@@ -75,10 +75,13 @@ const ProfileForm = () => {
     data.append('bio', formData.bio);
     data.append('wantedRole', formData.wantedRole);
     try {
-      const res = await fetch(`/api/user/add/${user?._id}`, {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/api/user/add/${user?._id}`,
+        {
+          method: 'POST',
+          body: data,
+        }
+      );
       if (res.ok) {
         toast({
           title: 'Success!',
