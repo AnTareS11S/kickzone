@@ -93,6 +93,11 @@ const Signin = () => {
 
       if (data.success === false) {
         dispatch(signInFailure(data.message));
+        toast({
+          title: 'Error!',
+          description: data.message || 'Failed to log in',
+          variant: 'destructive',
+        });
         return;
       }
 
