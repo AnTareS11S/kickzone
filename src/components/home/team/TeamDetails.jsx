@@ -36,6 +36,7 @@ const TeamDetails = () => {
   const [isFan, setIsFan] = useState(false);
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('results');
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const checkIfFan = async () => {
@@ -93,6 +94,7 @@ const TeamDetails = () => {
 
   const handleDownloadPDF = async () => {
     try {
+      setIsDownloading(true);
       const res = await fetch(
         `${import.meta.env.VITE_API_BASE_URL}/api/team/download-pdf/${teamId}`
       );
@@ -124,6 +126,7 @@ const TeamDetails = () => {
       link.click();
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
+      setIsDownloading(false);
     } catch (error) {
       console.error('Error downloading PDF:', error);
       toast({
@@ -131,6 +134,9 @@ const TeamDetails = () => {
         description: 'Failed to download PDF',
         variant: 'destructive',
       });
+      setIsDownloading(false);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -243,6 +249,7 @@ const TeamDetails = () => {
                 league={team.league?.name}
                 coach={team.coach}
                 onDownload={handleDownloadPDF}
+                isDownloading={isDownloading}
               />
             </motion.div>
           </div>
@@ -300,6 +307,7 @@ const TeamInfoSection = ({
   league,
   coach,
   onDownload,
+  isDownloading,
 }) => (
   <div className='space-y-4'>
     {founded && <InfoItem label='Founded' value={founded} />}
@@ -338,9 +346,10 @@ const TeamInfoSection = ({
         <p className='text-gray-700 font-semibold mb-2'>Download team info:</p>
         <Button
           onClick={onDownload}
+          disabled={isDownloading}
           className='bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded transition-colors duration-200'
         >
-          Download PDF
+          {isDownloading ? 'Downloading...' : 'Download PDF'}
         </Button>
       </div>
     )}
