@@ -21,6 +21,7 @@ const MatchDetails = () => {
   const [matches, setMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const { season, league } = GetSeasonByLeagueId(leagueId);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   useEffect(() => {
     const getRefereeMatches = async () => {
@@ -43,6 +44,7 @@ const MatchDetails = () => {
 
   const handleDownloadPDF = async (id, name) => {
     try {
+      setIsDownloading(true);
       const res = await fetch(
         `${
           import.meta.env.VITE_API_BASE_URL
@@ -70,8 +72,11 @@ const MatchDetails = () => {
       document.body.removeChild(link);
       // Revoke the URL
       URL.revokeObjectURL(url);
+      setIsDownloading(false);
     } catch (error) {
       console.error('Error downloading PDF:', error);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
@@ -95,35 +100,61 @@ const MatchDetails = () => {
   };
 
   const handleDownloadXLSX = async (id, name) => {
-    const res = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/api/referee/download-match-details-xlsx/${id}`
-    );
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(new Blob([blob]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${name}.xlsx`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
+    try {
+      setIsDownloading(true);
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/referee/download-match-details-xlsx/${id}`
+      );
+
+      if (!res.ok) {
+        throw new Error(`Failed to download XLSX. Status: ${res.status}`);
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${name}.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      setIsDownloading(false);
+    } catch (error) {
+      console.error('Error downloading XLSX:', error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const handleDownloadDocx = async (id, name) => {
-    const res = await fetch(
-      `${
-        import.meta.env.VITE_API_BASE_URL
-      }/api/referee/download-match-details-docx/${id}`
-    );
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(new Blob([blob]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', `${name}.docx`);
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
+    try {
+      setIsDownloading(true);
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/referee/download-match-details-docx/${id}`
+      );
+
+      if (!res.ok) {
+        throw new Error(`Failed to download DOCX. Status: ${res.status}`);
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${name}.docx`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      setIsDownloading(false);
+    } catch (error) {
+      console.error('Error downloading DOCX:', error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   if (loading) {
@@ -177,6 +208,9 @@ const MatchDetails = () => {
                         )
                       }
                     >
+                      {isDownloading ? (
+                        <Spinner className='h-5 w-5 mr-2' />
+                      ) : null}
                       Download in Word
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -190,6 +224,9 @@ const MatchDetails = () => {
                         )
                       }
                     >
+                      {isDownloading ? (
+                        <Spinner className='h-5 w-5 mr-2' />
+                      ) : null}
                       Download in PDF
                     </DropdownMenuItem>
                     <DropdownMenuItem
@@ -203,6 +240,9 @@ const MatchDetails = () => {
                         )
                       }
                     >
+                      {isDownloading ? (
+                        <Spinner className='h-5 w-5 mr-2' />
+                      ) : null}
                       Download in Excel
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
