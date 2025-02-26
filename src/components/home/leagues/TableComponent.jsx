@@ -3,22 +3,41 @@ import CustomDataTable from '../../CustomDataTable';
 import { Link } from 'react-router-dom';
 import { Button } from '../../ui/button';
 import { GetTeamStatsByLeagueId } from '../../../api/getTeamStatsByLeagueId';
+import { useState } from 'react';
 
 const TableComponent = ({ leagueId }) => {
   const { teamStats } = GetTeamStatsByLeagueId(leagueId);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownloadXLSX = async () => {
-    const res = await fetch(
-      `${import.meta.env.VITE_API_BASE_URL}/api/team/download-xlsx/${leagueId}`
-    );
-    const blob = await res.blob();
-    const url = window.URL.createObjectURL(new Blob([blob]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'LeagueStandings.xlsx');
-    document.body.appendChild(link);
-    link.click();
-    link.parentNode.removeChild(link);
+    try {
+      setIsDownloading(true);
+      const res = await fetch(
+        `${
+          import.meta.env.VITE_API_BASE_URL
+        }/api/team/download-xlsx/${leagueId}`
+      );
+
+      if (!res.ok) {
+        setIsDownloading(false);
+        throw new Error('Failed to download standings');
+      }
+
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(new Blob([blob]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'LeagueStandings.xlsx');
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode.removeChild(link);
+      setIsDownloading(false);
+    } catch (error) {
+      console.error('Download error:', error);
+      setIsDownloading(false);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
   const columns = [
@@ -116,8 +135,9 @@ const TableComponent = ({ leagueId }) => {
         <Button
           className='bg-primary-500 hover:bg-purple-500 text-white font-semibold py-2 px-4 rounded transition-colors duration-300'
           onClick={handleDownloadXLSX}
+          disabled={isDownloading}
         >
-          Download Standings.xlsx
+          {isDownloading ? 'Downloading...' : 'Download Standings'}
         </Button>
       </div>
       <Card className='rounded-lg shadow-md grid overflow-hidden'>
