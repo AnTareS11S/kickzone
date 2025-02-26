@@ -254,7 +254,9 @@ const Sidebar = () => {
     if (!currentUser?._id || currentUser?.role !== 'Admin') return;
     const getAdminNotifications = async () => {
       try {
-        const res = await fetch('/api/admin/notifications-count');
+        const res = await fetch(
+          `${import.meta.env.VITE_API_BASE_URL}/api/admin/notifications-count`
+        );
         const data = await res.json();
         setAdminNotification(data.notificationsCount + data.reportsCount);
       } catch (error) {
