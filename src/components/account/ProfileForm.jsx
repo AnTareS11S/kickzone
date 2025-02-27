@@ -79,6 +79,7 @@ const ProfileForm = () => {
         `${import.meta.env.VITE_API_BASE_URL}/api/user/add/${user?._id}`,
         {
           method: 'POST',
+          credentials: 'include',
           body: data,
         }
       );
