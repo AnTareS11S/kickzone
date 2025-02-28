@@ -5,7 +5,7 @@ export const postFormSchema = (isEdit) =>
     title: z
       .string()
       .min(3, 'Title must be at least 3 characters long')
-      .max(50, 'Title must be less than 50 characters long'),
+      .max(60, 'Title must be less than 60 characters long'),
     postContent: z
       .string()
       .min(3, 'Content must be at least 3 characters long'),
