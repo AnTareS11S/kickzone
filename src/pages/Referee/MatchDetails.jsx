@@ -191,7 +191,6 @@ const MatchDetails = () => {
                 <DropdownMenuTrigger className='inline-flex items-center px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2'>
                   {isDownloading ? (
                     <>
-                      <Spinner className='mr-2 h-4 w-4 animate-spin' />
                       <span>Downloading...</span>
                     </>
                   ) : (
