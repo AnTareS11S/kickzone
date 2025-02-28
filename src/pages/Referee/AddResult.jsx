@@ -47,7 +47,8 @@ const AddResult = () => {
         awayTeamScore: result?.result?.awayTeamScore || 0,
       });
     }
-  }, [result, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [result]);
 
   const onSubmit = async (data) => {
     try {
