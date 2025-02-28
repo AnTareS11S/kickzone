@@ -41,7 +41,7 @@ const AddResult = () => {
   });
 
   useEffect(() => {
-    if (result) {
+    if (result && !form.formState.isDirty) {
       form.reset({
         homeTeamScore: result?.result?.homeTeamScore || 0,
         awayTeamScore: result?.result?.awayTeamScore || 0,
