@@ -256,7 +256,7 @@ const App = () => {
                   element={<ContentManagement />}
                 />
                 <Route
-                  path='/dashboard/admin/team-request-form'
+                  path='/dashboard/admin/team-requests'
                   element={<TeamRequestFormManage />}
                 />
               </Route>

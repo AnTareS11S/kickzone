@@ -109,9 +109,9 @@ const AdminDashboard = () => {
       linkTo: '/dashboard/admin/forum-category',
     },
     {
-      title: 'Team Request Form',
+      title: 'Team Requests',
       icon: FaUsers,
-      linkTo: '/dashboard/admin/team-request-form',
+      linkTo: '/dashboard/admin/team-requests',
     },
   ];
 
