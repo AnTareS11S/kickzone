@@ -86,6 +86,7 @@ import RoleChanges from './pages/Admin/RoleChanges';
 import ReportsManagement from './pages/Report/ReportsManagement';
 import UserBanManagement from './pages/User/UsersBanManagement';
 import ContentManagement from './pages/Admin/ContentManagement';
+import TeamRequestFormManage from './pages/Team/TeamRequestFormManage';
 
 const App = () => {
   return (
@@ -253,6 +254,10 @@ const App = () => {
                 <Route
                   path='/dashboard/admin/content-management'
                   element={<ContentManagement />}
+                />
+                <Route
+                  path='/dashboard/admin/team-request-form'
+                  element={<TeamRequestFormManage />}
                 />
               </Route>
 
