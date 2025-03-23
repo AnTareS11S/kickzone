@@ -9,15 +9,28 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../../components/ui/select';
-import { FaRegCalendarAlt, FaTrophy } from 'react-icons/fa';
+import { FaRegCalendarAlt, FaTrophy, FaPlusCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { GetSeasons } from '../../api/getSeasons';
+import { Button } from '../../components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '../../components/ui/dialog';
+import TeamRequestForm from '../../components/home/team/TeamRequestForm';
+import { GetCountries } from '../../api/getCountries';
 
 const Leagues = () => {
   const [leagues, setLeagues] = useState([]);
   const [loading, setLoading] = useState(true);
   const seasons = GetSeasons();
+  const countries = GetCountries();
   const [selectedSeason, setSelectedSeason] = useState('');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   useEffect(() => {
     if (seasons.length > 0) {
@@ -66,7 +79,7 @@ const Leagues = () => {
             <FaTrophy className='mr-3 text-yellow-500' />
             Leagues
           </h1>
-          <div className='w-full md:w-auto'>
+          <div className='flex flex-col md:flex-row gap-3 items-center w-full md:w-auto'>
             <Select
               value={selectedSeason}
               onValueChange={(value) => setSelectedSeason(value)}
@@ -83,6 +96,28 @@ const Leagues = () => {
                 ))}
               </SelectContent>
             </Select>
+
+            {/* Team Request Button and Dialog */}
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className='bg-primary-500 hover:bg-purple-500 text-white flex items-center gap-2'>
+                  <FaPlusCircle />
+                  Request Team
+                </Button>
+              </DialogTrigger>
+              <DialogContent className='sm:max-w-[825px] mx-auto backdrop-blur-sm bg-white/95 max-h-[80vh] overflow-y-auto p-6'>
+                <DialogHeader>
+                  <DialogTitle>Request a New Team</DialogTitle>
+                  <DialogDescription>
+                    Fill out this form to request adding a team to our platform.
+                  </DialogDescription>
+                </DialogHeader>
+                <TeamRequestForm
+                  onSuccess={() => setIsDialogOpen(false)}
+                  countries={countries}
+                />
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
         <Separator className='my-6' />
