@@ -19,7 +19,7 @@ const CrudPanel = ({
   onRemoveTeamComponent: RemoveTeamComponent,
   onSendMessageComponent: SendMessageComponent,
   defaultValues,
-  formSchema,
+  formSchema = () => {},
   isExpandable,
   objectId,
   teamId,
