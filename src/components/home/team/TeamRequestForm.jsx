@@ -43,7 +43,7 @@ const TeamRequestForm = ({ onSuccess, countries }) => {
     setIsSubmitting(true);
     try {
       const res = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/api/user/add/team-request-form`,
+        `${import.meta.env.VITE_API_BASE_URL}/api/admin/add/team-request-form`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
