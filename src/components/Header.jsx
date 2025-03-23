@@ -248,8 +248,8 @@ const Header = () => {
   );
 
   const NotificationFromAdmin = () =>
-    adminNotificationExists.hasRoleChangeNotification &&
-    adminNotificationExists.hasDeletedContentNotification &&
+    (adminNotificationExists.hasRoleChangeNotification ||
+      adminNotificationExists.hasDeletedContentNotification) &&
     currentUser && (
       <Link
         to='/admin-alerts'
