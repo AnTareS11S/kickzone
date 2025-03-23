@@ -1,7 +1,6 @@
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
 import PageHeader from '../../components/PageHeader';
-import { roleFormSchema } from '../../lib/validation/UsersValidation';
 
 const columns = [
   {
@@ -43,10 +42,6 @@ const UserManage = () => {
         columns={columns}
         title='User'
         onDeleteComponent={DeleteEntity}
-        formSchema={roleFormSchema}
-        defaultValues={{
-          role: '',
-        }}
         isExpandable={false}
         isAction={true}
       />
