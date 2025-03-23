@@ -23,7 +23,6 @@ const columns = [
     selector: (row) => row.stadium,
     sortable: true,
   },
-
   {
     name: 'Year Founded',
     selector: (row) => row.yearFounded,
