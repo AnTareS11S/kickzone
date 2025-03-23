@@ -108,6 +108,11 @@ const AdminDashboard = () => {
       icon: FaComments,
       linkTo: '/dashboard/admin/forum-category',
     },
+    {
+      title: 'Team Request Form',
+      icon: FaUsers,
+      linkTo: '/dashboard/admin/team-request-form',
+    },
   ];
 
   if (loading) {
