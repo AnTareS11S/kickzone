@@ -1,5 +1,6 @@
 import CrudPanel from '../../components/CrudPanel';
 import DeleteEntity from '../../components/DeleteEntity';
+import DownloadRequest from '../../components/DownloadRequest';
 import PageHeader from '../../components/PageHeader';
 
 const columns = [
@@ -25,7 +26,7 @@ const columns = [
   },
   {
     name: 'Year Founded',
-    selector: (row) => row.yearFounded,
+    selector: (row) => row.foundedYear,
     sortable: true,
   },
 ];
@@ -38,6 +39,7 @@ const TeamRequestsFormManage = () => {
         apiPath='team-requests'
         columns={columns}
         onDeleteComponent={DeleteEntity}
+        onDownloadComponent={DownloadRequest}
         title='Team Request'
         isExpandable={false}
         isAction={true}
