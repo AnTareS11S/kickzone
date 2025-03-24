@@ -122,7 +122,7 @@ const TeamRequestForm = ({ onSuccess, countries }) => {
                   </FormControl>
                   <SelectContent>
                     {countries?.map((country) => (
-                      <SelectItem key={country?.id} value={country?.id}>
+                      <SelectItem key={country?.id} value={country?.name}>
                         {country?.name}
                       </SelectItem>
                     ))}
