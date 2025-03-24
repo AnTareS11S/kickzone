@@ -18,6 +18,7 @@ const CrudPanel = ({
   onAddTeamComponent: AddTeamComponent,
   onRemoveTeamComponent: RemoveTeamComponent,
   onSendMessageComponent: SendMessageComponent,
+  onDownloadComponent: DownloadComponent,
   defaultValues,
   formSchema = () => {},
   isExpandable,
@@ -193,6 +194,12 @@ const CrudPanel = ({
                   )}
                   {SendMessageComponent && (
                     <SendMessageComponent
+                      row={row}
+                      onEntityUpdated={handleEntityUpdated}
+                    />
+                  )}
+                  {DownloadComponent && (
+                    <DownloadComponent
                       row={row}
                       onEntityUpdated={handleEntityUpdated}
                     />
