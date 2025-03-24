@@ -44,7 +44,7 @@ const AdminDashboard = () => {
         const data = await response.json();
         setRoleChangeNotif(data.notificationsCount);
         setReportNotif(data.reportsCount);
-        setTeamRequestNotif(data.teamRequestCount);
+        setTeamRequestNotif(data.requestTeamFormCount);
       } catch (error) {
         console.error('Failed to fetch notifications:', error);
       }
