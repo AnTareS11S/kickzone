@@ -31,6 +31,7 @@ const AdminDashboard = () => {
   const { user, loading } = GetUserById();
   const [roleChangeNotif, setRoleChangeNotif] = useState(0);
   const [reportNotif, setReportNotif] = useState(0);
+  const [teamRequestNotif, setTeamRequestNotif] = useState(0);
 
   useEffect(() => {
     if (!user) return;
@@ -43,6 +44,7 @@ const AdminDashboard = () => {
         const data = await response.json();
         setRoleChangeNotif(data.notificationsCount);
         setReportNotif(data.reportsCount);
+        setTeamRequestNotif(data.teamRequestCount);
       } catch (error) {
         console.error('Failed to fetch notifications:', error);
       }
@@ -112,6 +114,7 @@ const AdminDashboard = () => {
       title: 'Team Requests',
       icon: FaUsers,
       linkTo: '/dashboard/admin/team-requests',
+      notificationCount: teamRequestNotif,
     },
   ];
 
