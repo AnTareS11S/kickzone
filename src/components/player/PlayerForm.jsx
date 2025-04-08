@@ -306,7 +306,10 @@ const PlayerForm = () => {
               id='footed'
               label='Footed'
               type='select'
-              items={['Left:1', 'Right:2']}
+              items={[
+                { id: 1, name: 'Left' },
+                { id: 2, name: 'Right' },
+              ]}
               placeholder={playerData?.footed || 'Select Foot'}
               form={form}
               name='footed'
