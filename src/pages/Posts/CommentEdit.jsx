@@ -29,7 +29,8 @@ const CommentEdit = () => {
     form.reset({
       post: post?.postContent,
     });
-  }, [post, form]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [post]);
 
   const onSubmit = async (formData) => {
     try {
